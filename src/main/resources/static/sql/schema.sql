@@ -1,0 +1,22 @@
+CREATE TYPE game_status AS ENUM ('ON_MATCHING', 'END');
+
+CREATE TABLE sport (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(31) NOT NULL,
+    recommended_player_count INT NOT NULL
+);
+
+CREATE TABLE game (
+    id BIGSERIAL PRIMARY KEY,
+    sport_id BIGINT NOT NULL REFERENCES sport(id),
+    player_count INT NOT NULL,
+    start_time TIME NOT NULL,
+    duration INT NOT NULL,
+    status game_status NOT NULL DEFAULT 'OnMatching'
+);
+
+CREATE TABLE game_user (
+    id BIGSERIAL PRIMARY KEY,
+    member_id BIGINT NOT NULL,
+    game_id BIGINT NOT NULL REFERENCES game(id)
+);
