@@ -2,7 +2,7 @@ CREATE TYPE game_status AS ENUM ('ON_MATCHING', 'END');
 
 CREATE TABLE sport (
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(8) NOT NULL,
+    name VARCHAR(31) NOT NULL,
     recommended_player_count INT NOT NULL
 );
 
