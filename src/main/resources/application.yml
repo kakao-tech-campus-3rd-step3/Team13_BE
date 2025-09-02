@@ -2,11 +2,15 @@ spring:
   application:
     name: pting
 
+  profiles:
+    include: auth
+
   sql:
     init:
       mode: never
       data-locations: classpath:static/sql/data.sql
       schema-locations: classpath:static/sql/schema.sql
+
   h2:
     console:
       enabled: true
