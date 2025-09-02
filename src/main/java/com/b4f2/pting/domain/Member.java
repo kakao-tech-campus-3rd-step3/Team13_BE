@@ -7,13 +7,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "member")
+@Table(name = "member", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"oauthId", "oauthProvider"})
+})
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
@@ -22,20 +27,26 @@ public class Member {
     Long id;
 
     @NotNull
-    String oauthId;
+    Long oauthId;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    OauthProvider oauthProvider;
+    OAuthProvider oauthProvider;
 
-    @NotNull
-    String nickname;
+    String name;
+
+    String imageUrl;
 
     String schoolEmail;
 
     Boolean isVerified = false;
 
-    public enum OauthProvider {
+    public enum OAuthProvider {
         KAKAO
+    }
+
+    public Member(Long oauthId, OAuthProvider oauthProvider) {
+        this.oauthId = oauthId;
+        this.oauthProvider = oauthProvider;
     }
 }
