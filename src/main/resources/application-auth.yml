@@ -1,4 +1,7 @@
 auth:
+  jwt:
+    secret: ${JWT_SECRET}
+
   oauth2:
     kakao:
       client-id: ${KAKAO_CLIENT_ID}
