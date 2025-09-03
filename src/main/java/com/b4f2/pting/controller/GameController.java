@@ -1,10 +1,7 @@
 package com.b4f2.pting.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,5 +21,11 @@ public class GameController {
     @PostMapping
     public ResponseEntity<GameResponse> createGame(@Login Member member, @RequestBody CreateGameRequest request) {
         return ResponseEntity.ok(gameService.createGame(member, request));
+    }
+
+    @PostMapping("/{gameId}")
+    public ResponseEntity<Void> joinGame(@Login Member member, @PathVariable Long gameId) {
+        gameService.joinGame(member, gameId);
+        return ResponseEntity.ok().build();
     }
 }

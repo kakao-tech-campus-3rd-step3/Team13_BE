@@ -31,9 +31,7 @@ public class GameService {
 
     @Transactional
     public GameResponse createGame(Member member, CreateGameRequest request) {
-        if (!member.getIsVerified()) {
-            throw new IllegalStateException("학교 이메일 인증이 필요합니다.");
-        }
+        validateMemberIsVerified(member);
 
         Sport sport = sportRepository.findById(request.sportId())
             .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
@@ -57,6 +55,26 @@ public class GameService {
         addParticipant(game, member);
 
         return new GameResponse(game);
+    }
+
+    @Transactional
+    public void joinGame(Member member, Long gameId) {
+        validateMemberIsVerified(member);
+
+        Game game = gameRepository.findById(gameId)
+            .orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
+
+        if (game.getGameStatus() != Game.GameStatus.ON_MATCHING) {
+            throw new IllegalStateException("게임이 모집 중이 아닙니다.");
+        }
+
+        addParticipant(game, member);
+    }
+
+    private void validateMemberIsVerified(Member member) {
+        if (!member.getIsVerified()) {
+            throw new IllegalStateException("학교 이메일 인증이 필요합니다.");
+        }
     }
 
     private void addParticipant(Game game, Member member) {
