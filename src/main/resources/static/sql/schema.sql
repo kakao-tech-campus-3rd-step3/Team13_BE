@@ -12,7 +12,7 @@ CREATE TABLE game (
     player_count INT NOT NULL,
     start_time TIMESTAMP NOT NULL,
     duration INT NOT NULL,
-    status game_status NOT NULL DEFAULT 'ON_MATCHING'
+    game_status game_status NOT NULL DEFAULT 'ON_MATCHING'
 );
 
 CREATE TABLE game_user (
