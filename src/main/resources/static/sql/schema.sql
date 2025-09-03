@@ -10,7 +10,7 @@ CREATE TABLE game (
     id BIGSERIAL PRIMARY KEY,
     sport_id BIGINT NOT NULL REFERENCES sport(id),
     player_count INT NOT NULL,
-    start_time TIME NOT NULL,
+    start_time TIMESTAMP NOT NULL,
     duration INT NOT NULL,
     status game_status NOT NULL DEFAULT 'ON_MATCHING'
 );
