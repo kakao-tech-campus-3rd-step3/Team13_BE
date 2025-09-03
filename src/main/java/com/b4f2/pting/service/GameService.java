@@ -92,7 +92,12 @@ public class GameService {
         return new GamesResponse(gameResponseList);
     }
 
+    public GameResponse findGameById(Long gameId) {
+        Game game = gameRepository.findById(gameId)
+            .orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
 
+        return new GameResponse(game);
+    }
 
     private void validateMemberIsVerified(Member member) {
         if (!member.getIsVerified()) {

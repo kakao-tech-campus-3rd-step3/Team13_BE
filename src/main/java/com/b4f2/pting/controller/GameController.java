@@ -38,4 +38,9 @@ public class GameController {
     ) {
         return ResponseEntity.ok(gameService.findGamesBySportIdAndTimePeriod(sportId, timePeriod));
     }
+
+    @GetMapping("/{gameId}")
+    public ResponseEntity<GameResponse> getGameById(@PathVariable Long gameId) {
+        return ResponseEntity.ok(gameService.findGameById(gameId));
+    }
 }
