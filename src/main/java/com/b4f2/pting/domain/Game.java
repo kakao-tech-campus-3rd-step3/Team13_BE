@@ -13,11 +13,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "game")
 @NoArgsConstructor
+@Getter
 public class Game {
 
     @Id
@@ -27,6 +29,9 @@ public class Game {
     @ManyToOne
     @JoinColumn(name = "sport_id")
     private Sport sport;
+
+    @Column(name = "player_count")
+    private Integer playerCount;
 
     @Column(name = "game_status")
     @Enumerated(EnumType.STRING)
@@ -41,5 +46,13 @@ public class Game {
     public enum GameStatus {
         ON_MATCHING,
         END
+    }
+
+    public Game(Sport sport, Integer playerCount, GameStatus gameStatus, LocalDateTime startTime, Integer duration) {
+        this.sport = sport;
+        this.playerCount = playerCount;
+        this.gameStatus = gameStatus;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 }
