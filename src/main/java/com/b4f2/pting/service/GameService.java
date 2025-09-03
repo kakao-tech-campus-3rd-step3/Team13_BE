@@ -2,6 +2,7 @@ package com.b4f2.pting.service;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -14,8 +15,10 @@ import com.b4f2.pting.domain.Game;
 import com.b4f2.pting.domain.GameUser;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Sport;
+import com.b4f2.pting.domain.TimePeriod;
 import com.b4f2.pting.dto.CreateGameRequest;
 import com.b4f2.pting.dto.GameResponse;
+import com.b4f2.pting.dto.GamesResponse;
 import com.b4f2.pting.repository.SportRepository;
 import com.b4f2.pting.repository.GameRepository;
 import com.b4f2.pting.repository.GameUserRepository;
@@ -70,6 +73,26 @@ public class GameService {
 
         addParticipant(game, member);
     }
+
+    public GamesResponse findGamesBySportIdAndTimePeriod(Long sportId, TimePeriod timePeriod) {
+        if (timePeriod == null) {
+            List<GameResponse> gameResponseList = gameRepository.findOnMatchingGamesBySportId(sportId)
+                .stream()
+                .map(GameResponse::new)
+                .toList();
+
+            return new GamesResponse(gameResponseList);
+        }
+
+        List<GameResponse> gameResponseList = gameRepository.findOnMatchingGamesBySportIdAndTimePeriod(sportId, timePeriod.getStartTime(), timePeriod.getEndTime())
+            .stream()
+            .map(GameResponse::new)
+            .toList();
+
+        return new GamesResponse(gameResponseList);
+    }
+
+
 
     private void validateMemberIsVerified(Member member) {
         if (!member.getIsVerified()) {

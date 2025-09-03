@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.config.Login;
 import com.b4f2.pting.domain.Member;
+import com.b4f2.pting.domain.TimePeriod;
 import com.b4f2.pting.dto.CreateGameRequest;
 import com.b4f2.pting.dto.GameResponse;
+import com.b4f2.pting.dto.GamesResponse;
 import com.b4f2.pting.service.GameService;
 
 @RestController
@@ -27,5 +29,13 @@ public class GameController {
     public ResponseEntity<Void> joinGame(@Login Member member, @PathVariable Long gameId) {
         gameService.joinGame(member, gameId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<GamesResponse> getGamesBySportIdAndTimePeriod(
+        @RequestParam Long sportId,
+        @RequestParam(required = false) TimePeriod timePeriod
+    ) {
+        return ResponseEntity.ok(gameService.findGamesBySportIdAndTimePeriod(sportId, timePeriod));
     }
 }
