@@ -13,11 +13,11 @@ import com.b4f2.pting.repository.SportRepository;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class SportService {
 
     private final SportRepository sportRepository;
 
-    @Transactional(readOnly = true)
     public SportsResponse findAllSports() {
         List<SportResponse> sportResponseList = sportRepository.findAll()
             .stream()
