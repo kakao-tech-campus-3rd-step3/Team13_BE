@@ -2,11 +2,19 @@ spring:
   application:
     name: pting
 
+  config:
+    import:
+      optional:file:.env[.properties] # 루트 디렉토리에 .env 파일이 있다면(local) 가져오고, 없으면(release) 무시하고 진행
+
+  profiles:
+    include: auth
+
   sql:
     init:
       mode: embedded
       data-locations: classpath:static/sql/data.sql
       schema-locations: classpath:static/sql/schema.sql
+
   h2:
     console:
       enabled: true
