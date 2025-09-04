@@ -9,4 +9,5 @@ public record CreateGameRequest(
     LocalDateTime startTime,
     Integer duration
 ) {
+    
 }

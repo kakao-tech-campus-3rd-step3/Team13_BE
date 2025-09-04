@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.b4f2.pting.domain.Game;
 
 public interface GameRepository extends JpaRepository<Game, Long> {
+
     List<Game> findAllByGameStatusAndSportId(Game.GameStatus status, Long sportId);
 
     @Query("""

@@ -13,6 +13,7 @@ public record GameResponse(
     LocalDateTime startTime,
     Integer duration
 ) {
+
     public GameResponse(Game game) {
         this(
             game.getId(),
