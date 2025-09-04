@@ -44,4 +44,4 @@ spring:
             enable: true
 
 app:
-  domain: ${APP_DOMAIN}
+  domain: ${SERVER_ADDRESS}
