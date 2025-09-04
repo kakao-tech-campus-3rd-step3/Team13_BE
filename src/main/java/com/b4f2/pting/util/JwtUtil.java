@@ -53,7 +53,7 @@ public class JwtUtil {
             .build()
             .parseSignedClaims(token)
             .getPayload()
-            .get("getSchoolEmail", String.class);
+            .get("schoolEmail", String.class);
     }
 
 }

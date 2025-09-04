@@ -20,7 +20,7 @@ public class EmailService {
         String subject = "[Pting] 학교 이메일 인증 요청";
 
         String certificationUrl = UriComponentsBuilder
-            .fromHttpUrl(domain + "/api/v1/members/mine/certification/verify")
+            .fromHttpUrl(domain + "/api/v1/members/me/certification/verify")
             .queryParam("token", token)
             .toUriString();
 
