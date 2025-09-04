@@ -13,12 +13,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "game")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class Game {
 
@@ -49,10 +51,6 @@ public class Game {
     }
 
     public Game(Sport sport, Integer playerCount, GameStatus gameStatus, LocalDateTime startTime, Integer duration) {
-        this.sport = sport;
-        this.playerCount = playerCount;
-        this.gameStatus = gameStatus;
-        this.startTime = startTime;
-        this.duration = duration;
+        this(null, sport, playerCount, gameStatus, startTime, duration);
     }
 }
