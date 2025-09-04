@@ -9,6 +9,7 @@ CREATE TABLE sport (
 CREATE TABLE game (
     id BIGSERIAL PRIMARY KEY,
     sport_id BIGINT NOT NULL REFERENCES sport(id),
+    name VARCHAR(31) NOT NULL,
     player_count INT NOT NULL,
     start_time TIMESTAMP NOT NULL,
     duration INT NOT NULL,

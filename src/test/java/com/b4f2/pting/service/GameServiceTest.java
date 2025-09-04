@@ -53,7 +53,7 @@ public class GameServiceTest {
         ReflectionTestUtils.setField(sport, "id", 1L);
         ReflectionTestUtils.setField(sport, "name", "축구");
 
-        game = new Game(sport, 10, Game.GameStatus.ON_MATCHING, LocalDateTime.now().plusHours(1), 2);
+        game = new Game(sport, "재미있는 방", 10, Game.GameStatus.ON_MATCHING, LocalDateTime.now().plusHours(1), 2);
         ReflectionTestUtils.setField(game, "id", 1L);
     }
 
@@ -62,6 +62,7 @@ public class GameServiceTest {
         // given
         CreateGameRequest request = new CreateGameRequest(
                 1L,
+            "재미있는 방",
                 10,
                 LocalDateTime.now().plusHours(1),
                 2

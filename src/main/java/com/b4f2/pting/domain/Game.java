@@ -32,6 +32,8 @@ public class Game {
     @JoinColumn(name = "sport_id")
     private Sport sport;
 
+    private String name;
+
     @Column(name = "player_count")
     private Integer playerCount;
 
@@ -50,7 +52,7 @@ public class Game {
         END
     }
 
-    public Game(Sport sport, Integer playerCount, GameStatus gameStatus, LocalDateTime startTime, Integer duration) {
-        this(null, sport, playerCount, gameStatus, startTime, duration);
+    public Game(Sport sport, String name, Integer playerCount, GameStatus gameStatus, LocalDateTime startTime, Integer duration) {
+        this(null, sport, name, playerCount, gameStatus, startTime, duration);
     }
 }

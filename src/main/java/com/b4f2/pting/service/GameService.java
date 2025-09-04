@@ -47,6 +47,7 @@ public class GameService {
 
         Game game = new Game(
             sport,
+            request.name(),
             request.playerCount(),
             Game.GameStatus.ON_MATCHING,
             request.startTime(),
