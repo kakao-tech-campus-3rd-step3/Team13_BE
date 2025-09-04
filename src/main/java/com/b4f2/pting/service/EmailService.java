@@ -1,5 +1,8 @@
 package com.b4f2.pting.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -16,6 +19,15 @@ public class EmailService {
     @Value("${app.domain}")
     private String domain;
 
+    private String loadTemplate(String fileName) {
+        try {
+            Path path = Path.of("src/main/resources/templates/" + fileName);
+            return Files.readString(path);
+        } catch (IOException e) {
+            throw new RuntimeException("메일 템플릿 로드 실패", e);
+        }
+    }
+
     public void sendCertificationEmail(String toEmail, String token) {
         String subject = "[Pting] 학교 이메일 인증 요청";
 
@@ -24,10 +36,9 @@ public class EmailService {
             .queryParam("token", token)
             .toUriString();
 
-        String message = "안녕하세요!\n\n" +
-            "아래 링크를 클릭하여 학교 이메일 인증을 완료해주세요.\n" +
-            certificationUrl + "\n\n" +
-            "링크는 30분 동안만 유효합니다.";
+        String template = loadTemplate("school_verification_email.txt");
+        
+        String message = template.replace("{link}", certificationUrl);
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(toEmail);
