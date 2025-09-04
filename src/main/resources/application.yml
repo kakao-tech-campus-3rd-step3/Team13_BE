@@ -42,3 +42,6 @@ spring:
           auth: true
           starttls:
             enable: true
+
+app:
+  domain: ${APP_DOMAIN}
