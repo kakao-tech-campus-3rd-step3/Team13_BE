@@ -4,6 +4,7 @@ import com.b4f2.pting.domain.Member;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -33,11 +34,15 @@ public class JwtUtil {
             .get("memberId", Long.class);
     }
 
-    // TODO: token 만료 시간 설정 안함. -> 해야한다.
     public String createEmailToken(Member member) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + 30 * 60 * 1000);
+
         return Jwts.builder()
             .claim("memberId", member.getId())
             .claim("schoolEmail", member.getSchoolEmail())
+            .setIssuedAt(now)
+            .setExpiration(expiryDate)
             .signWith(secretKey)
             .compact();
     }
