@@ -7,6 +7,7 @@ import com.b4f2.pting.util.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +45,7 @@ public class CertificationService {
         emailService.sendCertificationEmail(email, EmailToken);
     }
 
+    @Transactional
     public CertificationResponse verifyCertification(String token) {
         Long tokenMemberId;
         String tokenSchoolEmail;
