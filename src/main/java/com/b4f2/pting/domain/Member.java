@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,5 +47,13 @@ public class Member {
     public Member(Long oauthId, OAuthProvider oauthProvider) {
         this.oauthId = oauthId;
         this.oauthProvider = oauthProvider;
+    }
+
+    public void updateVerifiedSchoolEmail(String email) {
+        this.schoolEmail = email;
+    }
+
+    public void markAsVerified() {
+        this.isVerified = true;
     }
 }
