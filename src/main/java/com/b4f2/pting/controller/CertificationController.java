@@ -19,7 +19,7 @@ public class CertificationController {
 
     private final CertificationService certificationService;
 
-    @PostMapping("/members/mine/certification")
+    @PostMapping("/members/me/certification")
     public ResponseEntity<String> requestCertification(
         @RequestBody CertificationRequest certificationRequest
     ) {
@@ -29,7 +29,7 @@ public class CertificationController {
         return ResponseEntity.ok("인증 메일을 발송했습니다. 메일을 확인하세요.");
     }
 
-    @GetMapping("/members/mine/certification/verify")
+    @GetMapping("/members/me/certification/verify")
     public ResponseEntity<CertificationResponse> verifyCertification(@RequestParam String token) {
         CertificationResponse certificationResponse = certificationService.verifyCertification(token);
         return ResponseEntity.ok(certificationResponse);
