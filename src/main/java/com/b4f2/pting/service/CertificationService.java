@@ -4,6 +4,7 @@ import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.dto.CertificationResponse;
 import com.b4f2.pting.repository.MemberRepository;
 import com.b4f2.pting.util.JwtUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class CertificationService {
         }
 
         Member member = memberRepository.findById(tokenMemberId)
-            .orElseThrow(() -> new RuntimeException("유저가 존재하지 않습니다."));
+            .orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
 
         if (member.getIsVerified() && email.equals(member.getSchoolEmail())) {
             throw new IllegalArgumentException("이미 인증된 이메일입니다.");
@@ -54,7 +55,7 @@ public class CertificationService {
         }
 
         Member member = memberRepository.findById(tokenMemberId)
-            .orElseThrow(() -> new RuntimeException("유저가 존재하지 않습니다."));
+            .orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
 
         if (!member.getId().equals(tokenMemberId)) {
             throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
