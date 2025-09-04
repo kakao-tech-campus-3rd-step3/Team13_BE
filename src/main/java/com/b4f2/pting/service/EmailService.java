@@ -1,6 +1,7 @@
 package com.b4f2.pting.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -12,11 +13,14 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
+    @Value("${app.domain}")
+    private String domain;
+
     public void sendCertificationEmail(String toEmail, String token) {
         String subject = "[Pting] 학교 이메일 인증 요청";
 
-        String certificationUrl = UriComponentsBuilder.fromHttpUrl(
-                "http://localhost:8080/api/v1/members/mine/certification/verify") // TODO: domain
+        String certificationUrl = UriComponentsBuilder
+            .fromHttpUrl(domain + "/api/v1/members/mine/certification/verify")
             .queryParam("token", token)
             .toUriString();
 
