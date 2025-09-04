@@ -14,6 +14,7 @@ import com.b4f2.pting.util.JwtUtil;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CertificationService {
 
     private final MemberRepository memberRepository;
