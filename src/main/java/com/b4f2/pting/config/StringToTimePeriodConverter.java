@@ -14,14 +14,10 @@ public class StringToTimePeriodConverter implements Converter<String, TimePeriod
             return null;
         }
 
-        if (source.equals(source.toLowerCase())) {
-            try {
-                return TimePeriod.valueOf(source.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("유효하지 않은 TimePeriod 입니다.");
-            }
-        } else {
-            throw new IllegalArgumentException("TimePeriod는 소문자 이어야 합니다.");
+        try {
+            return TimePeriod.valueOf(source.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("유효하지 않은 TimePeriod 입니다.");
         }
     }
 }
