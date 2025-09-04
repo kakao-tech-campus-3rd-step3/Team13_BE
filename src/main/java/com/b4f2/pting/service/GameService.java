@@ -19,9 +19,9 @@ import com.b4f2.pting.domain.TimePeriod;
 import com.b4f2.pting.dto.CreateGameRequest;
 import com.b4f2.pting.dto.GameResponse;
 import com.b4f2.pting.dto.GamesResponse;
-import com.b4f2.pting.repository.SportRepository;
 import com.b4f2.pting.repository.GameRepository;
 import com.b4f2.pting.repository.GameUserRepository;
+import com.b4f2.pting.repository.SportRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -77,7 +77,8 @@ public class GameService {
 
     public GamesResponse findGamesBySportIdAndTimePeriod(Long sportId, TimePeriod timePeriod) {
         if (timePeriod == null) {
-            List<GameResponse> gameResponseList = gameRepository.findOnMatchingGamesBySportId(sportId)
+            List<GameResponse> gameResponseList = gameRepository
+                .findAllByGameStatusAndSportId(Game.GameStatus.ON_MATCHING, sportId)
                 .stream()
                 .map(GameResponse::new)
                 .toList();
@@ -85,7 +86,13 @@ public class GameService {
             return new GamesResponse(gameResponseList);
         }
 
-        List<GameResponse> gameResponseList = gameRepository.findOnMatchingGamesBySportIdAndTimePeriod(sportId, timePeriod.getStartTime(), timePeriod.getEndTime())
+        List<GameResponse> gameResponseList = gameRepository
+            .findAllByGameStatusAndSportIdAndTimePeriod(
+                Game.GameStatus.ON_MATCHING,
+                sportId,
+                timePeriod.getStartTime(),
+                timePeriod.getEndTime()
+            )
             .stream()
             .map(GameResponse::new)
             .toList();

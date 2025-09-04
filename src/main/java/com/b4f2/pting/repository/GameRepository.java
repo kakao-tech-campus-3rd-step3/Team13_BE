@@ -9,15 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 import com.b4f2.pting.domain.Game;
 
 public interface GameRepository extends JpaRepository<Game, Long> {
-    @Query("select g from Game g where g.sport.id = :sportId and g.gameStatus = 'ON_MATCHING'")
-    List<Game> findOnMatchingGamesBySportId(Long sportId);
+    List<Game> findAllByGameStatusAndSportId(Game.GameStatus status, Long sportId);
 
     @Query("""
-        select g
-        from Game g
-        where g.sport.id = :sportId
-            and g.gameStatus = 'ON_MATCHING'
-            and cast(g.startTime as localtime) between :startTime and :endTime
-    """)
-    List<Game> findOnMatchingGamesBySportIdAndTimePeriod(Long sportId, LocalTime startTime, LocalTime endTime);
+            select g
+            from Game g
+            where g.sport.id = :sportId
+                and g.gameStatus = :status
+                and cast(g.startTime as localtime) between :startTime and :endTime
+        """)
+    List<Game> findAllByGameStatusAndSportIdAndTimePeriod(Game.GameStatus status, Long sportId, LocalTime startTime, LocalTime endTime);
 }
