@@ -1,13 +1,17 @@
 package com.b4f2.pting.util;
 
-import com.b4f2.pting.domain.Member;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+
 import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+
+import com.b4f2.pting.domain.Member;
 
 @Component
 public class JwtUtil {

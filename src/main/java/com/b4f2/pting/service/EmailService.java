@@ -3,12 +3,14 @@ package com.b4f2.pting.service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +39,7 @@ public class EmailService {
             .toUriString();
 
         String template = loadTemplate("school_verification_email.txt");
-        
+
         String message = template.replace("{link}", certificationUrl);
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();

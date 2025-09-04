@@ -1,13 +1,16 @@
 package com.b4f2.pting.service;
 
+import jakarta.persistence.EntityNotFoundException;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
+
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.dto.CertificationResponse;
 import com.b4f2.pting.repository.MemberRepository;
 import com.b4f2.pting.util.JwtUtil;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
