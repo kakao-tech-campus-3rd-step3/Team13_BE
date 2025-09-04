@@ -1,16 +1,12 @@
 package com.b4f2.pting.util;
 
-import java.nio.charset.StandardCharsets;
-
-import javax.crypto.SecretKey;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
+import com.b4f2.pting.domain.Member;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-
-import com.b4f2.pting.domain.Member;
+import java.nio.charset.StandardCharsets;
+import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
@@ -36,4 +32,23 @@ public class JwtUtil {
             .getPayload()
             .get("memberId", Long.class);
     }
+
+    // TODO: token 만료 시간 설정 안함. -> 해야한다.
+    public String createEmailToken(Member member) {
+        return Jwts.builder()
+            .claim("memberId", member.getId())
+            .claim("schoolEmail", member.getSchoolEmail())
+            .signWith(secretKey)
+            .compact();
+    }
+
+    public String getSchoolEmail(String token) {
+        return Jwts.parser()
+            .verifyWith(secretKey)
+            .build()
+            .parseSignedClaims(token)
+            .getPayload()
+            .get("getSchoolEmail", String.class);
+    }
+
 }
