@@ -17,10 +17,6 @@ public class CertificationService {
     private final EmailService emailService;
     private final JwtUtil jwtUtil;
 
-    public boolean isValidSchoolEmail(String email) {
-        return email != null && email.endsWith(".ac.kr");
-    }
-
     public void sendCertificationEmail(String email, String token) {
         if (!isValidSchoolEmail(email)) {
             throw new IllegalArgumentException("학교 이메일만 인증 가능합니다.");
@@ -69,6 +65,10 @@ public class CertificationService {
         memberRepository.save(member);
 
         return new CertificationResponse(member.getIsVerified());
+    }
+
+    private boolean isValidSchoolEmail(String email) {
+        return email != null && email.endsWith(".ac.kr");
     }
 
     // TODO: Exception 재설정
