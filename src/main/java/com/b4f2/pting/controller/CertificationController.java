@@ -25,11 +25,11 @@ public class CertificationController {
 
     @PostMapping("/members/me/certification")
     public ResponseEntity<String> requestCertification(
+        @Login Member member,
         @RequestBody CertificationRequest certificationRequest
     ) {
         String email = certificationRequest.schoolEmail();
-        String token = certificationRequest.token();
-        certificationService.sendCertificationEmail(email, token);
+        certificationService.sendCertificationEmail(email, member);
         return ResponseEntity.ok("인증 메일을 발송했습니다. 메일을 확인하세요.");
     }
 
