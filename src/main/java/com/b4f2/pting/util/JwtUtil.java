@@ -1,6 +1,7 @@
 package com.b4f2.pting.util;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 import javax.crypto.SecretKey;
 
@@ -36,4 +37,27 @@ public class JwtUtil {
             .getPayload()
             .get("memberId", Long.class);
     }
+
+    public String createEmailToken(Member member) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + 30 * 60 * 1000);
+
+        return Jwts.builder()
+            .claim("memberId", member.getId())
+            .claim("schoolEmail", member.getSchoolEmail())
+            .setIssuedAt(now)
+            .setExpiration(expiryDate)
+            .signWith(secretKey)
+            .compact();
+    }
+
+    public String getSchoolEmail(String token) {
+        return Jwts.parser()
+            .verifyWith(secretKey)
+            .build()
+            .parseSignedClaims(token)
+            .getPayload()
+            .get("schoolEmail", String.class);
+    }
+
 }

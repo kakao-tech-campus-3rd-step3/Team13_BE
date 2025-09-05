@@ -49,4 +49,12 @@ public class Member {
         this.oauthId = oauthId;
         this.oauthProvider = oauthProvider;
     }
+
+    public void updateVerifiedSchoolEmail(String email) {
+        this.schoolEmail = email;
+    }
+
+    public void markAsVerified() {
+        this.isVerified = true;
+    }
 }
