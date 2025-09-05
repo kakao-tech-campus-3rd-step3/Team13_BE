@@ -17,6 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,7 +66,7 @@ public class GameServiceTest {
                 1L,
             "재미있는 방",
                 10,
-                LocalDateTime.now().plusHours(1),
+                ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime().plusHours(1),
                 2
         );
 
