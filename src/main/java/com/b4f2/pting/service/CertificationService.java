@@ -67,6 +67,10 @@ public class CertificationService {
         return new CertificationResponse(member.getIsVerified());
     }
 
+    public CertificationResponse checkCertification(Member member) {
+        return new CertificationResponse(member.getIsVerified());
+    }
+
     private boolean isValidSchoolEmail(String email) {
         return email != null && email.endsWith(".ac.kr");
     }
