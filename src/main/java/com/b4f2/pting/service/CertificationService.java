@@ -59,10 +59,6 @@ public class CertificationService {
         Member member = memberRepository.findById(tokenMemberId)
             .orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
 
-        if (!member.getId().equals(tokenMemberId)) {
-            throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
-        }
-
         member.updateVerifiedSchoolEmail(tokenSchoolEmail);
         member.markAsVerified();
 
