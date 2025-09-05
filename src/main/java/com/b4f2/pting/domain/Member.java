@@ -24,22 +24,22 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @NotNull
-    Long oauthId;
+    private Long oauthId;
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    OAuthProvider oauthProvider;
+    private OAuthProvider oauthProvider;
 
-    String name;
+    private String name;
 
-    String imageUrl;
+    private String imageUrl;
 
-    String schoolEmail;
+    private String schoolEmail;
 
-    Boolean isVerified = false;
+    private Boolean isVerified = false;
 
     public enum OAuthProvider {
         KAKAO
