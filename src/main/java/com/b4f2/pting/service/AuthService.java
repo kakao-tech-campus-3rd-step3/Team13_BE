@@ -21,6 +21,7 @@ import com.b4f2.pting.util.JwtUtil;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthService {
 
     private final KakaoOAuthProperties kakaoOAuthProperties;
@@ -28,7 +29,6 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
 
-    @Transactional(readOnly = true)
     public OAuthUrlResponse getKakaoOAuthUrl() {
         return new OAuthUrlResponse(
             kakaoOAuthProperties.authUri()
