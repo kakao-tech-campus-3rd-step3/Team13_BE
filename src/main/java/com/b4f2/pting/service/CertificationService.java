@@ -27,7 +27,7 @@ public class CertificationService {
         }
 
         if (member.getIsVerified() && email.equals(member.getSchoolEmail())) {
-            throw new IllegalArgumentException("이미 인증된 이메일입니다.");
+            throw new IllegalStateException("이미 인증된 이메일입니다.");
         }
 
         String emailToken = jwtUtil.createEmailToken(member);
