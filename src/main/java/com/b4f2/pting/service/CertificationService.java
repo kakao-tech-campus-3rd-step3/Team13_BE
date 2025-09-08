@@ -30,9 +30,9 @@ public class CertificationService {
             throw new IllegalArgumentException("이미 인증된 이메일입니다.");
         }
 
-        String EmailToken = jwtUtil.createEmailToken(member);
+        String emailToken = jwtUtil.createEmailToken(member);
 
-        emailService.sendCertificationEmail(email, EmailToken);
+        emailService.sendCertificationEmail(email, emailToken);
     }
 
     @Transactional
