@@ -1,7 +1,5 @@
 package com.b4f2.pting.service;
 
-import jakarta.persistence.EntityNotFoundException;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +17,7 @@ public class CertificationService {
 
     private final MemberRepository memberRepository;
     private final EmailService emailService;
+    private final MemberService memberService;
     private final JwtUtil jwtUtil;
 
     public void sendCertificationEmail(String email, Member member) {
@@ -50,8 +49,7 @@ public class CertificationService {
             throw new IllegalArgumentException("토큰이 유효하지 않거나 만료되었습니다.");
         }
 
-        Member member = memberRepository.findById(tokenMemberId)
-            .orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
+        Member member = memberService.getMemberById(tokenMemberId);
 
         member.updateVerifiedSchoolEmail(tokenSchoolEmail);
         member.markAsVerified();
