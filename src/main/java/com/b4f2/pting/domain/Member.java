@@ -50,7 +50,7 @@ public class Member {
         this.oauthProvider = oauthProvider;
     }
 
-    public void updateVerifiedSchoolEmail(String email) {
+    public void updateSchoolEmail(String email) {
         this.schoolEmail = email;
     }
 

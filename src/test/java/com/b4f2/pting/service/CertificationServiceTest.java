@@ -74,7 +74,7 @@ public class CertificationServiceTest {
     void sendCertificationEmail_이미인증된이메일_예외발생() {
         // given
         String verifiedEmail = "test@pusan.ac.kr";
-        member.updateVerifiedSchoolEmail(verifiedEmail);
+        member.updateSchoolEmail(verifiedEmail);
         member.markAsVerified();
 
         // when & then

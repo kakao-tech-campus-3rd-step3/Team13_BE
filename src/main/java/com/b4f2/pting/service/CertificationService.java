@@ -51,7 +51,7 @@ public class CertificationService {
 
         Member member = memberService.getMemberById(tokenMemberId);
 
-        member.updateVerifiedSchoolEmail(tokenSchoolEmail);
+        member.updateSchoolEmail(tokenSchoolEmail);
         member.markAsVerified();
 
         memberRepository.save(member);
