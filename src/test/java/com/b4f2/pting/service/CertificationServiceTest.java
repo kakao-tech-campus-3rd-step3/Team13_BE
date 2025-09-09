@@ -2,11 +2,14 @@ package com.b4f2.pting.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
-import java.util.Optional;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,14 +21,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.dto.CertificationResponse;
-import com.b4f2.pting.repository.MemberRepository;
 import com.b4f2.pting.util.JwtUtil;
 
 @ExtendWith(MockitoExtension.class)
 public class CertificationServiceTest {
 
     @Mock
-    private MemberRepository memberRepository;
+    private MemberService memberService;
 
     @Mock
     private EmailService emailService;
@@ -91,14 +93,23 @@ public class CertificationServiceTest {
 
         given(jwtUtil.getMemberId(token)).willReturn(member.getId());
         given(jwtUtil.getSchoolEmail(token)).willReturn(schoolEmail);
-        given(memberRepository.findById(member.getId())).willReturn(Optional.of(member));
+
+        when(memberService.getMemberById(member.getId())).thenReturn(member);
+        doAnswer(invocation -> {
+            Member m = invocation.getArgument(0);
+            m.updateSchoolEmail(schoolEmail);
+            m.markAsVerified();
+            return null;
+        }).when(memberService).verifySchoolEmail(member, schoolEmail);
 
         // when
         CertificationResponse response = certificationService.verifyCertification(token);
 
         // then
-        assertThat(response.isVerified()).isTrue();
-        assertThat(member.getSchoolEmail()).isEqualTo(schoolEmail);
+        assertNotNull(response);
+        assertTrue(response.isVerified());
+
+        verify(memberService, times(1)).verifySchoolEmail(member, schoolEmail);
     }
 
     @Test
