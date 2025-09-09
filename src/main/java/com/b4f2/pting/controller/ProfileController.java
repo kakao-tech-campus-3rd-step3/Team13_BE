@@ -1,6 +1,7 @@
 package com.b4f2.pting.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +45,7 @@ public class ProfileController {
     @PatchMapping("/me/profile/name")
     public ResponseEntity<ProfileResponse> updateName(
         @Login Member member,
-        @RequestBody ChangeProfileNameRequest request
+        @Validated @RequestBody ChangeProfileNameRequest request
     ) {
         ProfileResponse profileResponse = profileService.updateName(member.getId(), request.name());
 
@@ -54,7 +55,7 @@ public class ProfileController {
     @PatchMapping("/me/profile/description")
     public ResponseEntity<ProfileResponse> updateDescription(
         @Login Member member,
-        @RequestBody ChangeProfileDescriptionRequest request
+        @Validated @RequestBody ChangeProfileDescriptionRequest request
     ) {
         ProfileResponse profileResponse = profileService.updateDescription(member.getId(), request.description());
 
@@ -64,7 +65,7 @@ public class ProfileController {
     @PatchMapping("/me/profile/image-url")
     public ResponseEntity<ProfileResponse> updateImageUrl(
         @Login Member member,
-        @RequestBody ChangeProfileImageUrlRequest request
+        @Validated @RequestBody ChangeProfileImageUrlRequest request
     ) {
         ProfileResponse profileResponse = profileService.updateImageUrl(member.getId(), request.imageUrl());
 
