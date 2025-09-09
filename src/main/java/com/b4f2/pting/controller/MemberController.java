@@ -19,7 +19,7 @@ import com.b4f2.pting.service.CertificationService;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-public class CertificationController {
+public class MemberController {
 
     private final CertificationService certificationService;
 
