@@ -38,15 +38,12 @@ public class Member {
     @Column(name = "oauth_provider")
     private OAuthProvider oauthProvider;
 
-    @Setter
     @Column(name = "name")
     private String name;
 
-    @Setter
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Setter
     @Column(name = "description")
     private String description;
 
@@ -55,6 +52,18 @@ public class Member {
 
     @Column(name = "is_verified")
     private Boolean isVerified = false;
+
+    public void changeName(String name) {
+        this.name = name;
+    }
+
+    public void changeImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
+    }
 
     public enum OAuthProvider {
         KAKAO
