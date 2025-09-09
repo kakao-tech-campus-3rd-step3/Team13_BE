@@ -1,5 +1,6 @@
 package com.b4f2.pting.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -13,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "member", uniqueConstraints = {
@@ -27,18 +29,31 @@ public class Member {
     private Long id;
 
     @NotNull
+    @Column(name = "oauth_id")
     private Long oauthId;
 
     @NotNull
     @Enumerated(EnumType.STRING)
+
+    @Column(name = "oauth_provider")
     private OAuthProvider oauthProvider;
 
+    @Setter
+    @Column(name = "name")
     private String name;
 
+    @Setter
+    @Column(name = "image_url")
     private String imageUrl;
 
+    @Setter
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "school_email")
     private String schoolEmail;
 
+    @Column(name = "is_verified")
     private Boolean isVerified = false;
 
     public enum OAuthProvider {
