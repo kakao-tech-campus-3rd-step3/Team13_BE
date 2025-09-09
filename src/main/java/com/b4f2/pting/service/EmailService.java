@@ -21,12 +21,12 @@ public class EmailService {
     @Value("${app.domain}")
     private String domain;
 
-    private String loadTemplate(String fileName) {
+    String loadTemplate(String fileName) {
         try {
             Path path = Path.of("src/main/resources/templates/" + fileName);
             return Files.readString(path);
         } catch (IOException e) {
-            throw new RuntimeException("메일 템플릿 로드 실패", e);
+            throw new RuntimeException("메일 템플릿 로드 실패");
         }
     }
 
