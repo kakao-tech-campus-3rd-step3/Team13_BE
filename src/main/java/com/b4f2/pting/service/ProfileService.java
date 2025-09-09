@@ -19,39 +19,40 @@ public class ProfileService {
     private final MemberRepository memberRepository;
 
     public ProfileResponse getProfile(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException("해당 유저는 존재하지 않습니다."));
+        Member member = getMemberOrThrowException(memberId);;
 
         return new ProfileResponse(member);
     }
 
     @Transactional
     public ProfileResponse updateName(Long memberId, String name) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException("해당 유저는 존재하지 않습니다."));
+        Member member = getMemberOrThrowException(memberId);
 
-        member.setName(name);
+        member.changeName(name);
 
         return new ProfileResponse(member);
     }
 
     @Transactional
     public ProfileResponse updateDescription(Long memberId, String description) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException("해당 유저는 존재하지 않습니다."));
+        Member member = getMemberOrThrowException(memberId);
 
-        member.setDescription(description);
+        member.changeDescription(description);
 
         return new ProfileResponse(member);
     }
 
     @Transactional
     public ProfileResponse updateImageUrl(Long memberId, String imageUrl) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException("해당 유저는 존재하지 않습니다."));
+        Member member = getMemberOrThrowException(memberId);
 
-        member.setImageUrl(imageUrl);
+        member.changeImageUrl(imageUrl);
 
         return new ProfileResponse(member);
+    }
+
+    public Member getMemberOrThrowException(Long memberId) {
+        return memberRepository.findById(memberId)
+            .orElseThrow(() -> new EntityNotFoundException("해당 유저는 존재하지 않습니다."));
     }
 }
