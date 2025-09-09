@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.dto.CertificationResponse;
-import com.b4f2.pting.repository.MemberRepository;
 import com.b4f2.pting.util.JwtUtil;
 
 @Service
@@ -15,7 +14,6 @@ import com.b4f2.pting.util.JwtUtil;
 @Transactional(readOnly = true)
 public class CertificationService {
 
-    private final MemberRepository memberRepository;
     private final EmailService emailService;
     private final MemberService memberService;
     private final JwtUtil jwtUtil;
@@ -50,11 +48,7 @@ public class CertificationService {
         }
 
         Member member = memberService.getMemberById(tokenMemberId);
-
-        member.updateSchoolEmail(tokenSchoolEmail);
-        member.markAsVerified();
-
-        memberRepository.save(member);
+        memberService.verifySchoolEmail(member, tokenSchoolEmail);
 
         return new CertificationResponse(member.getIsVerified());
     }
