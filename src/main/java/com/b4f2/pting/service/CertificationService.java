@@ -27,12 +27,12 @@ public class CertificationService {
         }
 
         if (member.getIsVerified() && email.equals(member.getSchoolEmail())) {
-            throw new IllegalArgumentException("이미 인증된 이메일입니다.");
+            throw new IllegalStateException("이미 인증된 이메일입니다.");
         }
 
-        String EmailToken = jwtUtil.createEmailToken(member);
+        String emailToken = jwtUtil.createEmailToken(member);
 
-        emailService.sendCertificationEmail(email, EmailToken);
+        emailService.sendCertificationEmail(email, emailToken);
     }
 
     @Transactional
