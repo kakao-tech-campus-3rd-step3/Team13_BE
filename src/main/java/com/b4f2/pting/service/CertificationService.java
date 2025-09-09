@@ -35,6 +35,10 @@ public class CertificationService {
         emailService.sendCertificationEmail(email, emailToken);
     }
 
+    private boolean isValidSchoolEmail(String email) {
+        return email != null && email.endsWith(".ac.kr");
+    }
+
     @Transactional
     public CertificationResponse verifyCertification(String token) {
         Long tokenMemberId;
@@ -59,10 +63,6 @@ public class CertificationService {
 
     public CertificationResponse checkCertification(Member member) {
         return new CertificationResponse(member.getIsVerified());
-    }
-
-    private boolean isValidSchoolEmail(String email) {
-        return email != null && email.endsWith(".ac.kr");
     }
 
     // TODO: Exception 재설정
