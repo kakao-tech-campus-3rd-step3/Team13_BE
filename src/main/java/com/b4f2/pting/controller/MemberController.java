@@ -17,13 +17,13 @@ import com.b4f2.pting.dto.CertificationResponse;
 import com.b4f2.pting.service.CertificationService;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final CertificationService certificationService;
 
-    @PostMapping("/members/me/certification")
+    @PostMapping("/me/certification")
     public ResponseEntity<String> requestCertification(
         @Login Member member,
         @RequestBody CertificationRequest certificationRequest
@@ -33,13 +33,13 @@ public class MemberController {
         return ResponseEntity.ok("인증 메일을 발송했습니다. 메일을 확인하세요.");
     }
 
-    @GetMapping("/members/me/certification/verify")
+    @GetMapping("/me/certification/verify")
     public ResponseEntity<CertificationResponse> verifyCertification(@RequestParam String token) {
         CertificationResponse certificationResponse = certificationService.verifyCertification(token);
         return ResponseEntity.ok(certificationResponse);
     }
 
-    @GetMapping("/members/me/certification")
+    @GetMapping("/me/certification")
     public ResponseEntity<CertificationResponse> checkCertification(@Login Member member) {
         CertificationResponse certificationResponse = certificationService.checkCertification(member);
         return ResponseEntity.ok(certificationResponse);
