@@ -9,9 +9,9 @@ import org.springframework.web.client.RestClient;
 
 import lombok.RequiredArgsConstructor;
 
+import com.b4f2.pting.config.properties.KakaoOAuthProperties;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Member.OAuthProvider;
-import com.b4f2.pting.domain.properties.KakaoOAuthProperties;
 import com.b4f2.pting.dto.AuthResponse;
 import com.b4f2.pting.dto.KakaoOAuthTokenResponse;
 import com.b4f2.pting.dto.KakaoUserInfoResponse;

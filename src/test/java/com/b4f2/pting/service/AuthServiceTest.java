@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.b4f2.pting.domain.properties.KakaoOAuthProperties;
+import com.b4f2.pting.config.properties.KakaoOAuthProperties;
 import com.b4f2.pting.dto.OAuthUrlResponse;
 
 @ExtendWith(MockitoExtension.class)
