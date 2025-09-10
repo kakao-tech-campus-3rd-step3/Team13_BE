@@ -3,9 +3,9 @@ package com.b4f2.pting.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.b4f2.pting.domain.Game;
-import com.b4f2.pting.domain.GameUser;
+import com.b4f2.pting.domain.GameParticipant;
 
-public interface GameUserRepository extends JpaRepository<GameUser, Long> {
+public interface GameParticipantRepository extends JpaRepository<GameParticipant, Long> {
 
     boolean existsByMemberIdAndGame(Long memberId, Game game);
 

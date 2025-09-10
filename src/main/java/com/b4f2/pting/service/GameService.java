@@ -12,15 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.domain.Game;
-import com.b4f2.pting.domain.GameUser;
+import com.b4f2.pting.domain.GameParticipant;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Sport;
 import com.b4f2.pting.domain.TimePeriod;
 import com.b4f2.pting.dto.CreateGameRequest;
 import com.b4f2.pting.dto.GameResponse;
 import com.b4f2.pting.dto.GamesResponse;
+import com.b4f2.pting.repository.GameParticipantRepository;
 import com.b4f2.pting.repository.GameRepository;
-import com.b4f2.pting.repository.GameUserRepository;
 import com.b4f2.pting.repository.SportRepository;
 
 @Service
@@ -29,7 +29,7 @@ import com.b4f2.pting.repository.SportRepository;
 public class GameService {
 
     private final GameRepository gameRepository;
-    private final GameUserRepository gameUserRepository;
+    private final GameParticipantRepository gameParticipantRepository;
     private final SportRepository sportRepository;
 
     @Transactional
@@ -113,15 +113,15 @@ public class GameService {
     }
 
     private void addParticipant(Game game, Member member) {
-        if (gameUserRepository.existsByMemberIdAndGame(member.getId(), game)) {
+        if (gameParticipantRepository.existsByMemberIdAndGame(member.getId(), game)) {
             throw new IllegalStateException("이미 참여한 게임입니다.");
         }
 
-        int currentPlayerCount = gameUserRepository.countByGame(game);
+        int currentPlayerCount = gameParticipantRepository.countByGame(game);
         if (currentPlayerCount >= game.getPlayerCount()) {
             throw new IllegalStateException("모집 인원이 마감되었습니다.");
         }
 
-        gameUserRepository.save(new GameUser(member.getId(), game));
+        gameParticipantRepository.save(new GameParticipant(member, game));
     }
 }
