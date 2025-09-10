@@ -5,11 +5,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
+import com.b4f2.pting.config.InMemoryCache;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.School;
 import com.b4f2.pting.dto.CertificationRequest;
 import com.b4f2.pting.dto.CertificationResponse;
-import com.b4f2.pting.util.JwtUtil;
+import com.b4f2.pting.dto.CertificationVerifyRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -18,8 +19,9 @@ public class CertificationService {
 
     private final EmailService emailService;
     private final MemberService memberService;
-    private final SchoolService schoolService;
-    private final JwtUtil jwtUtil;
+    private final InMemoryCache cache;
+
+    private static final long CODE_EXPIRE_TIME = 5 * 60 * 1000;
 
     public void sendCertificationEmail(Member member, CertificationRequest request) {
         School school = member.getSchool();
@@ -36,28 +38,45 @@ public class CertificationService {
             throw new IllegalStateException("이미 인증된 이메일입니다.");
         }
 
-        String emailToken = jwtUtil.createEmailToken(member, schoolEmail);
+        String key = "cert:" + member.getId() + ":" + schoolEmail;
+        cache.delete(key);
+        String code = generateRandomCode();
+        cache.set(key, code, CODE_EXPIRE_TIME);
 
-        emailService.sendCertificationEmail(schoolEmail, emailToken);
+        emailService.sendCertificationEmail(schoolEmail, code);
     }
 
     private boolean isValidSchoolEmail(String email) {
         return email != null && email.endsWith(".ac.kr");
     }
 
+    private String generateRandomCode() {
+        return String.valueOf((int) (Math.random() * 900000) + 100000);
+    }
+
     @Transactional
-    public CertificationResponse verifyCertification(String token) {
-        Long tokenMemberId;
-        String tokenSchoolEmail;
-        try {
-            tokenMemberId = jwtUtil.getMemberId(token);
-            tokenSchoolEmail = jwtUtil.getSchoolEmail(token);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("토큰이 유효하지 않거나 만료되었습니다.");
+    public CertificationResponse verifyCertification(Member member, CertificationVerifyRequest request) {
+        School school = member.getSchool();
+        if (school == null) {
+            throw new IllegalStateException("학교를 먼저 선택해야 합니다.");
         }
 
-        Member member = memberService.getMemberById(tokenMemberId);
-        memberService.verifySchoolEmail(member, tokenSchoolEmail);
+        String schoolEmail = request.localPart() + "@" + school.getDomain();
+        String code = request.code();
+
+        String key = "cert:" + member.getId() + ":" + schoolEmail;
+        String savedCode = cache.get(key);
+
+        if (savedCode == null) {
+            throw new IllegalArgumentException("인증 코드가 만료되었습니다.");
+        }
+        if (!savedCode.equals(code)) {
+            throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
+        }
+
+        memberService.verifySchoolEmail(member, schoolEmail);
+
+        cache.delete(key);
 
         return new CertificationResponse(member.getIsVerified());
     }

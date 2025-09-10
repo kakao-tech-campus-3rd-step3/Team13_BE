@@ -37,14 +37,14 @@ public class EmailServiceTest {
     void sendCertificationEmail_이메일보내기_성공() throws IOException {
         // given
         String toEmail = "test@pusan.ac.kr";
-        String emailToken = "emailToken";
+        String code = "123456";
 
         EmailService spyService = Mockito.spy(emailService);
-        String templateContent = "안녕하세요!\n인증 링크: {link}";
+        String templateContent = "안녕하세요!\n인증 링크: {code}";
         doReturn(templateContent).when(spyService).loadTemplate("school_verification_email.txt");
 
         // when
-        spyService.sendCertificationEmail(toEmail, emailToken);
+        spyService.sendCertificationEmail(toEmail, code);
 
         // then
         ArgumentCaptor<SimpleMailMessage> mailMessageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
@@ -54,8 +54,7 @@ public class EmailServiceTest {
 
         assertThat(sentMessage.getTo()).containsExactly(toEmail);
         assertThat(sentMessage.getSubject()).isEqualTo("[Pting] 학교 이메일 인증 요청");
-        assertThat(sentMessage.getText()).contains(
-            "http://localhost:8080/api/v1/members/me/certification/verify?token=" + emailToken);
+        assertThat(sentMessage.getText()).contains(code);
     }
 
     @Test

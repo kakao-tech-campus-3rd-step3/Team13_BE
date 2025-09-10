@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,17 +29,12 @@ public class EmailService {
         }
     }
 
-    public void sendCertificationEmail(String toEmail, String token) {
+    public void sendCertificationEmail(String toEmail, String code) {
         String subject = "[Pting] 학교 이메일 인증 요청";
-
-        String certificationUrl = UriComponentsBuilder
-            .fromHttpUrl(domain + "/api/v1/members/me/certification/verify")
-            .queryParam("token", token)
-            .toUriString();
 
         String template = loadTemplate("school_verification_email.txt");
 
-        String message = template.replace("{link}", certificationUrl);
+        String message = template.replace("{code}", code);
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(toEmail);

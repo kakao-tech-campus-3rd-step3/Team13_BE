@@ -2,14 +2,14 @@ package com.b4f2.pting.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,11 +19,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.b4f2.pting.config.InMemoryCache;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.School;
 import com.b4f2.pting.dto.CertificationRequest;
 import com.b4f2.pting.dto.CertificationResponse;
-import com.b4f2.pting.util.JwtUtil;
+import com.b4f2.pting.dto.CertificationVerifyRequest;
 
 @ExtendWith(MockitoExtension.class)
 public class CertificationServiceTest {
@@ -35,16 +36,16 @@ public class CertificationServiceTest {
     private EmailService emailService;
 
     @Mock
-    private SchoolService schoolService;
-
-    @Mock
-    private JwtUtil jwtUtil;
+    private InMemoryCache cache;
 
     @InjectMocks
     private CertificationService certificationService;
 
     private Member member;
     private School school;
+
+    private String localPart = "test";
+    private String code = "123456";
 
     @BeforeEach
     void setUp() {
@@ -60,29 +61,30 @@ public class CertificationServiceTest {
     @Test
     void sendCertificationEmail_이메일보내기_성공() {
         // given
-        String schoolEmail = "test@pusan.ac.kr";
-        String emailToken = "email_token";
-        CertificationRequest request = new CertificationRequest("test");
+        String schoolEmail = localPart + "@" + school.getDomain();
+        String key = "cert:" + member.getId() + ":" + schoolEmail;
+        CertificationRequest request = new CertificationRequest(localPart);
 
-        given(jwtUtil.createEmailToken(member, schoolEmail)).willReturn(emailToken);
+        doNothing().when(cache).delete(key);
+        doNothing().when(cache).set(anyString(), anyString(), anyLong());
 
         // when
         certificationService.sendCertificationEmail(member, request);
 
         // then
-        verify(emailService).sendCertificationEmail(eq(schoolEmail), eq(emailToken));
+        verify(emailService, times(1)).sendCertificationEmail(eq(schoolEmail), anyString());
     }
 
     @Test
     void sendCertficiationEmail_학교미선택_예외발생() {
         // given
         member.updateSchool(null);
-        CertificationRequest request = new CertificationRequest("test");
+        CertificationRequest request = new CertificationRequest(localPart);
 
         // when & then
         assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("학교를 먼저 선택해야 합니다.");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("학교를 먼저 선택해야 합니다.");
     }
 
     @Test
@@ -91,37 +93,38 @@ public class CertificationServiceTest {
         School wrongSchool = new School("구글", "gmail.com");
         ReflectionTestUtils.setField(wrongSchool, "id", 2L);
         member.updateSchool(wrongSchool);
-        CertificationRequest request = new CertificationRequest("test");
+        CertificationRequest request = new CertificationRequest(localPart);
 
         // when & then
         assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("학교 이메일만 인증 가능합니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("학교 이메일만 인증 가능합니다.");
     }
 
     @Test
     void sendCertificationEmail_이미인증된이메일_예외발생() {
         // given
-        member.updateSchoolEmail("test@pusan.ac.kr");
+        String schoolEmail = localPart + "@" + school.getDomain();
+        member.updateSchoolEmail(schoolEmail);
         member.markAsVerified();
-        CertificationRequest request = new CertificationRequest("test");
+        CertificationRequest request = new CertificationRequest(localPart);
 
         // when & then
         assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("이미 인증된 이메일입니다.");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("이미 인증된 이메일입니다.");
     }
 
     @Test
     void verifyCertification_인증하기_성공() {
         // given
-        String token = "token";
-        String schoolEmail = "test@pusan.ac.kr";
+        String schoolEmail = localPart + "@" + school.getDomain();
+        String key = "cert:" + member.getId() + ":" + schoolEmail;
+        CertificationVerifyRequest request = new CertificationVerifyRequest(localPart, code);
 
-        given(jwtUtil.getMemberId(token)).willReturn(member.getId());
-        given(jwtUtil.getSchoolEmail(token)).willReturn(schoolEmail);
+        given(cache.get(key)).willReturn(code);
+        doNothing().when(cache).delete(key);
 
-        when(memberService.getMemberById(member.getId())).thenReturn(member);
         doAnswer(invocation -> {
             Member m = invocation.getArgument(0);
             m.updateSchoolEmail(schoolEmail);
@@ -130,13 +133,25 @@ public class CertificationServiceTest {
         }).when(memberService).verifySchoolEmail(member, schoolEmail);
 
         // when
-        CertificationResponse response = certificationService.verifyCertification(token);
+        CertificationResponse response = certificationService.verifyCertification(member, request);
 
         // then
-        assertNotNull(response);
-        assertTrue(response.isVerified());
-
+        assertThat(response.isVerified()).isTrue();
         verify(memberService, times(1)).verifySchoolEmail(member, schoolEmail);
+        verify(cache, times(1)).delete(key);
+    }
+
+    @Test
+    void verifyCertification_코드만료_예외발생() {
+        String schoolEmail = localPart + "@" + school.getDomain();
+        String key = "cert:" + member.getId() + ":" + schoolEmail;
+        CertificationVerifyRequest request = new CertificationVerifyRequest(localPart, code);
+
+        given(cache.get(key)).willReturn(null);
+
+        assertThatThrownBy(() -> certificationService.verifyCertification(member, request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("인증 코드가 만료되었습니다.");
     }
 
     @Test
