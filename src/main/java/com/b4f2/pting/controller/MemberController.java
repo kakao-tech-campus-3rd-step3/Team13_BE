@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.config.Login;
 import com.b4f2.pting.domain.Member;
+import com.b4f2.pting.domain.School;
 import com.b4f2.pting.dto.CertificationRequest;
 import com.b4f2.pting.dto.CertificationResponse;
 import com.b4f2.pting.dto.SchoolResponse;
@@ -27,31 +28,34 @@ public class MemberController {
     private final CertificationService certificationService;
     private final SchoolService schoolService;
 
-    @PostMapping("/me/certification")
+    @PostMapping("/me/school/{schoolId}")
+    public ResponseEntity<SchoolResponse> selectSchool(
+        @Login Member member,
+        @PathVariable Long schoolId
+    ) {
+        School school = schoolService.selectSchool(member, schoolId);
+        SchoolResponse response = new SchoolResponse(school.getId(), school.getName(), school.getDomain());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/me/certification/email")
     public ResponseEntity<String> requestCertification(
         @Login Member member,
-        @RequestBody CertificationRequest certificationRequest
+        @RequestBody CertificationRequest request
     ) {
-        String email = certificationRequest.schoolEmail();
-        certificationService.sendCertificationEmail(email, member);
+        certificationService.sendCertificationEmail(member, request);
         return ResponseEntity.ok("인증 메일을 발송했습니다. 메일을 확인하세요.");
     }
 
     @GetMapping("/me/certification/verify")
     public ResponseEntity<CertificationResponse> verifyCertification(@RequestParam String token) {
-        CertificationResponse certificationResponse = certificationService.verifyCertification(token);
-        return ResponseEntity.ok(certificationResponse);
+        CertificationResponse response = certificationService.verifyCertification(token);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/me/certification")
+    @GetMapping("/me/certification/status")
     public ResponseEntity<CertificationResponse> checkCertification(@Login Member member) {
-        CertificationResponse certificationResponse = certificationService.checkCertification(member);
-        return ResponseEntity.ok(certificationResponse);
-    }
-
-    @PostMapping("/me/school/{schoolId}")
-    public ResponseEntity<SchoolResponse> selectSchool(@Login Member member, @PathVariable Long schoolId) {
-        SchoolResponse response = schoolService.selectSchool(member, schoolId);
+        CertificationResponse response = certificationService.checkCertification(member);
         return ResponseEntity.ok(response);
     }
 }
