@@ -26,8 +26,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.School;
 import com.b4f2.pting.dto.SchoolRequest;
-import com.b4f2.pting.dto.SchoolResponse;
-import com.b4f2.pting.dto.SchoolsResponse;
 import com.b4f2.pting.repository.SchoolRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,12 +58,13 @@ class SchoolServiceTest {
         when(schoolRepository.findAll()).thenReturn(List.of(school));
 
         // when
-        SchoolsResponse response = schoolService.getAllSchools();
+        List<School> schools = schoolService.getAllSchools();
 
         // then
-        assertNotNull(response);
-        assertEquals(1, response.schools().size());
-        assertEquals("부산대학교", response.schools().get(0).name());
+        assertNotNull(schools);
+        assertEquals(1, schools.size());
+        assertEquals("부산대학교", schools.get(0).getName());
+        assertEquals("pusan.ac.kr", schools.get(0).getDomain());
         verify(schoolRepository, times(1)).findAll();
     }
 
@@ -75,13 +74,13 @@ class SchoolServiceTest {
         when(schoolRepository.findById(1L)).thenReturn(Optional.of(school));
 
         // when
-        SchoolResponse response = schoolService.getSchoolById(1L);
+        School response = schoolService.getSchoolById(1L);
 
         // then
         assertNotNull(response);
-        assertEquals(school.getId(), response.id());
-        assertEquals(school.getName(), response.name());
-        assertEquals(school.getDomain(), response.domain());
+        assertEquals(school.getId(), response.getId());
+        assertEquals(school.getName(), response.getName());
+        assertEquals(school.getDomain(), response.getDomain());
         verify(schoolRepository, times(1)).findById(1L);
     }
 
@@ -107,13 +106,13 @@ class SchoolServiceTest {
         when(schoolRepository.save(ArgumentMatchers.<School>any())).thenReturn(savedSchool);
 
         // when
-        SchoolResponse response = schoolService.createSchool(request);
+        School response = schoolService.createSchool(request);
 
         // then
         assertNotNull(response);
-        assertEquals(savedSchool.getId(), response.id());
-        assertEquals(savedSchool.getName(), response.name());
-        assertEquals(savedSchool.getDomain(), response.domain());
+        assertEquals(savedSchool.getId(), response.getId());
+        assertEquals(savedSchool.getName(), response.getName());
+        assertEquals(savedSchool.getDomain(), response.getDomain());
 
         verify(schoolRepository, times(1)).save(ArgumentMatchers.<School>any());
     }
