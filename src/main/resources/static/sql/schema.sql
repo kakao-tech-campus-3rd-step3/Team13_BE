@@ -21,3 +21,9 @@ CREATE TABLE game_user (
     member_id BIGINT NOT NULL,
     game_id BIGINT NOT NULL REFERENCES game(id)
 );
+
+CREATE TABLE school (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    domain VARCHAR(255) NOT NULL UNIQUE
+);
