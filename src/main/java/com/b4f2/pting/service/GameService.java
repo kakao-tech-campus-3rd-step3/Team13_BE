@@ -113,12 +113,15 @@ public class GameService {
     }
 
     private void addParticipant(Game game, Member member) {
-        if (gameParticipantRepository.existsByMemberIdAndGame(member.getId(), game)) {
-            throw new IllegalStateException("이미 참여한 게임입니다.");
-        }
+        final List<GameParticipant> gameParticipants = gameParticipantRepository.findByGame(game);
 
-        int currentPlayerCount = gameParticipantRepository.countByGame(game);
-        if (currentPlayerCount >= game.getPlayerCount()) {
+        gameParticipants.forEach(gameParticipant -> {
+            if (gameParticipant.getMember().getId().equals(member.getId())) {
+                throw new IllegalStateException("이미 참여한 게임입니다.");
+            }
+        });
+
+        if (gameParticipants.size() >= game.getPlayerCount()) {
             throw new IllegalStateException("모집 인원이 마감되었습니다.");
         }
 

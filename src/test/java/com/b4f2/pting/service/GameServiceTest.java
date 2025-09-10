@@ -2,6 +2,7 @@ package com.b4f2.pting.service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.test.util.ReflectionTestUtils;
@@ -23,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -90,17 +92,15 @@ public class GameServiceTest {
     void 게임_참가_성공() {
         // given
         when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
-        when(gameParticipantRepository.existsByMemberIdAndGame(member.getId(), game)).thenReturn(false);
-        when(gameParticipantRepository.countByGame(game)).thenReturn(5);
+        when(gameParticipantRepository.findByGame(game)).thenReturn(List.of());
 
         // when
         gameService.joinGame(member, game.getId());
 
         // then
-        verify(gameRepository).findById(game.getId());
-        verify(gameParticipantRepository).existsByMemberIdAndGame(member.getId(), game);
-        verify(gameParticipantRepository).countByGame(game);
-        verify(gameParticipantRepository).save(any());
+        verify(gameParticipantRepository).save(argThat(gp ->
+            gp.getGame().equals(game) && gp.getMember().equals(member)
+        ));
     }
 
     @Test

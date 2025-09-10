@@ -2,11 +2,13 @@ package com.b4f2.pting.domain;
 
 import jakarta.persistence.*;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "game_user")
 @NoArgsConstructor
+@Getter
 public class GameParticipant {
 
     @Id
