@@ -1,5 +1,11 @@
 package com.b4f2.pting.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Optional;
+
+import org.springframework.test.util.ReflectionTestUtils;
+
 import com.b4f2.pting.domain.Game;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Sport;
@@ -14,12 +20,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -63,11 +63,11 @@ public class GameServiceTest {
     void 게임_생성_성공() {
         // given
         CreateGameRequest request = new CreateGameRequest(
-                1L,
+            1L,
             "재미있는 방",
-                10,
-                ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime().plusHours(1),
-                2
+            10,
+            LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
+            2
         );
 
         when(sportRepository.findById(request.sportId())).thenReturn(Optional.of(sport));

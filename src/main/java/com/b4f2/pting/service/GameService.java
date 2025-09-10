@@ -1,7 +1,7 @@
 package com.b4f2.pting.service;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -39,9 +39,8 @@ public class GameService {
         Sport sport = sportRepository.findById(request.sportId())
             .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
 
-        ZonedDateTime nowInSeoul = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        ZonedDateTime requestedStartTimeInSeoul = request.startTime().atZone(ZoneId.of("Asia/Seoul"));
-        if (requestedStartTimeInSeoul.isBefore(nowInSeoul)) {
+        LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        if (request.startTime().isBefore(nowInSeoul)) {
             throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
         }
 
