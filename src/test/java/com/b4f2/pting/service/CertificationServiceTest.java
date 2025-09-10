@@ -20,6 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.b4f2.pting.domain.Member;
+import com.b4f2.pting.domain.School;
+import com.b4f2.pting.dto.CertificationRequest;
 import com.b4f2.pting.dto.CertificationResponse;
 import com.b4f2.pting.util.JwtUtil;
 
@@ -33,17 +35,26 @@ public class CertificationServiceTest {
     private EmailService emailService;
 
     @Mock
+    private SchoolService schoolService;
+
+    @Mock
     private JwtUtil jwtUtil;
 
     @InjectMocks
     private CertificationService certificationService;
 
     private Member member;
+    private School school;
 
     @BeforeEach
     void setUp() {
         member = new Member(1L, Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(member, "id", 1L);
+
+        school = new School("부산대학교", "pusan.ac.kr");
+        ReflectionTestUtils.setField(school, "id", 1L);
+
+        member.updateSchool(school);
     }
 
     @Test
@@ -51,23 +62,39 @@ public class CertificationServiceTest {
         // given
         String schoolEmail = "test@pusan.ac.kr";
         String emailToken = "email_token";
+        CertificationRequest request = new CertificationRequest("test");
 
-        given(jwtUtil.createEmailToken(member)).willReturn(emailToken);
+        given(jwtUtil.createEmailToken(member, schoolEmail)).willReturn(emailToken);
 
         // when
-        certificationService.sendCertificationEmail(schoolEmail, member);
+        certificationService.sendCertificationEmail(member, request);
 
         // then
         verify(emailService).sendCertificationEmail(eq(schoolEmail), eq(emailToken));
     }
 
     @Test
-    void sendCertificationEmail_학교이메일아님_예외발생() {
+    void sendCertficiationEmail_학교미선택_예외발생() {
         // given
-        String wrongEmail = "test@gmail.com";
+        member.updateSchool(null);
+        CertificationRequest request = new CertificationRequest("test");
 
         // when & then
-        assertThatThrownBy(() -> certificationService.sendCertificationEmail(wrongEmail, member))
+        assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("학교를 먼저 선택해야 합니다.");
+    }
+
+    @Test
+    void sendCertificationEmail_학교이메일아님_예외발생() {
+        // given
+        School wrongSchool = new School("구글", "gmail.com");
+        ReflectionTestUtils.setField(wrongSchool, "id", 2L);
+        member.updateSchool(wrongSchool);
+        CertificationRequest request = new CertificationRequest("test");
+
+        // when & then
+        assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("학교 이메일만 인증 가능합니다.");
     }
@@ -75,12 +102,12 @@ public class CertificationServiceTest {
     @Test
     void sendCertificationEmail_이미인증된이메일_예외발생() {
         // given
-        String verifiedEmail = "test@pusan.ac.kr";
-        member.updateSchoolEmail(verifiedEmail);
+        member.updateSchoolEmail("test@pusan.ac.kr");
         member.markAsVerified();
+        CertificationRequest request = new CertificationRequest("test");
 
         // when & then
-        assertThatThrownBy(() -> certificationService.sendCertificationEmail(verifiedEmail, member))
+        assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
             .isInstanceOf(IllegalStateException.class)
             .hasMessage("이미 인증된 이메일입니다.");
     }

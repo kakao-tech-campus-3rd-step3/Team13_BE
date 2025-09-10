@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.domain.Member;
+import com.b4f2.pting.domain.School;
+import com.b4f2.pting.dto.CertificationRequest;
 import com.b4f2.pting.dto.CertificationResponse;
 import com.b4f2.pting.util.JwtUtil;
 
@@ -16,20 +18,27 @@ public class CertificationService {
 
     private final EmailService emailService;
     private final MemberService memberService;
+    private final SchoolService schoolService;
     private final JwtUtil jwtUtil;
 
-    public void sendCertificationEmail(String email, Member member) {
-        if (!isValidSchoolEmail(email)) {
+    public void sendCertificationEmail(Member member, CertificationRequest request) {
+        School school = member.getSchool();
+        if (school == null) {
+            throw new IllegalStateException("학교를 먼저 선택해야 합니다.");
+        }
+
+        String schoolEmail = request.localPart() + "@" + school.getDomain();
+        if (!isValidSchoolEmail(schoolEmail)) {
             throw new IllegalArgumentException("학교 이메일만 인증 가능합니다.");
         }
 
-        if (member.getIsVerified() && email.equals(member.getSchoolEmail())) {
+        if (member.getIsVerified() && schoolEmail.equals(member.getSchoolEmail())) {
             throw new IllegalStateException("이미 인증된 이메일입니다.");
         }
 
-        String emailToken = jwtUtil.createEmailToken(member);
+        String emailToken = jwtUtil.createEmailToken(member, schoolEmail);
 
-        emailService.sendCertificationEmail(email, emailToken);
+        emailService.sendCertificationEmail(schoolEmail, emailToken);
     }
 
     private boolean isValidSchoolEmail(String email) {

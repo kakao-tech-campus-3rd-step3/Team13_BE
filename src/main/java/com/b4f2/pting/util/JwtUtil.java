@@ -38,13 +38,13 @@ public class JwtUtil {
             .get("memberId", Long.class);
     }
 
-    public String createEmailToken(Member member) {
+    public String createEmailToken(Member member, String schoolEmail) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + 30 * 60 * 1000);
 
         return Jwts.builder()
             .claim("memberId", member.getId())
-            .claim("schoolEmail", member.getSchoolEmail())
+            .claim("schoolEmail", schoolEmail)
             .setIssuedAt(now)
             .setExpiration(expiryDate)
             .signWith(secretKey)
