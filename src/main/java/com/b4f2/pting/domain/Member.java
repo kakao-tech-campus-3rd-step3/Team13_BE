@@ -1,5 +1,6 @@
 package com.b4f2.pting.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -29,18 +30,28 @@ public class Member {
     private Long id;
 
     @NotNull
+    @Column(name = "oauth_id")
     private Long oauthId;
 
     @NotNull
     @Enumerated(EnumType.STRING)
+
+    @Column(name = "oauth_provider")
     private OAuthProvider oauthProvider;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "school_email")
     private String schoolEmail;
 
+    @Column(name = "is_verified")
     private Boolean isVerified = false;
 
     @ManyToOne
@@ -54,6 +65,18 @@ public class Member {
     public Member(Long oauthId, OAuthProvider oauthProvider) {
         this.oauthId = oauthId;
         this.oauthProvider = oauthProvider;
+    }
+
+    public void changeName(String name) {
+        this.name = name;
+    }
+
+    public void changeImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
     }
 
     public void updateSchoolEmail(String email) {
