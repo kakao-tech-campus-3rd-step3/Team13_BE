@@ -1,12 +1,19 @@
 package com.b4f2.pting.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.test.util.ReflectionTestUtils;
+
 import com.b4f2.pting.domain.Game;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Sport;
 import com.b4f2.pting.dto.CreateGameRequest;
 import com.b4f2.pting.dto.GameResponse;
+import com.b4f2.pting.repository.GameParticipantRepository;
 import com.b4f2.pting.repository.GameRepository;
-import com.b4f2.pting.repository.GameUserRepository;
 import com.b4f2.pting.repository.SportRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,15 +21,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +38,7 @@ public class GameServiceTest {
     private SportRepository sportRepository;
 
     @Mock
-    private GameUserRepository gameUserRepository;
+    private GameParticipantRepository gameParticipantRepository;
 
     @InjectMocks
     private GameService gameService;
@@ -63,11 +65,11 @@ public class GameServiceTest {
     void 게임_생성_성공() {
         // given
         CreateGameRequest request = new CreateGameRequest(
-                1L,
+            1L,
             "재미있는 방",
-                10,
-                ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime().plusHours(1),
-                2
+            10,
+            LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
+            2
         );
 
         when(sportRepository.findById(request.sportId())).thenReturn(Optional.of(sport));
@@ -83,24 +85,22 @@ public class GameServiceTest {
 
         verify(sportRepository).findById(request.sportId());
         verify(gameRepository).save(any(Game.class));
-        verify(gameUserRepository).save(any());
+        verify(gameParticipantRepository).save(any());
     }
 
     @Test
     void 게임_참가_성공() {
         // given
         when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
-        when(gameUserRepository.existsByMemberIdAndGame(member.getId(), game)).thenReturn(false);
-        when(gameUserRepository.countByGame(game)).thenReturn(5);
+        when(gameParticipantRepository.findByGame(game)).thenReturn(List.of());
 
         // when
         gameService.joinGame(member, game.getId());
 
         // then
-        verify(gameRepository).findById(game.getId());
-        verify(gameUserRepository).existsByMemberIdAndGame(member.getId(), game);
-        verify(gameUserRepository).countByGame(game);
-        verify(gameUserRepository).save(any());
+        verify(gameParticipantRepository).save(argThat(gp ->
+            gp.getGame().equals(game) && gp.getMember().equals(member)
+        ));
     }
 
     @Test
