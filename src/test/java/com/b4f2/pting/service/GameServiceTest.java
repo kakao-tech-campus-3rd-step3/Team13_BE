@@ -11,7 +11,7 @@ import com.b4f2.pting.domain.Game;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Sport;
 import com.b4f2.pting.dto.CreateGameRequest;
-import com.b4f2.pting.dto.GameResponse;
+import com.b4f2.pting.dto.GameDetailResponse;
 import com.b4f2.pting.repository.GameParticipantRepository;
 import com.b4f2.pting.repository.GameRepository;
 import com.b4f2.pting.repository.SportRepository;
@@ -57,7 +57,15 @@ public class GameServiceTest {
         ReflectionTestUtils.setField(sport, "id", 1L);
         ReflectionTestUtils.setField(sport, "name", "축구");
 
-        game = new Game(sport, "재미있는 방", 10, Game.GameStatus.ON_MATCHING, LocalDateTime.now().plusHours(1), 2);
+        game = new Game(
+            sport,
+            "재미있는 방",
+            10,
+            Game.GameStatus.ON_MATCHING,
+            LocalDateTime.now().plusHours(1),
+            2,
+            "재미있는 방 설명입니다."
+        );
         ReflectionTestUtils.setField(game, "id", 1L);
     }
 
@@ -69,14 +77,15 @@ public class GameServiceTest {
             "재미있는 방",
             10,
             LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
-            2
+            2,
+            "재미있는 방 설명입니다."
         );
 
         when(sportRepository.findById(request.sportId())).thenReturn(Optional.of(sport));
         when(gameRepository.save(any(Game.class))).thenReturn(game);
 
         // when
-        GameResponse response = gameService.createGame(member, request);
+        GameDetailResponse response = gameService.createGame(member, request);
 
         // then
         assertThat(response).isNotNull();
@@ -109,7 +118,7 @@ public class GameServiceTest {
         when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
 
         // when
-        GameResponse response = gameService.findGameById(game.getId());
+        GameDetailResponse response = gameService.findGameById(game.getId());
 
         // then
         assertThat(response).isNotNull();

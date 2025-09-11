@@ -17,6 +17,7 @@ import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Sport;
 import com.b4f2.pting.domain.TimePeriod;
 import com.b4f2.pting.dto.CreateGameRequest;
+import com.b4f2.pting.dto.GameDetailResponse;
 import com.b4f2.pting.dto.GameResponse;
 import com.b4f2.pting.dto.GamesResponse;
 import com.b4f2.pting.repository.GameParticipantRepository;
@@ -33,7 +34,7 @@ public class GameService {
     private final SportRepository sportRepository;
 
     @Transactional
-    public GameResponse createGame(Member member, CreateGameRequest request) {
+    public GameDetailResponse createGame(Member member, CreateGameRequest request) {
         validateMemberIsVerified(member);
 
         Sport sport = sportRepository.findById(request.sportId())
@@ -50,14 +51,15 @@ public class GameService {
             request.playerCount(),
             Game.GameStatus.ON_MATCHING,
             request.startTime(),
-            request.duration()
+            request.duration(),
+            request.description()
         );
 
         gameRepository.save(game);
 
         addParticipant(game, member);
 
-        return new GameResponse(game);
+        return new GameDetailResponse(game);
     }
 
     @Transactional
@@ -99,11 +101,11 @@ public class GameService {
         return new GamesResponse(gameResponseList);
     }
 
-    public GameResponse findGameById(Long gameId) {
+    public GameDetailResponse findGameById(Long gameId) {
         Game game = gameRepository.findById(gameId)
             .orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
 
-        return new GameResponse(game);
+        return new GameDetailResponse(game);
     }
 
     private void validateMemberIsVerified(Member member) {
