@@ -7,7 +7,8 @@ public record CreateGameRequest(
     String name,
     Integer playerCount,
     LocalDateTime startTime,
-    Integer duration
+    Integer duration,
+    String description
 ) {
-    
+
 }

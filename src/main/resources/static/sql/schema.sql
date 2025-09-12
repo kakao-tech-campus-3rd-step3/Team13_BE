@@ -36,6 +36,7 @@ CREATE TABLE game (
     player_count INT NOT NULL,
     start_time TIMESTAMP NOT NULL,
     duration INT NOT NULL,
+    description VARCHAR(255),
     game_status game_status NOT NULL DEFAULT 'ON_MATCHING'
 );
 
