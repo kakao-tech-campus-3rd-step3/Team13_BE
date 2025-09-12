@@ -7,6 +7,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +16,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "member", uniqueConstraints = {
@@ -53,6 +54,19 @@ public class Member {
     @Column(name = "is_verified")
     private Boolean isVerified = false;
 
+    @ManyToOne
+    @JoinColumn(name = "school_id")
+    private School school;
+
+    public enum OAuthProvider {
+        KAKAO
+    }
+
+    public Member(Long oauthId, OAuthProvider oauthProvider) {
+        this.oauthId = oauthId;
+        this.oauthProvider = oauthProvider;
+    }
+
     public void changeName(String name) {
         this.name = name;
     }
@@ -65,20 +79,15 @@ public class Member {
         this.description = description;
     }
 
-    public enum OAuthProvider {
-        KAKAO
-    }
-
-    public Member(Long oauthId, OAuthProvider oauthProvider) {
-        this.oauthId = oauthId;
-        this.oauthProvider = oauthProvider;
-    }
-
-    public void updateVerifiedSchoolEmail(String email) {
+    public void updateSchoolEmail(String email) {
         this.schoolEmail = email;
     }
 
     public void markAsVerified() {
         this.isVerified = true;
+    }
+
+    public void updateSchool(School school) {
+        this.school = school;
     }
 }
