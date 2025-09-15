@@ -34,7 +34,7 @@ public class CertificationService {
             throw new IllegalArgumentException("학교 이메일만 인증 가능합니다.");
         }
 
-        if (member.getIsVerified() && schoolEmail.equals(member.getSchoolEmail())) {
+        if (member.getIsVerified() && member.isMySchoolEmail(schoolEmail)) {
             throw new IllegalStateException("이미 인증된 이메일입니다.");
         }
 

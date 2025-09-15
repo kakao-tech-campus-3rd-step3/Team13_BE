@@ -90,4 +90,8 @@ public class Member {
     public void updateSchool(School school) {
         this.school = school;
     }
+
+    public boolean isMySchoolEmail(String email) {
+        return schoolEmail.equals(email);
+    }
 }
