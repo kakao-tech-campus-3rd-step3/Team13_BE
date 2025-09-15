@@ -15,6 +15,8 @@ import java.util.Optional;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -29,6 +31,8 @@ import com.b4f2.pting.dto.SchoolRequest;
 import com.b4f2.pting.repository.SchoolRepository;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class SchoolServiceTest {
 
     @Mock
@@ -63,8 +67,8 @@ class SchoolServiceTest {
         // then
         assertNotNull(schools);
         assertEquals(1, schools.size());
-        assertEquals("부산대학교", schools.get(0).getName());
-        assertEquals("pusan.ac.kr", schools.get(0).getDomain());
+        assertEquals("부산대학교", schools.getFirst().getName());
+        assertEquals("pusan.ac.kr", schools.getFirst().getDomain());
         verify(schoolRepository, times(1)).findAll();
     }
 
@@ -103,7 +107,7 @@ class SchoolServiceTest {
         School savedSchool = new School(request.name(), request.domain());
         ReflectionTestUtils.setField(savedSchool, "id", 1L);
 
-        when(schoolRepository.save(ArgumentMatchers.<School>any())).thenReturn(savedSchool);
+        when(schoolRepository.save(ArgumentMatchers.any())).thenReturn(savedSchool);
 
         // when
         School response = schoolService.createSchool(request);
@@ -114,7 +118,7 @@ class SchoolServiceTest {
         assertEquals(savedSchool.getName(), response.getName());
         assertEquals(savedSchool.getDomain(), response.getDomain());
 
-        verify(schoolRepository, times(1)).save(ArgumentMatchers.<School>any());
+        verify(schoolRepository, times(1)).save(ArgumentMatchers.any());
     }
 
     @Test

@@ -12,6 +12,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +29,9 @@ import com.b4f2.pting.dto.CertificationResponse;
 import com.b4f2.pting.dto.CertificationVerifyRequest;
 
 @ExtendWith(MockitoExtension.class)
-public class CertificationServiceTest {
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+class CertificationServiceTest {
 
     @Mock
     private MemberService memberService;
@@ -76,15 +80,15 @@ public class CertificationServiceTest {
     }
 
     @Test
-    void sendCertficiationEmail_학교미선택_예외발생() {
+    void sendCertificationEmail_학교미선택_예외발생() {
         // given
         member.updateSchool(null);
         CertificationRequest request = new CertificationRequest(localPart);
 
         // when & then
         assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("학교를 먼저 선택해야 합니다.");
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("학교를 먼저 선택해야 합니다.");
     }
 
     @Test
@@ -97,8 +101,8 @@ public class CertificationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("학교 이메일만 인증 가능합니다.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("학교 이메일만 인증 가능합니다.");
     }
 
     @Test
@@ -111,8 +115,8 @@ public class CertificationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("이미 인증된 이메일입니다.");
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessage("이미 인증된 이메일입니다.");
     }
 
     @Test
@@ -150,8 +154,8 @@ public class CertificationServiceTest {
         given(cache.get(key)).willReturn(null);
 
         assertThatThrownBy(() -> certificationService.verifyCertification(member, request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("인증 코드가 만료되었습니다.");
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("인증 코드가 만료되었습니다.");
     }
 
     @Test
