@@ -19,7 +19,8 @@ public class ProfileService {
     private final MemberRepository memberRepository;
 
     public ProfileResponse getProfile(Long memberId) {
-        Member member = getMemberOrThrowException(memberId);;
+        Member member = getMemberOrThrowException(memberId);
+        ;
 
         return new ProfileResponse(member);
     }
@@ -31,6 +32,11 @@ public class ProfileService {
         member.changeName(name);
 
         return new ProfileResponse(member);
+    }
+
+    private Member getMemberOrThrowException(Long memberId) {
+        return memberRepository.findById(memberId)
+            .orElseThrow(() -> new EntityNotFoundException("해당 유저는 존재하지 않습니다."));
     }
 
     @Transactional
@@ -49,10 +55,5 @@ public class ProfileService {
         member.changeImageUrl(imageUrl);
 
         return new ProfileResponse(member);
-    }
-
-    public Member getMemberOrThrowException(Long memberId) {
-        return memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException("해당 유저는 존재하지 않습니다."));
     }
 }
