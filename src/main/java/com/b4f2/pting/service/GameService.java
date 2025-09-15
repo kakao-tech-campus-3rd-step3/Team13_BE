@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.domain.Game;
 import com.b4f2.pting.domain.GameParticipant;
+import com.b4f2.pting.domain.GameParticipants;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Sport;
 import com.b4f2.pting.domain.TimePeriod;
@@ -115,13 +116,11 @@ public class GameService {
     }
 
     private void addParticipant(Game game, Member member) {
-        final List<GameParticipant> gameParticipants = gameParticipantRepository.findByGame(game);
+        final GameParticipants gameParticipants = new GameParticipants(gameParticipantRepository.findByGame(game));
 
-        gameParticipants.forEach(gameParticipant -> {
-            if (gameParticipant.getMember().getId().equals(member.getId())) {
-                throw new IllegalStateException("이미 참여한 게임입니다.");
-            }
-        });
+        if (gameParticipants.checkAlreadyParticipate(member.getId())) {
+            throw new IllegalStateException("이미 참여한 게임입니다.");
+        }
 
         if (gameParticipants.size() >= game.getPlayerCount()) {
             throw new IllegalStateException("모집 인원이 마감되었습니다.");
