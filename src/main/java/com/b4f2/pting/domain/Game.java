@@ -1,6 +1,7 @@
 package com.b4f2.pting.domain;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,7 +56,7 @@ public class Game {
         END
     }
 
-    public Game(
+    public static Game create(
         Sport sport,
         String name,
         Integer playerCount,
@@ -64,6 +65,12 @@ public class Game {
         Integer duration,
         String description
     ) {
-        this(null, sport, name, playerCount, gameStatus, startTime, duration, description);
+        LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
+        if (startTime.isBefore(nowInSeoul)) {
+            throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
+        }
+
+        return new Game(null, sport, name, playerCount, gameStatus, startTime, duration, description);
     }
 }

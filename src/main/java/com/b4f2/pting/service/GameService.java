@@ -41,12 +41,7 @@ public class GameService {
         Sport sport = sportRepository.findById(request.sportId())
             .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
 
-        LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        if (request.startTime().isBefore(nowInSeoul)) {
-            throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
-        }
-
-        Game game = new Game(
+        Game game = Game.create(
             sport,
             request.name(),
             request.playerCount(),
