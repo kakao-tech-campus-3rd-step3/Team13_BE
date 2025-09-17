@@ -21,7 +21,6 @@ import com.b4f2.pting.util.EmailUtil;
 public class CertificationService {
 
     private final EmailService emailService;
-    private final MemberService memberService;
     private final InMemoryCache cache;
     private final EmailUtil emailUtil;
 
@@ -75,7 +74,8 @@ public class CertificationService {
             throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
         }
 
-        memberService.verifySchoolEmail(member, schoolEmail);
+        member.updateSchoolEmail(schoolEmail);
+        member.markAsVerified();
 
         cache.delete(key);
 

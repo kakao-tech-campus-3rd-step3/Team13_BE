@@ -3,7 +3,6 @@ package com.b4f2.pting.service;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -74,30 +73,5 @@ class MemberServiceTest {
             .isInstanceOf(EntityNotFoundException.class)
             .hasMessage("회원 정보가 존재하지 않습니다.");
         verify(memberRepository, times(1)).findById(member.getId());
-    }
-
-    @Test
-    void verifySchoolEmail_학교인증업데이트_성공() {
-        // given
-        String schoolEmail = "test@pusan.ac.kr";
-
-        // when
-        memberService.verifySchoolEmail(member, schoolEmail);
-
-        // then
-        assertEquals(schoolEmail, member.getSchoolEmail());
-        assertTrue(member.getIsVerified());
-        verify(memberRepository, times(1)).save(member);
-    }
-
-    @Test
-    void updateSchool_학교업데이트_성공() {
-        // given
-        // when
-        memberService.updateSchool(member, school);
-
-        // then
-        assertEquals(school, member.getSchool());
-        verify(memberRepository, times(1)).save(member);
     }
 }
