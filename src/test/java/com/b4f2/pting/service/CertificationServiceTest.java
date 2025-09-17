@@ -65,7 +65,7 @@ class CertificationServiceTest {
     @Test
     void sendCertificationEmail_이메일보내기_성공() {
         // given
-        String schoolEmail = localPart + "@" + school.getDomain();
+        String schoolEmail = localPart + "@" + school.getPostfix();
         String key = "cert:" + member.getId() + ":" + schoolEmail;
         CertificationRequest request = new CertificationRequest(localPart);
 
@@ -108,7 +108,7 @@ class CertificationServiceTest {
     @Test
     void sendCertificationEmail_이미인증된이메일_예외발생() {
         // given
-        String schoolEmail = localPart + "@" + school.getDomain();
+        String schoolEmail = localPart + "@" + school.getPostfix();
         member.updateSchoolEmail(schoolEmail);
         member.markAsVerified();
         CertificationRequest request = new CertificationRequest(localPart);
@@ -122,7 +122,7 @@ class CertificationServiceTest {
     @Test
     void verifyCertification_인증하기_성공() {
         // given
-        String schoolEmail = localPart + "@" + school.getDomain();
+        String schoolEmail = localPart + "@" + school.getPostfix();
         String key = "cert:" + member.getId() + ":" + schoolEmail;
         CertificationVerifyRequest request = new CertificationVerifyRequest(localPart, code);
 
@@ -147,7 +147,7 @@ class CertificationServiceTest {
 
     @Test
     void verifyCertification_코드만료_예외발생() {
-        String schoolEmail = localPart + "@" + school.getDomain();
+        String schoolEmail = localPart + "@" + school.getPostfix();
         String key = "cert:" + member.getId() + ":" + schoolEmail;
         CertificationVerifyRequest request = new CertificationVerifyRequest(localPart, code);
 

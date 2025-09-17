@@ -68,7 +68,7 @@ class SchoolServiceTest {
         assertNotNull(schools);
         assertEquals(1, schools.size());
         assertEquals("부산대학교", schools.getFirst().getName());
-        assertEquals("pusan.ac.kr", schools.getFirst().getDomain());
+        assertEquals("pusan.ac.kr", schools.getFirst().getPostfix());
         verify(schoolRepository, times(1)).findAll();
     }
 
@@ -84,7 +84,7 @@ class SchoolServiceTest {
         assertNotNull(response);
         assertEquals(school.getId(), response.getId());
         assertEquals(school.getName(), response.getName());
-        assertEquals(school.getDomain(), response.getDomain());
+        assertEquals(school.getPostfix(), response.getPostfix());
         verify(schoolRepository, times(1)).findById(1L);
     }
 
@@ -116,7 +116,7 @@ class SchoolServiceTest {
         assertNotNull(response);
         assertEquals(savedSchool.getId(), response.getId());
         assertEquals(savedSchool.getName(), response.getName());
-        assertEquals(savedSchool.getDomain(), response.getDomain());
+        assertEquals(savedSchool.getPostfix(), response.getPostfix());
 
         verify(schoolRepository, times(1)).save(ArgumentMatchers.any());
     }

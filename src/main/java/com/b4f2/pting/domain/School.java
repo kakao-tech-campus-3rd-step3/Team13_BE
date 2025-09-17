@@ -27,11 +27,11 @@ public class School {
     private String name;
 
     @NotNull
-    @Column(name = "domain", unique = true)
-    private String domain;
+    @Column(name = "postfix", unique = true)
+    private String postfix;
 
-    public School(String name, String domain) {
+    public School(String name, String postfix) {
         this.name = name;
-        this.domain = domain;
+        this.postfix = postfix;
     }
 }

@@ -29,7 +29,7 @@ public class SchoolController {
     public ResponseEntity<SchoolsResponse> getSchools() {
         List<SchoolResponse> responseList = schoolService.getAllSchools()
             .stream()
-            .map(s -> new SchoolResponse(s.getId(), s.getName(), s.getDomain()))
+            .map(s -> new SchoolResponse(s.getId(), s.getName(), s.getPostfix()))
             .toList();
 
         SchoolsResponse responses = new SchoolsResponse(responseList);
@@ -40,14 +40,14 @@ public class SchoolController {
     @GetMapping("/{schoolId}")
     public ResponseEntity<SchoolResponse> getSchoolById(@PathVariable Long schoolId) {
         School school = schoolService.getSchoolById(schoolId);
-        SchoolResponse response = new SchoolResponse(school.getId(), school.getName(), school.getDomain());
+        SchoolResponse response = new SchoolResponse(school.getId(), school.getName(), school.getPostfix());
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<SchoolResponse> createSchool(@RequestBody SchoolRequest request) {
         School school = schoolService.createSchool(request);
-        SchoolResponse response = new SchoolResponse(school.getId(), school.getName(), school.getDomain());
+        SchoolResponse response = new SchoolResponse(school.getId(), school.getName(), school.getPostfix());
         return ResponseEntity.ok(response);
     }
 

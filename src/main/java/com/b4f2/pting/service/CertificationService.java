@@ -24,12 +24,9 @@ public class CertificationService {
     private static final long CODE_EXPIRE_TIME = 5 * 60 * 1000;
 
     public void sendCertificationEmail(Member member, CertificationRequest request) {
-        School school = member.getSchool();
-        if (school == null) {
-            throw new IllegalStateException("학교를 먼저 선택해야 합니다.");
-        }
+        School school = getSchoolOrThrowException(member);
 
-        String schoolEmail = request.localPart() + "@" + school.getDomain();
+        String schoolEmail = request.localPart() + "@" + school.getPostfix();
         if (!isValidSchoolEmail(schoolEmail)) {
             throw new IllegalArgumentException("학교 이메일만 인증 가능합니다.");
         }
@@ -56,12 +53,9 @@ public class CertificationService {
 
     @Transactional
     public CertificationResponse verifyCertification(Member member, CertificationVerifyRequest request) {
-        School school = member.getSchool();
-        if (school == null) {
-            throw new IllegalStateException("학교를 먼저 선택해야 합니다.");
-        }
+        School school = getSchoolOrThrowException(member);
 
-        String schoolEmail = request.localPart() + "@" + school.getDomain();
+        String schoolEmail = request.localPart() + "@" + school.getPostfix();
         String code = request.code();
 
         String key = "cert:" + member.getId() + ":" + schoolEmail;
@@ -79,6 +73,16 @@ public class CertificationService {
         cache.delete(key);
 
         return new CertificationResponse(member.getIsVerified());
+    }
+
+    private School getSchoolOrThrowException(Member member) {
+
+        School school = member.getSchool();
+        if (school == null) {
+            throw new IllegalStateException("학교를 먼저 선택해야 합니다.");
+        }
+
+        return school;
     }
 
     public CertificationResponse checkCertification(Member member) {

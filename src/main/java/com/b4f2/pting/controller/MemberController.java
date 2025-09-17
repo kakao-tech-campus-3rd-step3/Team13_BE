@@ -36,7 +36,7 @@ public class MemberController {
             @PathVariable Long schoolId
     ) {
         School school = schoolService.selectSchool(member, schoolId);
-        SchoolResponse response = new SchoolResponse(school.getId(), school.getName(), school.getDomain());
+        SchoolResponse response = new SchoolResponse(school.getId(), school.getName(), school.getPostfix());
         return ResponseEntity.ok(response);
     }
 
