@@ -1,5 +1,7 @@
 package com.b4f2.pting.service;
 
+import java.util.Random;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +53,9 @@ public class CertificationService {
     }
 
     private String generateRandomCode() {
-        return String.valueOf((int) (Math.random() * 900000) + 100000);
+        Random random = new Random();
+        int code = random.nextInt(900000) + 100000;
+        return String.valueOf(code);
     }
 
     @Transactional
