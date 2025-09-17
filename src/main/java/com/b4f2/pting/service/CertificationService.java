@@ -11,6 +11,7 @@ import com.b4f2.pting.domain.School;
 import com.b4f2.pting.dto.CertificationRequest;
 import com.b4f2.pting.dto.CertificationResponse;
 import com.b4f2.pting.dto.CertificationVerifyRequest;
+import com.b4f2.pting.util.EmailUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +21,15 @@ public class CertificationService {
     private final EmailService emailService;
     private final MemberService memberService;
     private final InMemoryCache cache;
+    private final EmailUtil emailUtil;
 
     private static final long CODE_EXPIRE_TIME = 5 * 60 * 1000;
 
     public void sendCertificationEmail(Member member, CertificationRequest request) {
         School school = getSchoolOrThrowException(member);
 
-        String schoolEmail = request.localPart() + "@" + school.getPostfix();
+        String schoolEmail = emailUtil.getEmailAddress(request.localPart(), school.getPostfix());
+
         if (!isValidSchoolEmail(schoolEmail)) {
             throw new IllegalArgumentException("학교 이메일만 인증 가능합니다.");
         }
@@ -35,7 +38,7 @@ public class CertificationService {
             throw new IllegalStateException("이미 인증된 이메일입니다.");
         }
 
-        String key = "cert:" + member.getId() + ":" + schoolEmail;
+        String key = emailUtil.getEmailCertificationKey(member.getId(), schoolEmail);
         cache.delete(key);
         String code = generateRandomCode();
         cache.set(key, code, CODE_EXPIRE_TIME);
@@ -44,7 +47,7 @@ public class CertificationService {
     }
 
     private boolean isValidSchoolEmail(String email) {
-        return email != null && email.endsWith(".ac.kr");
+        return email != null && emailUtil.isSchoolEmail(email);
     }
 
     private String generateRandomCode() {
@@ -55,10 +58,10 @@ public class CertificationService {
     public CertificationResponse verifyCertification(Member member, CertificationVerifyRequest request) {
         School school = getSchoolOrThrowException(member);
 
-        String schoolEmail = request.localPart() + "@" + school.getPostfix();
+        String schoolEmail = emailUtil.getEmailAddress(request.localPart(), school.getPostfix());
         String code = request.code();
 
-        String key = "cert:" + member.getId() + ":" + schoolEmail;
+        String key = emailUtil.getEmailCertificationKey(member.getId(), schoolEmail);
         String savedCode = cache.get(key);
 
         if (savedCode == null) {
@@ -76,8 +79,8 @@ public class CertificationService {
     }
 
     private School getSchoolOrThrowException(Member member) {
-
         School school = member.getSchool();
+
         if (school == null) {
             throw new IllegalStateException("학교를 먼저 선택해야 합니다.");
         }
