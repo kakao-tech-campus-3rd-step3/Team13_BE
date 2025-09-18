@@ -1,5 +1,7 @@
 CREATE TYPE game_status AS ENUM ('ON_MATCHING', 'END');
 CREATE TYPE oauth_provider AS ENUM ('KAKAO');
+CREATE TYPE report_status AS ENUM ('PENDING', 'RESOLVED', 'REJECTED');
+
 
 CREATE TABLE school (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -44,4 +46,16 @@ CREATE TABLE game_user (
     id BIGSERIAL PRIMARY KEY,
     member_id BIGINT NOT NULL REFERENCES member(id),
     game_id BIGINT NOT NULL REFERENCES game(id)
+);
+
+CREATE TABLE game_report (
+    id BIGSERIAL PRIMARY KEY,
+    game_id BIGINT NOT NULL REFERENCES game(id) ON DELETE CASCADE,
+    reporter_id BIGINT NOT NULL REFERENCES member(id) ON DELETE CASCADE,
+    reported_id BIGINT NOT NULL REFERENCES member(id) ON DELETE CASCADE,
+    reason_text VARCHAR(255),
+    status report_status NOT NULL DEFAULT 'PENDING',
+    created_at TIMESTAMP NOT NULL DEFAULT now(),
+    CONSTRAINT chk_different_users CHECK (reporter_id <> reported_id),
+    CONSTRAINT unique_report UNIQUE (game_id, reporter_id, reported_id)
 );
