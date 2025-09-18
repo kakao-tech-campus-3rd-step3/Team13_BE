@@ -35,14 +35,14 @@ public class GameReportService {
     public GameReportResponse createReport(Member reporter, GameReportRequest request) {
 
         Game game = gameRepository.findById(request.gameId())
-            .orElseThrow(() -> new EntityNotFoundException("해당 게임이 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 게임이 존재하지 않습니다."));
 
         if (!game.getGameStatus().equals(GameStatus.END)) {
             throw new IllegalStateException("게임이 종료된 후에만 신고할 수 있습니다.");
         }
 
         Member reported = memberRepository.findById(request.reportedId())
-            .orElseThrow(() -> new IllegalArgumentException("피신고자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("피신고자를 찾을 수 없습니다."));
 
         List<Long> participants = participantRepository.findMemberIdsByGameId(request.gameId());
 
@@ -60,15 +60,7 @@ public class GameReportService {
 
         reportRepository.save(report);
 
-        return new GameReportResponse(
-            report.getId(),
-            report.getGame().getId(),
-            report.getReporter().getId(),
-            report.getReported().getId(),
-            report.getReasonText(),
-            report.getStatus(),
-            report.getCreatedAt()
-        );
+        return GameReportResponse.from(report);
     }
 
     public List<GameReport> getAllReports() {
@@ -86,18 +78,10 @@ public class GameReportService {
     @Transactional
     public GameReportResponse updateReportStatus(Long reportId, GameReportStatusUpdateRequest request) {
         GameReport report = reportRepository.findById(reportId)
-            .orElseThrow(() -> new EntityNotFoundException("신고를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("신고를 찾을 수 없습니다."));
 
         report.changeStatus(request.status());
 
-        return new GameReportResponse(
-            report.getId(),
-            report.getGame().getId(),
-            report.getReporter().getId(),
-            report.getReported().getId(),
-            report.getReasonText(),
-            report.getStatus(),
-            report.getCreatedAt()
-        );
+        return GameReportResponse.from(report);
     }
 }
