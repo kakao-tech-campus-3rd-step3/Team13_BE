@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.domain.Game;
+import com.b4f2.pting.domain.Game.GameStatus;
 import com.b4f2.pting.domain.GameReport;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.dto.GameReportRequest;
@@ -35,6 +36,10 @@ public class GameReportService {
 
         Game game = gameRepository.findById(request.gameId())
             .orElseThrow(() -> new EntityNotFoundException("해당 게임이 존재하지 않습니다."));
+
+        if (!game.getGameStatus().equals(GameStatus.END)) {
+            throw new IllegalStateException("게임이 종료된 후에만 신고할 수 있습니다.");
+        }
 
         Member reported = memberRepository.findById(request.reportedId())
             .orElseThrow(() -> new IllegalArgumentException("피신고자를 찾을 수 없습니다."));
