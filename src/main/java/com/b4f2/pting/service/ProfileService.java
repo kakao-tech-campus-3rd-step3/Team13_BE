@@ -20,8 +20,6 @@ public class ProfileService {
 
     public ProfileResponse getProfile(Long memberId) {
         Member member = getMemberOrThrowException(memberId);
-        ;
-
         return new ProfileResponse(member);
     }
 
