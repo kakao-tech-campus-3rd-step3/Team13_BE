@@ -27,6 +27,7 @@ import com.b4f2.pting.domain.School;
 import com.b4f2.pting.dto.CertificationRequest;
 import com.b4f2.pting.dto.CertificationResponse;
 import com.b4f2.pting.dto.CertificationVerifyRequest;
+import com.b4f2.pting.util.EmailUtil;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -38,6 +39,8 @@ class CertificationServiceTest {
 
     @Mock
     private EmailService emailService;
+
+    private EmailUtil emailUtil = new EmailUtil();
 
     @Mock
     private InMemoryCache cache;
@@ -58,6 +61,8 @@ class CertificationServiceTest {
 
         school = new School("부산대학교", "pusan.ac.kr");
         ReflectionTestUtils.setField(school, "id", 1L);
+
+        ReflectionTestUtils.setField(certificationService, "emailUtil", emailUtil);
 
         member.updateSchool(school);
     }

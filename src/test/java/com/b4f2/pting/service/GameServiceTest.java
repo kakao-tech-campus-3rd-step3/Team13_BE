@@ -61,7 +61,7 @@ class GameServiceTest {
         ReflectionTestUtils.setField(sport, "id", 1L);
         ReflectionTestUtils.setField(sport, "name", "축구");
 
-        game = new Game(
+        game = Game.create(
             sport,
             "재미있는 방",
             10,
