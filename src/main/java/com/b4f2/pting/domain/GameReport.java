@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,10 +21,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(
-    name = "game_report",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"game_id", "reporter_id", "reported_id"})
-    }
+        name = "game_report",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"game_id", "reporter_id", "reported_id"})
+        }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -33,15 +34,15 @@ public class GameReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporter_id", nullable = false)
     private Member reporter;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reported_id", nullable = false)
     private Member reported;
 
