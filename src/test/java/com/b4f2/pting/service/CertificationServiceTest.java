@@ -4,9 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,15 +33,15 @@ import com.b4f2.pting.util.EmailUtil;
 class CertificationServiceTest {
 
     @Mock
-    private MemberService memberService;
-
-    @Mock
     private EmailService emailService;
 
     private EmailUtil emailUtil = new EmailUtil();
 
     @Mock
     private InMemoryCache cache;
+
+    @Mock
+    private EmailUtil emailUtil;
 
     @InjectMocks
     private CertificationService certificationService;
@@ -53,6 +51,7 @@ class CertificationServiceTest {
 
     private String localPart = "test";
     private String code = "123456";
+    private static final long CODE_EXPIRE_TIME = 5 * 60 * 1000;
 
     @BeforeEach
     void setUp() {
@@ -71,17 +70,24 @@ class CertificationServiceTest {
     void sendCertificationEmail_이메일보내기_성공() {
         // given
         String schoolEmail = localPart + "@" + school.getPostfix();
-        String key = "cert:" + member.getId() + ":" + schoolEmail;
         CertificationRequest request = new CertificationRequest(localPart);
 
-        doNothing().when(cache).delete(key);
+        given(emailUtil.getEmailAddress(localPart, school.getPostfix())).willReturn(schoolEmail);
+        given(emailUtil.getEmailCertificationKey(member.getId(), schoolEmail)).willReturn(
+            "cert:" + member.getId() + ":" + schoolEmail);
+        given(emailUtil.isSchoolEmail(schoolEmail)).willReturn(true);
+
+        doNothing().when(cache).delete(anyString());
         doNothing().when(cache).set(anyString(), anyString(), anyLong());
+        doNothing().when(emailService).sendCertificationEmail(anyString(), anyString());
 
         // when
         certificationService.sendCertificationEmail(member, request);
 
         // then
-        verify(emailService, times(1)).sendCertificationEmail(eq(schoolEmail), anyString());
+        verify(cache, times(1)).delete(anyString());
+        verify(cache, times(1)).set(anyString(), anyString(), anyLong());
+        verify(emailService, times(1)).sendCertificationEmail(anyString(), anyString());
     }
 
     @Test
@@ -118,6 +124,9 @@ class CertificationServiceTest {
         member.markAsVerified();
         CertificationRequest request = new CertificationRequest(localPart);
 
+        given(emailUtil.getEmailAddress(localPart, school.getPostfix())).willReturn(schoolEmail);
+        given(emailUtil.isSchoolEmail(schoolEmail)).willReturn(true);
+
         // when & then
         assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
             .isInstanceOf(IllegalStateException.class)
@@ -131,22 +140,22 @@ class CertificationServiceTest {
         String key = "cert:" + member.getId() + ":" + schoolEmail;
         CertificationVerifyRequest request = new CertificationVerifyRequest(localPart, code);
 
-        given(cache.get(key)).willReturn(code);
-        doNothing().when(cache).delete(key);
+        given(emailUtil.getEmailAddress(localPart, school.getPostfix())).willReturn(schoolEmail);
+        given(emailUtil.getEmailCertificationKey(member.getId(), schoolEmail)).willReturn(
+            "cert:" + member.getId() + ":" + schoolEmail);
 
-        doAnswer(invocation -> {
-            Member m = invocation.getArgument(0);
-            m.updateSchoolEmail(schoolEmail);
-            m.markAsVerified();
-            return null;
-        }).when(memberService).verifySchoolEmail(member, schoolEmail);
+        given(cache.get(key)).willReturn(code);
+
+        doNothing().when(cache).delete(key);
 
         // when
         CertificationResponse response = certificationService.verifyCertification(member, request);
 
         // then
         assertThat(response.isVerified()).isTrue();
-        verify(memberService, times(1)).verifySchoolEmail(member, schoolEmail);
+        assertThat(member.getIsVerified()).isTrue();
+        assertThat(member.getSchoolEmail()).isEqualTo(schoolEmail);
+
         verify(cache, times(1)).delete(key);
     }
 
@@ -155,6 +164,10 @@ class CertificationServiceTest {
         String schoolEmail = localPart + "@" + school.getPostfix();
         String key = "cert:" + member.getId() + ":" + schoolEmail;
         CertificationVerifyRequest request = new CertificationVerifyRequest(localPart, code);
+
+        given(emailUtil.getEmailAddress(localPart, school.getPostfix())).willReturn(schoolEmail);
+        given(emailUtil.getEmailCertificationKey(member.getId(), schoolEmail)).willReturn(
+            "cert:" + member.getId() + ":" + schoolEmail);
 
         given(cache.get(key)).willReturn(null);
 

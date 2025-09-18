@@ -1,5 +1,7 @@
 package com.b4f2.pting.service;
 
+import java.util.Random;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +21,6 @@ import com.b4f2.pting.util.EmailUtil;
 public class CertificationService {
 
     private final EmailService emailService;
-    private final MemberService memberService;
     private final InMemoryCache cache;
     private final EmailUtil emailUtil;
 
@@ -51,7 +52,9 @@ public class CertificationService {
     }
 
     private String generateRandomCode() {
-        return String.valueOf((int) (Math.random() * 900000) + 100000);
+        Random random = new Random();
+        int code = random.nextInt(900000) + 100000;
+        return String.valueOf(code);
     }
 
     @Transactional
@@ -71,7 +74,8 @@ public class CertificationService {
             throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
         }
 
-        memberService.verifySchoolEmail(member, schoolEmail);
+        member.updateSchoolEmail(schoolEmail);
+        member.markAsVerified();
 
         cache.delete(key);
 

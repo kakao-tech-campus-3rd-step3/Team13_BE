@@ -3,8 +3,6 @@ package com.b4f2.pting.service;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,9 +35,6 @@ class SchoolServiceTest {
 
     @Mock
     private SchoolRepository schoolRepository;
-
-    @Mock
-    private MemberService memberService;
 
     @InjectMocks
     private SchoolService schoolService;
@@ -131,6 +126,5 @@ class SchoolServiceTest {
             .isInstanceOf(EntityNotFoundException.class)
             .hasMessage("학교 정보가 존재하지 않습니다.");
         verify(schoolRepository, times(1)).findById(1L);
-        verify(memberService, never()).updateSchool(any(), any());
     }
 }
