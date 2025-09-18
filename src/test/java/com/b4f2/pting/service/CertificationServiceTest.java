@@ -35,8 +35,6 @@ class CertificationServiceTest {
     @Mock
     private EmailService emailService;
 
-    private EmailUtil emailUtil = new EmailUtil();
-
     @Mock
     private InMemoryCache cache;
 
@@ -60,8 +58,6 @@ class CertificationServiceTest {
 
         school = new School("부산대학교", "pusan.ac.kr");
         ReflectionTestUtils.setField(school, "id", 1L);
-
-        ReflectionTestUtils.setField(certificationService, "emailUtil", emailUtil);
 
         member.updateSchool(school);
     }
