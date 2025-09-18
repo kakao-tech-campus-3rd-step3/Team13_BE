@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.b4f2.pting.domain.Game;
+import com.b4f2.pting.domain.Game.GameStatus;
 import com.b4f2.pting.domain.GameReport;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.dto.GameReportRequest;
@@ -64,21 +65,22 @@ class GameReportServiceTest {
 
         game = new Game();
         ReflectionTestUtils.setField(game, "id", 1L);
+        ReflectionTestUtils.setField(game, "gameStatus", GameStatus.END);
     }
 
     @Test
     void createReport_신고하기_성공() {
         // given
         GameReportRequest request = new GameReportRequest(
-            game.getId(),
-            reported.getId(),
-            "테스트 신고 사유"
+                game.getId(),
+                reported.getId(),
+                "테스트 신고 사유"
         );
 
         when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
         when(memberRepository.findById(reported.getId())).thenReturn(Optional.of(reported));
         when(participantRepository.findMemberIdsByGameId(game.getId())).thenReturn(
-            List.of(reporter.getId(), reported.getId()));
+                List.of(reporter.getId(), reported.getId()));
         when(reportRepository.save((GameReport) any(GameReport.class))).thenAnswer(i -> i.getArgument(0));
 
         // when
@@ -97,9 +99,9 @@ class GameReportServiceTest {
     void createReport_자기자신신고_예외발생() {
         // given
         GameReportRequest request = new GameReportRequest(
-            game.getId(),
-            reporter.getId(),
-            "자기 자신 신고"
+                game.getId(),
+                reporter.getId(),
+                "자기 자신 신고"
         );
 
         when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
@@ -108,8 +110,8 @@ class GameReportServiceTest {
 
         // when & then
         assertThatThrownBy(() -> reportService.createReport(reporter, request))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("자기 자신을 신고할 수 없습니다.");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("자기 자신을 신고할 수 없습니다.");
     }
 
     @Test
