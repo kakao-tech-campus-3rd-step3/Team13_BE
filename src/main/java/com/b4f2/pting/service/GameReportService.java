@@ -79,7 +79,7 @@ public class GameReportService {
         return reportRepository.findByGameId(gameId);
     }
 
-    public List<GameReport> getReportsByMember(Long memberId) {
+    public List<GameReport> getReportsByReporter(Long memberId) {
         return reportRepository.findByReporterId(memberId);
     }
 

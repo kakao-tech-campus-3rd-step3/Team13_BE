@@ -47,8 +47,8 @@ public class GameReportController {
     }
 
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<GameReport>> getReportsByMember(@PathVariable Long memberId) {
-        return ResponseEntity.ok(reportService.getReportsByMember(memberId));
+    public ResponseEntity<List<GameReport>> getReportsByReporter(@PathVariable Long memberId) {
+        return ResponseEntity.ok(reportService.getReportsByReporter(memberId));
     }
 
     @PatchMapping("/{reportId}/status")
