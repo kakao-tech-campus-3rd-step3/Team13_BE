@@ -21,6 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.b4f2.pting.domain.Game;
 import com.b4f2.pting.domain.Game.GameStatus;
+import com.b4f2.pting.domain.GameParticipants;
 import com.b4f2.pting.domain.GameReport;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.dto.GameReportRequest;
@@ -79,8 +80,8 @@ class GameReportServiceTest {
 
         when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
         when(memberRepository.findById(reported.getId())).thenReturn(Optional.of(reported));
-        when(participantRepository.findMemberIdsByGameId(game.getId())).thenReturn(
-                List.of(reporter.getId(), reported.getId()));
+        when(participantRepository.findMembersByGameId(game.getId())).thenReturn(
+                List.of(reporter, reported));
         when(reportRepository.save((GameReport) any(GameReport.class))).thenAnswer(i -> i.getArgument(0));
 
         // when
@@ -106,7 +107,7 @@ class GameReportServiceTest {
 
         when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
         when(memberRepository.findById(reporter.getId())).thenReturn(Optional.of(reporter));
-        when(participantRepository.findMemberIdsByGameId(game.getId())).thenReturn(List.of(reporter.getId()));
+        when(participantRepository.findMembersByGameId(game.getId())).thenReturn(List.of(reporter));
 
         // when & then
         assertThatThrownBy(() -> reportService.createReport(reporter, request))
@@ -117,7 +118,8 @@ class GameReportServiceTest {
     @Test
     void updateReportStatus_상태변경_성공() {
         // given
-        GameReport report = new GameReport(game, reporter, reported, "테스트");
+        GameReport report = GameReport.create(game, reporter, reported, "부적절한 행동",
+                new GameParticipants(List.of(reporter, reported)));
         ReflectionTestUtils.setField(report, "id", 1L);
 
         GameReportStatusUpdateRequest request = new GameReportStatusUpdateRequest(GameReport.ReportStatus.RESOLVED);

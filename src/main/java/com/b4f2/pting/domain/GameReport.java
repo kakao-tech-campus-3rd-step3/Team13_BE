@@ -62,7 +62,24 @@ public class GameReport {
         REJECTED   // 기각
     }
 
-    public GameReport(Game game, Member reporter, Member reported, String reasonText) {
+    public static GameReport create(Game game, Member reporter, Member reported, String reasonText,
+            GameParticipants participants) {
+        if (!game.isEnded()) {
+            throw new IllegalStateException("게임이 종료된 후에만 신고할 수 있습니다.");
+        }
+        if (!participants.contains(reporter.getId())) {
+            throw new IllegalArgumentException("신고자는 해당 게임에 참여하지 않았습니다.");
+        }
+        if (!participants.contains(reported.getId())) {
+            throw new IllegalArgumentException("피신고자는 해당 게임에 참여하지 않았습니다.");
+        }
+        if (reporter.getId().equals(reported.getId())) {
+            throw new IllegalStateException("자기 자신을 신고할 수 없습니다.");
+        }
+        return new GameReport(game, reporter, reported, reasonText);
+    }
+
+    private GameReport(Game game, Member reporter, Member reported, String reasonText) {
         this.game = game;
         this.reporter = reporter;
         this.reported = reported;

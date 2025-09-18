@@ -66,4 +66,8 @@ public class Game {
     ) {
         this(null, sport, name, playerCount, gameStatus, startTime, duration, description);
     }
+
+    public boolean isEnded() {
+        return this.gameStatus == GameStatus.END;
+    }
 }
