@@ -47,12 +47,23 @@ public class Game {
     @Column(name = "duration")
     private Integer duration;
 
+    @Column(name = "description")
+    private String description;
+
     public enum GameStatus {
         ON_MATCHING,
         END
     }
 
-    public Game(Sport sport, String name, Integer playerCount, GameStatus gameStatus, LocalDateTime startTime, Integer duration) {
-        this(null, sport, name, playerCount, gameStatus, startTime, duration);
+    public Game(
+        Sport sport,
+        String name,
+        Integer playerCount,
+        GameStatus gameStatus,
+        LocalDateTime startTime,
+        Integer duration,
+        String description
+    ) {
+        this(null, sport, name, playerCount, gameStatus, startTime, duration, description);
     }
 }

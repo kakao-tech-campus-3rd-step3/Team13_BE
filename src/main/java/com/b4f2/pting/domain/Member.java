@@ -1,11 +1,14 @@
 package com.b4f2.pting.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
@@ -27,19 +30,33 @@ public class Member {
     private Long id;
 
     @NotNull
+    @Column(name = "oauth_id")
     private Long oauthId;
 
     @NotNull
     @Enumerated(EnumType.STRING)
+
+    @Column(name = "oauth_provider")
     private OAuthProvider oauthProvider;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "school_email")
     private String schoolEmail;
 
+    @Column(name = "is_verified")
     private Boolean isVerified = false;
+
+    @ManyToOne
+    @JoinColumn(name = "school_id")
+    private School school;
 
     public enum OAuthProvider {
         KAKAO
@@ -50,11 +67,27 @@ public class Member {
         this.oauthProvider = oauthProvider;
     }
 
-    public void updateVerifiedSchoolEmail(String email) {
+    public void changeName(String name) {
+        this.name = name;
+    }
+
+    public void changeImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
+    }
+
+    public void updateSchoolEmail(String email) {
         this.schoolEmail = email;
     }
 
     public void markAsVerified() {
         this.isVerified = true;
+    }
+
+    public void updateSchool(School school) {
+        this.school = school;
     }
 }

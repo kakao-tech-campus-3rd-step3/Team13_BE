@@ -1,4 +1,4 @@
-package com.b4f2.pting.domain.properties;
+package com.b4f2.pting.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

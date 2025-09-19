@@ -1,7 +1,7 @@
 package com.b4f2.pting.service;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -12,15 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.domain.Game;
-import com.b4f2.pting.domain.GameUser;
+import com.b4f2.pting.domain.GameParticipant;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Sport;
 import com.b4f2.pting.domain.TimePeriod;
 import com.b4f2.pting.dto.CreateGameRequest;
+import com.b4f2.pting.dto.GameDetailResponse;
 import com.b4f2.pting.dto.GameResponse;
 import com.b4f2.pting.dto.GamesResponse;
+import com.b4f2.pting.repository.GameParticipantRepository;
 import com.b4f2.pting.repository.GameRepository;
-import com.b4f2.pting.repository.GameUserRepository;
 import com.b4f2.pting.repository.SportRepository;
 
 @Service
@@ -29,19 +30,18 @@ import com.b4f2.pting.repository.SportRepository;
 public class GameService {
 
     private final GameRepository gameRepository;
-    private final GameUserRepository gameUserRepository;
+    private final GameParticipantRepository gameParticipantRepository;
     private final SportRepository sportRepository;
 
     @Transactional
-    public GameResponse createGame(Member member, CreateGameRequest request) {
+    public GameDetailResponse createGame(Member member, CreateGameRequest request) {
         validateMemberIsVerified(member);
 
         Sport sport = sportRepository.findById(request.sportId())
             .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
 
-        ZonedDateTime nowInSeoul = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        ZonedDateTime requestedStartTimeInSeoul = request.startTime().atZone(ZoneId.of("Asia/Seoul"));
-        if (requestedStartTimeInSeoul.isBefore(nowInSeoul)) {
+        LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        if (request.startTime().isBefore(nowInSeoul)) {
             throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
         }
 
@@ -51,14 +51,15 @@ public class GameService {
             request.playerCount(),
             Game.GameStatus.ON_MATCHING,
             request.startTime(),
-            request.duration()
+            request.duration(),
+            request.description()
         );
 
         gameRepository.save(game);
 
         addParticipant(game, member);
 
-        return new GameResponse(game);
+        return new GameDetailResponse(game);
     }
 
     @Transactional
@@ -100,11 +101,11 @@ public class GameService {
         return new GamesResponse(gameResponseList);
     }
 
-    public GameResponse findGameById(Long gameId) {
+    public GameDetailResponse findGameById(Long gameId) {
         Game game = gameRepository.findById(gameId)
             .orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
 
-        return new GameResponse(game);
+        return new GameDetailResponse(game);
     }
 
     private void validateMemberIsVerified(Member member) {
@@ -114,15 +115,18 @@ public class GameService {
     }
 
     private void addParticipant(Game game, Member member) {
-        if (gameUserRepository.existsByMemberIdAndGame(member.getId(), game)) {
-            throw new IllegalStateException("이미 참여한 게임입니다.");
-        }
+        final List<GameParticipant> gameParticipants = gameParticipantRepository.findByGame(game);
 
-        int currentPlayerCount = gameUserRepository.countByGame(game);
-        if (currentPlayerCount >= game.getPlayerCount()) {
+        gameParticipants.forEach(gameParticipant -> {
+            if (gameParticipant.getMember().getId().equals(member.getId())) {
+                throw new IllegalStateException("이미 참여한 게임입니다.");
+            }
+        });
+
+        if (gameParticipants.size() >= game.getPlayerCount()) {
             throw new IllegalStateException("모집 인원이 마감되었습니다.");
         }
 
-        gameUserRepository.save(new GameUser(member.getId(), game));
+        gameParticipantRepository.save(new GameParticipant(member, game));
     }
 }

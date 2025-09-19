@@ -25,6 +25,12 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ProblemDetail handleIllegalStateException(IllegalStateException e) {
+        log.error("[IllegalStateException] {}", e.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ProblemDetail handleRuntimeException(RuntimeException e) {
         log.error("[RuntimeException] {}", e.getMessage());
