@@ -1,4 +1,4 @@
-package com.b4f2.pting.service;
+package com.b4f2.pting.facade;
 
 import java.util.Random;
 
@@ -13,6 +13,7 @@ import com.b4f2.pting.domain.School;
 import com.b4f2.pting.dto.CertificationRequest;
 import com.b4f2.pting.dto.CertificationResponse;
 import com.b4f2.pting.dto.CertificationVerifyRequest;
+import com.b4f2.pting.service.EmailService;
 import com.b4f2.pting.util.EmailUtil;
 
 @Service
