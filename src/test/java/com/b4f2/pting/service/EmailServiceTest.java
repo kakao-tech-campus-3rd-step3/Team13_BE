@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import java.io.IOException;
-
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -20,7 +20,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
-public class EmailServiceTest {
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+class EmailServiceTest {
 
     @Mock
     private JavaMailSender mailSender;
@@ -34,7 +36,7 @@ public class EmailServiceTest {
     }
 
     @Test
-    void sendCertificationEmail_이메일보내기_성공() throws IOException {
+    void sendCertificationEmail_이메일보내기_성공() {
         // given
         String toEmail = "test@pusan.ac.kr";
         String code = "123456";

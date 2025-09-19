@@ -1,10 +1,12 @@
 package com.b4f2.pting.service;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,8 @@ public class EmailService {
 
     String loadTemplate(String fileName) {
         try {
-            Path path = Path.of("src/main/resources/templates/" + fileName);
-            return Files.readString(path);
+            ClassPathResource resource = new ClassPathResource("templates/" + fileName);
+            return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException("메일 템플릿 로드 실패");
         }

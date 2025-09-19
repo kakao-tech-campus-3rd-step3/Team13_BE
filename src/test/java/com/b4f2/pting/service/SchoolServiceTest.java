@@ -3,8 +3,6 @@ package com.b4f2.pting.service;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,6 +13,8 @@ import java.util.Optional;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -29,13 +29,12 @@ import com.b4f2.pting.dto.SchoolRequest;
 import com.b4f2.pting.repository.SchoolRepository;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class SchoolServiceTest {
 
     @Mock
     private SchoolRepository schoolRepository;
-
-    @Mock
-    private MemberService memberService;
 
     @InjectMocks
     private SchoolService schoolService;
@@ -63,8 +62,8 @@ class SchoolServiceTest {
         // then
         assertNotNull(schools);
         assertEquals(1, schools.size());
-        assertEquals("부산대학교", schools.get(0).getName());
-        assertEquals("pusan.ac.kr", schools.get(0).getDomain());
+        assertEquals("부산대학교", schools.getFirst().getName());
+        assertEquals("pusan.ac.kr", schools.getFirst().getPostfix());
         verify(schoolRepository, times(1)).findAll();
     }
 
@@ -80,7 +79,7 @@ class SchoolServiceTest {
         assertNotNull(response);
         assertEquals(school.getId(), response.getId());
         assertEquals(school.getName(), response.getName());
-        assertEquals(school.getDomain(), response.getDomain());
+        assertEquals(school.getPostfix(), response.getPostfix());
         verify(schoolRepository, times(1)).findById(1L);
     }
 
@@ -103,7 +102,7 @@ class SchoolServiceTest {
         School savedSchool = new School(request.name(), request.domain());
         ReflectionTestUtils.setField(savedSchool, "id", 1L);
 
-        when(schoolRepository.save(ArgumentMatchers.<School>any())).thenReturn(savedSchool);
+        when(schoolRepository.save(ArgumentMatchers.any())).thenReturn(savedSchool);
 
         // when
         School response = schoolService.createSchool(request);
@@ -112,9 +111,9 @@ class SchoolServiceTest {
         assertNotNull(response);
         assertEquals(savedSchool.getId(), response.getId());
         assertEquals(savedSchool.getName(), response.getName());
-        assertEquals(savedSchool.getDomain(), response.getDomain());
+        assertEquals(savedSchool.getPostfix(), response.getPostfix());
 
-        verify(schoolRepository, times(1)).save(ArgumentMatchers.<School>any());
+        verify(schoolRepository, times(1)).save(ArgumentMatchers.any());
     }
 
     @Test
@@ -127,6 +126,5 @@ class SchoolServiceTest {
             .isInstanceOf(EntityNotFoundException.class)
             .hasMessage("학교 정보가 존재하지 않습니다.");
         verify(schoolRepository, times(1)).findById(1L);
-        verify(memberService, never()).updateSchool(any(), any());
     }
 }

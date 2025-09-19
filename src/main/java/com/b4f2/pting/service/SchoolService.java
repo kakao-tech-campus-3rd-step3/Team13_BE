@@ -20,7 +20,6 @@ import com.b4f2.pting.repository.SchoolRepository;
 public class SchoolService {
 
     private final SchoolRepository schoolRepository;
-    private final MemberService memberService;
 
     public List<School> getAllSchools() {
         return schoolRepository.findAll();
@@ -41,7 +40,9 @@ public class SchoolService {
     public School selectSchool(Member member, Long schoolId) {
         School school = schoolRepository.findById(schoolId)
             .orElseThrow(() -> new EntityNotFoundException("학교 정보가 존재하지 않습니다."));
-        memberService.updateSchool(member, school);
+
+        member.updateSchool(school);
+
         return school;
     }
 }

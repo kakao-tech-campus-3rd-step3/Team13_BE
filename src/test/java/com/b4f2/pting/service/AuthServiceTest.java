@@ -3,6 +3,8 @@ package com.b4f2.pting.service;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,7 +15,9 @@ import com.b4f2.pting.config.properties.KakaoOAuthProperties;
 import com.b4f2.pting.dto.OAuthUrlResponse;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthServiceTest {
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+class AuthServiceTest {
 
     @Mock
     private KakaoOAuthProperties kakaoOAuthProperties;
@@ -22,7 +26,7 @@ public class AuthServiceTest {
     private AuthService authService;
 
     @Test
-    void 카카오_OAuth_로그인_URL_조회() {
+    void getKakaoOAuthUrl_카카오OAuthURL조회_성공() {
         // given
         given(kakaoOAuthProperties.authUri()).willReturn("kakao_auth_uri");
         given(kakaoOAuthProperties.clientId()).willReturn("client_id");

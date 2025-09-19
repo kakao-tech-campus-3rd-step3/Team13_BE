@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.domain.Member;
-import com.b4f2.pting.domain.School;
 import com.b4f2.pting.repository.MemberRepository;
 
 @Service
@@ -21,18 +20,5 @@ public class MemberService {
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId)
             .orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
-    }
-
-    @Transactional
-    public void verifySchoolEmail(Member member, String schoolEmail) {
-        member.updateSchoolEmail(schoolEmail);
-        member.markAsVerified();
-        memberRepository.save(member);
-    }
-
-    @Transactional
-    public void updateSchool(Member member, School school) {
-        member.updateSchool(school);
-        memberRepository.save(member);
     }
 }
