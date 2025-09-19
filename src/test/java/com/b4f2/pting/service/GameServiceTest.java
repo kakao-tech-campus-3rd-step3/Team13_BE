@@ -66,7 +66,7 @@ class GameServiceTest {
             "재미있는 방",
             10,
             Game.GameStatus.ON_MATCHING,
-            LocalDateTime.now().plusHours(1),
+            LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
             2,
             "재미있는 방 설명입니다."
         );
