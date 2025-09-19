@@ -17,6 +17,7 @@ import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.dto.GameReportRequest;
 import com.b4f2.pting.dto.GameReportResponse;
 import com.b4f2.pting.dto.GameReportStatusUpdateRequest;
+import com.b4f2.pting.dto.GameReportsResponse;
 import com.b4f2.pting.repository.GameParticipantRepository;
 import com.b4f2.pting.repository.GameReportRepository;
 import com.b4f2.pting.repository.GameRepository;
@@ -51,16 +52,25 @@ public class GameReportService {
         return GameReportResponse.from(report);
     }
 
-    public List<GameReport> getAllReports() {
-        return reportRepository.findAll();
+    public GameReportsResponse getAllReports() {
+        List<GameReportResponse> reports = reportRepository.findAll().stream()
+            .map(GameReportResponse::from)
+            .toList();
+        return new GameReportsResponse(reports);
     }
 
-    public List<GameReport> getReportsByGame(Long gameId) {
-        return reportRepository.findByGameId(gameId);
+    public GameReportsResponse getReportsByGame(Long gameId) {
+        List<GameReportResponse> reports = reportRepository.findByGameId(gameId).stream()
+            .map(GameReportResponse::from)
+            .toList();
+        return new GameReportsResponse(reports);
     }
 
-    public List<GameReport> getReportsByReporter(Long memberId) {
-        return reportRepository.findByReporterId(memberId);
+    public GameReportsResponse getReportsByReporter(Long memberId) {
+        List<GameReportResponse> reports = reportRepository.findByReporterId(memberId).stream()
+            .map(GameReportResponse::from)
+            .toList();
+        return new GameReportsResponse(reports);
     }
 
     @Transactional

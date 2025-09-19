@@ -1,7 +1,5 @@
 package com.b4f2.pting.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.config.Login;
-import com.b4f2.pting.domain.GameReport;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.dto.GameReportRequest;
 import com.b4f2.pting.dto.GameReportResponse;
 import com.b4f2.pting.dto.GameReportStatusUpdateRequest;
+import com.b4f2.pting.dto.GameReportsResponse;
 import com.b4f2.pting.service.GameReportService;
 
 @RestController
@@ -37,17 +35,17 @@ public class GameReportController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GameReport>> getAllReports() {
+    public ResponseEntity<GameReportsResponse> getAllReports() {
         return ResponseEntity.ok(reportService.getAllReports());
     }
 
     @GetMapping("/game/{gameId}")
-    public ResponseEntity<List<GameReport>> getReportsByGame(@PathVariable Long gameId) {
+    public ResponseEntity<GameReportsResponse> getReportsByGame(@PathVariable Long gameId) {
         return ResponseEntity.ok(reportService.getReportsByGame(gameId));
     }
 
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<GameReport>> getReportsByReporter(@PathVariable Long memberId) {
+    public ResponseEntity<GameReportsResponse> getReportsByReporter(@PathVariable Long memberId) {
         return ResponseEntity.ok(reportService.getReportsByReporter(memberId));
     }
 
