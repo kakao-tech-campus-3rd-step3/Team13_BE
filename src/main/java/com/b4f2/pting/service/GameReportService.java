@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.domain.Game;
-import com.b4f2.pting.domain.GameParticipant;
 import com.b4f2.pting.domain.GameParticipants;
 import com.b4f2.pting.domain.GameReport;
 import com.b4f2.pting.domain.Member;
@@ -42,8 +41,7 @@ public class GameReportService {
         Member reported = memberRepository.findById(request.reportedId())
             .orElseThrow(() -> new IllegalArgumentException("피신고자를 찾을 수 없습니다."));
 
-        List<GameParticipant> members = participantRepository.findByGame(game);
-        GameParticipants participants = new GameParticipants(members);
+        GameParticipants participants = new GameParticipants(participantRepository.findByGame(game));
 
         GameReport report = GameReport.create(game, reporter, reported, request.reasonText(), participants);
 
