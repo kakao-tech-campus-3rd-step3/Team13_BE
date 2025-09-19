@@ -1,17 +1,17 @@
 package com.b4f2.pting.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class GameParticipants {
 
-    private final List<Member> members;
+    private final List<GameParticipant> participants;
 
-    public GameParticipants(List<Member> members) {
-        this.members = new ArrayList<>(members);
-    }
-
-    public boolean contains(Long memberId) {
-        return members.stream().anyMatch(m -> m.getId().equals(memberId));
+    public boolean checkAlreadyParticipate(long memberId) {
+        return participants.stream().anyMatch(gameParticipant ->
+            gameParticipant.getMember().getId().equals(memberId)
+        );
     }
 }

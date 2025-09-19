@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.domain.Game;
+import com.b4f2.pting.domain.GameParticipant;
 import com.b4f2.pting.domain.GameParticipants;
 import com.b4f2.pting.domain.GameReport;
 import com.b4f2.pting.domain.Member;
@@ -35,12 +36,12 @@ public class GameReportService {
     public GameReportResponse createReport(Member reporter, GameReportRequest request) {
 
         Game game = gameRepository.findById(request.gameId())
-                .orElseThrow(() -> new EntityNotFoundException("해당 게임이 존재하지 않습니다."));
+            .orElseThrow(() -> new EntityNotFoundException("해당 게임이 존재하지 않습니다."));
 
         Member reported = memberRepository.findById(request.reportedId())
-                .orElseThrow(() -> new IllegalArgumentException("피신고자를 찾을 수 없습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("피신고자를 찾을 수 없습니다."));
 
-        List<Member> members = participantRepository.findMembersByGameId(request.gameId());
+        List<GameParticipant> members = participantRepository.findByGame(game);
         GameParticipants participants = new GameParticipants(members);
 
         GameReport report = GameReport.create(game, reporter, reported, request.reasonText(), participants);
@@ -65,7 +66,7 @@ public class GameReportService {
     @Transactional
     public GameReportResponse updateReportStatus(Long reportId, GameReportStatusUpdateRequest request) {
         GameReport report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new EntityNotFoundException("신고를 찾을 수 없습니다."));
+            .orElseThrow(() -> new EntityNotFoundException("신고를 찾을 수 없습니다."));
 
         report.changeStatus(request.status());
 

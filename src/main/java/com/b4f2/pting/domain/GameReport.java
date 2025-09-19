@@ -21,10 +21,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(
-        name = "game_report",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"game_id", "reporter_id", "reported_id"})
-        }
+    name = "game_report",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"game_id", "reporter_id", "reported_id"})
+    }
 )
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -63,14 +63,14 @@ public class GameReport {
     }
 
     public static GameReport create(Game game, Member reporter, Member reported, String reasonText,
-            GameParticipants participants) {
+        GameParticipants participants) {
         if (!game.isEnded()) {
             throw new IllegalStateException("게임이 종료된 후에만 신고할 수 있습니다.");
         }
-        if (!participants.contains(reporter.getId())) {
+        if (!participants.checkAlreadyParticipate(reporter.getId())) {
             throw new IllegalArgumentException("신고자는 해당 게임에 참여하지 않았습니다.");
         }
-        if (!participants.contains(reported.getId())) {
+        if (!participants.checkAlreadyParticipate(reported.getId())) {
             throw new IllegalArgumentException("피신고자는 해당 게임에 참여하지 않았습니다.");
         }
         if (reporter.getId().equals(reported.getId())) {
