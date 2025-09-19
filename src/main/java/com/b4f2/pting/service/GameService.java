@@ -1,7 +1,5 @@
 package com.b4f2.pting.service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -113,7 +111,7 @@ public class GameService {
     private void addParticipant(Game game, Member member) {
         final GameParticipants gameParticipants = new GameParticipants(gameParticipantRepository.findByGame(game));
 
-        if (gameParticipants.checkAlreadyParticipate(member.getId())) {
+        if (gameParticipants.hasParticipated(member.getId())) {
             throw new IllegalStateException("이미 참여한 게임입니다.");
         }
 

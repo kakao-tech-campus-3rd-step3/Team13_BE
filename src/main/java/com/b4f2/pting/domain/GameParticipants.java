@@ -9,7 +9,7 @@ public class GameParticipants {
 
     private final List<GameParticipant> participants;
 
-    public boolean checkAlreadyParticipate(long memberId) {
+    public boolean hasParticipated(long memberId) {
         return participants.stream().anyMatch(gameParticipant ->
             gameParticipant.getMember().getId().equals(memberId)
         );
@@ -18,5 +18,5 @@ public class GameParticipants {
     public int size() {
         return participants.size();
     }
-  
+
 }
