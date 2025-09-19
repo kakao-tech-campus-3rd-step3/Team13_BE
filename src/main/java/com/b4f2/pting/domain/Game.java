@@ -74,4 +74,8 @@ public class Game {
 
         return new Game(null, sport, name, playerCount, gameStatus, startTime, duration, description);
     }
+
+    public boolean isEnded() {
+        return this.gameStatus == GameStatus.END;
+    }
 }
