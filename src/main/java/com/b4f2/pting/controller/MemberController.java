@@ -19,7 +19,7 @@ import com.b4f2.pting.dto.CertificationRequest;
 import com.b4f2.pting.dto.CertificationResponse;
 import com.b4f2.pting.dto.CertificationVerifyRequest;
 import com.b4f2.pting.dto.SchoolResponse;
-import com.b4f2.pting.service.CertificationService;
+import com.b4f2.pting.facade.CertificationService;
 import com.b4f2.pting.service.SchoolService;
 
 @RestController
@@ -32,18 +32,18 @@ public class MemberController {
 
     @PostMapping("/me/school/{schoolId}")
     public ResponseEntity<SchoolResponse> selectSchool(
-            @Login Member member,
-            @PathVariable Long schoolId
+        @Login Member member,
+        @PathVariable Long schoolId
     ) {
         School school = schoolService.selectSchool(member, schoolId);
-        SchoolResponse response = new SchoolResponse(school.getId(), school.getName(), school.getDomain());
+        SchoolResponse response = new SchoolResponse(school.getId(), school.getName(), school.getPostfix());
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/me/certification/email")
     public ResponseEntity<String> sendCertificationEmail(
-            @Login Member member,
-            @RequestBody CertificationRequest request
+        @Login Member member,
+        @RequestBody CertificationRequest request
     ) {
         certificationService.sendCertificationEmail(member, request);
         return ResponseEntity.ok("인증 메일을 발송했습니다. 메일을 확인하세요.");
@@ -51,8 +51,8 @@ public class MemberController {
 
     @PostMapping("/me/certification/verify")
     public ResponseEntity<CertificationResponse> verifyCertification(
-            @Login Member member,
-            @RequestBody @Valid CertificationVerifyRequest request
+        @Login Member member,
+        @RequestBody @Valid CertificationVerifyRequest request
     ) {
         CertificationResponse response = certificationService.verifyCertification(member, request);
         return ResponseEntity.ok(response);

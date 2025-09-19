@@ -14,4 +14,9 @@ public class GameParticipants {
             gameParticipant.getMember().getId().equals(memberId)
         );
     }
+
+    public int size() {
+        return participants.size();
+    }
+  
 }

@@ -1,11 +1,13 @@
 package com.b4f2.pting.domain;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,7 +30,7 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport_id")
     private Sport sport;
 
@@ -55,7 +57,7 @@ public class Game {
         END
     }
 
-    public Game(
+    public static Game create(
         Sport sport,
         String name,
         Integer playerCount,
@@ -64,7 +66,13 @@ public class Game {
         Integer duration,
         String description
     ) {
-        this(null, sport, name, playerCount, gameStatus, startTime, duration, description);
+        LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
+        if (startTime.isBefore(nowInSeoul)) {
+            throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
+        }
+
+        return new Game(null, sport, name, playerCount, gameStatus, startTime, duration, description);
     }
 
     public boolean isEnded() {

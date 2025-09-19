@@ -3,13 +3,17 @@ package com.b4f2.pting.config;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.b4f2.pting.domain.TimePeriod;
 
-public class StringToTimePeriodConverterTest {
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+class StringToTimePeriodConverterTest {
 
     private StringToTimePeriodConverter converter;
 
@@ -20,19 +24,17 @@ public class StringToTimePeriodConverterTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"noon", "MORNING", "EVENING"})
-    void 옳바른_값_변환(String input) {
+    void convert_올바른값변환_성공(String input) {
         TimePeriod period = converter.convert(input);
 
-        assert(period instanceof TimePeriod);
+        assert (period instanceof TimePeriod);
     }
 
     @Test
-    void 옮바르지_않은_값_변환() {
+    void convert_올바르지않은값변환_실패() {
         assertThrows(
             IllegalArgumentException.class,
             () -> converter.convert("asdf")
         );
     }
-
-
 }
