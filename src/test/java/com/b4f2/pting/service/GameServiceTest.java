@@ -1,10 +1,24 @@
 package com.b4f2.pting.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.b4f2.pting.domain.Game;
@@ -15,21 +29,11 @@ import com.b4f2.pting.dto.GameDetailResponse;
 import com.b4f2.pting.repository.GameParticipantRepository;
 import com.b4f2.pting.repository.GameRepository;
 import com.b4f2.pting.repository.SportRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GameServiceTest {
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+class GameServiceTest {
 
     @Mock
     private GameRepository gameRepository;
@@ -57,7 +61,7 @@ public class GameServiceTest {
         ReflectionTestUtils.setField(sport, "id", 1L);
         ReflectionTestUtils.setField(sport, "name", "축구");
 
-        game = new Game(
+        game = Game.create(
             sport,
             "재미있는 방",
             10,
@@ -70,7 +74,7 @@ public class GameServiceTest {
     }
 
     @Test
-    void 게임_생성_성공() {
+    void createGame_게임생성_성공() {
         // given
         CreateGameRequest request = new CreateGameRequest(
             1L,
@@ -98,7 +102,7 @@ public class GameServiceTest {
     }
 
     @Test
-    void 게임_참가_성공() {
+    void joinGame_게임참가_성공() {
         // given
         when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
         when(gameParticipantRepository.findByGame(game)).thenReturn(List.of());
@@ -113,7 +117,7 @@ public class GameServiceTest {
     }
 
     @Test
-    void ID로_게임_조회_성공() {
+    void findGameById_ID로게임조회_성공() {
         // given
         when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
 
