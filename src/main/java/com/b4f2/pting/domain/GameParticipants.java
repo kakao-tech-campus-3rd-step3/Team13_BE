@@ -9,9 +9,9 @@ public class GameParticipants {
 
     private final List<GameParticipant> participants;
 
-    public boolean hasParticipated(long memberId) {
+    public boolean hasParticipated(Member member) {
         return participants.stream().anyMatch(gameParticipant ->
-            gameParticipant.getMember().getId().equals(memberId)
+            gameParticipant.getMember().isEqualMember(member)
         );
     }
 

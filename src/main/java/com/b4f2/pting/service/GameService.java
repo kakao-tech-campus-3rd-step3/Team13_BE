@@ -111,7 +111,7 @@ public class GameService {
     private void addParticipant(Game game, Member member) {
         final GameParticipants gameParticipants = new GameParticipants(gameParticipantRepository.findByGame(game));
 
-        if (gameParticipants.hasParticipated(member.getId())) {
+        if (gameParticipants.hasParticipated(member)) {
             throw new IllegalStateException("이미 참여한 게임입니다.");
         }
 
