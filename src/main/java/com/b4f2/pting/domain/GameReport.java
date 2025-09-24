@@ -56,12 +56,6 @@ public class GameReport {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public enum ReportStatus {
-        PENDING,   // 처리 전
-        RESOLVED,  // 처리 완료
-        REJECTED   // 기각
-    }
-
     public static GameReport create(Game game, Member reporter, Member reported, String reasonText,
         GameParticipants participants) {
         if (!game.isEnded()) {
