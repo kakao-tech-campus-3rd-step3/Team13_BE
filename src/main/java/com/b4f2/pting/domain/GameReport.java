@@ -67,12 +67,10 @@ public class GameReport {
         if (!game.isEnded()) {
             throw new IllegalStateException("게임이 종료된 후에만 신고할 수 있습니다.");
         }
-        if (!participants.hasParticipated(reporter)) {
-            throw new IllegalArgumentException("신고자는 해당 게임에 참여하지 않았습니다.");
-        }
-        if (!participants.hasParticipated(reported)) {
-            throw new IllegalArgumentException("피신고자는 해당 게임에 참여하지 않았습니다.");
-        }
+
+        participants.validateParticipated(reporter);
+        participants.validateParticipated(reported);
+
         if (reporter.isEqualMember(reported)) {
             throw new IllegalStateException("자기 자신을 신고할 수 없습니다.");
         }

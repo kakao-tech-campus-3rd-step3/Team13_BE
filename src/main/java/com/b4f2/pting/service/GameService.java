@@ -111,9 +111,7 @@ public class GameService {
     private void addParticipant(Game game, Member member) {
         final GameParticipants gameParticipants = new GameParticipants(gameParticipantRepository.findByGame(game));
 
-        if (gameParticipants.hasParticipated(member)) {
-            throw new IllegalStateException("이미 참여한 게임입니다.");
-        }
+        gameParticipants.validateNotParticipated(member);
 
         if (gameParticipants.size() >= game.getPlayerCount()) {
             throw new IllegalStateException("모집 인원이 마감되었습니다.");
