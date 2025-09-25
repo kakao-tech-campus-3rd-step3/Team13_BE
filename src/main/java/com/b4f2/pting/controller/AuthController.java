@@ -2,6 +2,7 @@ package com.b4f2.pting.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,7 @@ public class AuthController {
         return authService.getKakaoOAuthUrl();
     }
 
-    @GetMapping("/kakao/callback")
+    @PostMapping("/kakao/callback")
     public ResponseEntity<AuthResponse> kakaoOAuthCallback(@RequestParam String code) {
         AuthResponse authResponse = authService.kakaoOAuthLogin(code);
         return ResponseEntity.ok(authResponse);
