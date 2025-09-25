@@ -63,9 +63,8 @@ class AuthIntegrationTest {
         given(kakaoOAuthClient.getKakaoUserInfo(tokenResponse)).willReturn(userInfoResponse);
 
         // when
-        ResponseEntity<AuthResponse> response = restTemplate.postForEntity(
+        ResponseEntity<AuthResponse> response = restTemplate.getForEntity(
             "/api/v1/auth/kakao/callback?code=" + code,
-            null,
             AuthResponse.class
         );
 
@@ -99,9 +98,8 @@ class AuthIntegrationTest {
         given(kakaoOAuthClient.getKakaoUserInfo(tokenResponse)).willReturn(userInfoResponse);
 
         // when
-        ResponseEntity<AuthResponse> response = restTemplate.postForEntity(
+        ResponseEntity<AuthResponse> response = restTemplate.getForEntity(
             "/api/v1/auth/kakao/callback?code=" + code,
-            null,
             AuthResponse.class
         );
 
