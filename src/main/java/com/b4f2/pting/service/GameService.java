@@ -1,5 +1,6 @@
 package com.b4f2.pting.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -68,6 +69,11 @@ public class GameService {
         }
 
         addParticipant(game, member);
+    }
+
+    @Transactional
+    public int endMatchingGames(LocalDateTime deadLine) {
+        return gameRepository.endMatchingGames(deadLine);
     }
 
     public GamesResponse findGamesBySportIdAndTimePeriod(Long sportId, TimePeriod timePeriod) {
