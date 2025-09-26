@@ -25,6 +25,7 @@ import com.b4f2.pting.domain.GameParticipant;
 import com.b4f2.pting.domain.GameParticipants;
 import com.b4f2.pting.domain.GameReport;
 import com.b4f2.pting.domain.Member;
+import com.b4f2.pting.domain.ReportStatus;
 import com.b4f2.pting.dto.GameReportRequest;
 import com.b4f2.pting.dto.GameReportResponse;
 import com.b4f2.pting.dto.GameReportStatusUpdateRequest;
@@ -99,7 +100,7 @@ class GameReportServiceTest {
         assertEquals(reporter.getId(), response.reporterId());
         assertEquals(reported.getId(), response.reportedId());
         assertEquals("테스트 신고 사유", response.reasonText());
-        assertEquals(GameReport.ReportStatus.PENDING, response.status());
+        assertEquals(ReportStatus.PENDING, response.status());
     }
 
     @Test
@@ -127,7 +128,7 @@ class GameReportServiceTest {
         GameReport report = GameReport.create(game, reporter, reported, "부적절한 행동", new GameParticipants(participants));
         ReflectionTestUtils.setField(report, "id", 1L);
 
-        GameReportStatusUpdateRequest request = new GameReportStatusUpdateRequest(GameReport.ReportStatus.RESOLVED);
+        GameReportStatusUpdateRequest request = new GameReportStatusUpdateRequest(ReportStatus.RESOLVED);
 
         when(reportRepository.findById(report.getId())).thenReturn(Optional.of(report));
 
@@ -135,7 +136,7 @@ class GameReportServiceTest {
         GameReportResponse response = reportService.updateReportStatus(report.getId(), request);
 
         // then
-        assertEquals(GameReport.ReportStatus.RESOLVED, response.status());
+        assertEquals(ReportStatus.RESOLVED, response.status());
     }
 
 }
