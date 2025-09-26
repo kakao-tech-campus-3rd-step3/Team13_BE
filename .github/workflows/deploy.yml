@@ -23,7 +23,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with Gradle (skip integration tests)
-        run: ./gradlew build -x integrationTest
+        run: ./gradlew build
 
       - name: Transfer JAR to EC2
         uses: appleboy/scp-action@master
