@@ -68,10 +68,6 @@ public class Member {
         this.oauthProvider = oauthProvider;
     }
 
-    public boolean isEqualMember(Member member) {
-        return id.equals(member.id);
-    }
-
     public void changeName(String name) {
         this.name = name;
     }
@@ -96,7 +92,15 @@ public class Member {
         this.school = school;
     }
 
+    public boolean isEqualMember(Member member) {
+        return id.equals(member.id);
+    }
+
     public boolean isMySchoolEmail(String email) {
         return schoolEmail.equals(email);
+    }
+
+    public boolean isVerifiedEmail(String email) {
+        return isVerified && isMySchoolEmail(email);
     }
 }
