@@ -1,5 +1,7 @@
 package com.b4f2.pting.domain;
 
+import java.util.Optional;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -66,6 +68,10 @@ public class Member {
     public Member(Long oauthId, OAuthProvider oauthProvider) {
         this.oauthId = oauthId;
         this.oauthProvider = oauthProvider;
+    }
+
+    public Optional<School> getSchool() {
+        return Optional.ofNullable(school);
     }
 
     public void changeName(String name) {
