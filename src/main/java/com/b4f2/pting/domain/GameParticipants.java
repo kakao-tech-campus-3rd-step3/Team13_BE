@@ -9,10 +9,6 @@ public class GameParticipants {
 
     private final List<GameParticipant> participants;
 
-    public int size() {
-        return participants.size();
-    }
-
     public void validateParticipated(Member member) {
         if (!hasParticipated(member)) {
             throw new IllegalArgumentException(member.getName() + "은/는 해당 게임에 참여하지 않았습니다.");
@@ -29,5 +25,15 @@ public class GameParticipants {
         return participants.stream().anyMatch(gameParticipant ->
             gameParticipant.getMember().isEqualMember(member)
         );
+    }
+
+    public void validateCapacity(Game game) {
+        if (size() >= game.getPlayerCount()) {
+            throw new IllegalStateException("모집 인원이 마감되었습니다.");
+        }
+    }
+
+    private int size() {
+        return participants.size();
     }
 }
