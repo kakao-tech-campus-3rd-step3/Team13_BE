@@ -23,7 +23,7 @@ public class GameParticipants {
 
     private boolean hasParticipated(Member member) {
         return participants.stream().anyMatch(gameParticipant ->
-            gameParticipant.getMember().isEqualMember(member)
+            gameParticipant.isEqualMember(member)
         );
     }
 
