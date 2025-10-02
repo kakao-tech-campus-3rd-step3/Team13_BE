@@ -17,7 +17,10 @@ import com.b4f2.pting.domain.TimePeriod;
 import com.b4f2.pting.dto.CreateGameRequest;
 import com.b4f2.pting.dto.GameDetailResponse;
 import com.b4f2.pting.dto.GamesResponse;
+import com.b4f2.pting.dto.VoteRequest;
+import com.b4f2.pting.dto.VoteResultResponse;
 import com.b4f2.pting.service.GameService;
+import com.b4f2.pting.service.RankGameService;
 
 @RestController
 @RequestMapping("/api/v1/games")
@@ -25,6 +28,7 @@ import com.b4f2.pting.service.GameService;
 public class GameController {
 
     private final GameService gameService;
+    private final RankGameService rankGameService;
 
     @PostMapping
     public ResponseEntity<GameDetailResponse> createGame(
@@ -54,5 +58,14 @@ public class GameController {
     @GetMapping("/{gameId}")
     public ResponseEntity<GameDetailResponse> getGameById(@PathVariable Long gameId) {
         return ResponseEntity.ok(gameService.findGameById(gameId));
+    }
+
+    @PostMapping("/{gameId}/votes")
+    public ResponseEntity<VoteResultResponse> voteMatchResult(
+        @Login Member member,
+        @RequestBody VoteRequest voteRequest,
+        @PathVariable Long gameId
+    ) {
+        return ResponseEntity.ok(rankGameService.voteMatchResult(gameId, voteRequest, member));
     }
 }
