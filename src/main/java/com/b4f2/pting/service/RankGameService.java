@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +29,7 @@ import com.b4f2.pting.repository.RankGameRepository;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RankGameService {
 
     private final RankGameParticipantRepository rankGameParticipantRepository;
@@ -37,6 +39,7 @@ public class RankGameService {
     private final MatchResultVoteRepository matchResultVoteRepository;
     private final MmrRepository mmrRpository;
 
+    @Transactional
     public VoteResultResponse voteMatchResult(Long gameId, VoteRequest voteRequest, Member member) {
         // Validation Response
         RankGame game = rankGameRepository.findById(gameId)
