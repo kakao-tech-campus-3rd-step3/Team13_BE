@@ -20,6 +20,7 @@ import com.b4f2.pting.dto.VoteResultResponse;
 import com.b4f2.pting.repository.GameParticipantRepository;
 import com.b4f2.pting.repository.MatchResultVoteRepository;
 import com.b4f2.pting.repository.MemberRepository;
+import com.b4f2.pting.repository.MmrRepository;
 import com.b4f2.pting.repository.RankGameParticipantRepository;
 import com.b4f2.pting.repository.RankGameRepository;
 import java.util.Collections;
@@ -49,6 +50,8 @@ class RankGameServiceTest {
     private MemberRepository memberRepository;
     @Mock
     private MatchResultVoteRepository matchResultVoteRepository;
+    @Mock
+    private MmrRepository mmrRepository;
 
     private RankGameService rankGameService;
 
@@ -60,7 +63,7 @@ class RankGameServiceTest {
 
     @BeforeEach
     void setUp() {
-        rankGameService = spy(new RankGameService(rankGameParticipantRepository, gameParticipantRepository, rankGameRepository, memberRepository, matchResultVoteRepository));
+        rankGameService = spy(new RankGameService(rankGameParticipantRepository, gameParticipantRepository, rankGameRepository, memberRepository, matchResultVoteRepository, mmrRepository));
 
         member = new Member(1L, Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(member, "id", memberId);
