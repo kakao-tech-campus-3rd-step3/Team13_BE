@@ -53,8 +53,9 @@ public class Game {
     private String description;
 
     public enum GameStatus {
-        ON_MATCHING,
-        END
+        ON_RECRUITING, // 모집 중
+        FULL, // 모집 완료
+        END // 게임 종료
     }
 
     public static Game create(
@@ -77,5 +78,9 @@ public class Game {
 
     public boolean isEnded() {
         return this.gameStatus == GameStatus.END;
+    }
+
+    public void changeStatus(GameStatus status) {
+        this.gameStatus = status;
     }
 }
