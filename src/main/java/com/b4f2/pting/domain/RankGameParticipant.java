@@ -16,4 +16,8 @@ public class RankGameParticipant extends GameParticipant {
     @Column(name = "team")
     @Enumerated(EnumType.STRING)
     private RankGameTeam team;
+
+    public boolean isTeam(RankGameTeam rankGameTeam) {
+        return  team == rankGameTeam;
+    }
 }
