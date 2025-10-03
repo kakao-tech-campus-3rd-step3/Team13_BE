@@ -72,7 +72,7 @@ public class GameService {
     }
 
     @Transactional
-    public int endMatchingGames(LocalDateTime deadLine) {
+    public List<Game> endMatchingGames(LocalDateTime deadLine) {
         return gameRepository.endMatchingGames(deadLine);
     }
 
@@ -124,5 +124,9 @@ public class GameService {
         }
 
         gameParticipantRepository.save(new GameParticipant(member, game));
+
+        if (gameParticipants.size() + 1 == game.getPlayerCount()) {
+            // TODO - call alarm method
+        }
     }
 }
