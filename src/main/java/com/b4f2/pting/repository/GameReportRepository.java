@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.b4f2.pting.domain.GameReport;
-import com.b4f2.pting.domain.GameReport.ReportStatus;
+import com.b4f2.pting.domain.ReportStatus;
 
 @Repository
 public interface GameReportRepository extends JpaRepository<GameReport, Long> {

@@ -1,5 +1,6 @@
 package com.b4f2.pting.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -82,6 +83,11 @@ public class GameService {
         }
     }
 
+    @Transactional
+    public int endMatchingGames(LocalDateTime deadLine) {
+        return gameRepository.endMatchingGames(deadLine);
+    }
+
     public GamesResponse findGamesBySportIdAndTimePeriod(Long sportId, TimePeriod timePeriod) {
         if (timePeriod == null) {
             List<GameResponse> gameResponseList = gameRepository
@@ -123,9 +129,7 @@ public class GameService {
     private void addParticipant(Game game, Member member) {
         final GameParticipants gameParticipants = new GameParticipants(gameParticipantRepository.findByGame(game));
 
-        if (gameParticipants.hasParticipated(member.getId())) {
-            throw new IllegalStateException("이미 참여한 게임입니다.");
-        }
+        gameParticipants.validateNotParticipated(member);
 
         if (gameParticipants.size() >= game.getPlayerCount()) {
             throw new IllegalStateException("모집 인원이 마감되었습니다.");

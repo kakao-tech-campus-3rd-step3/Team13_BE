@@ -21,11 +21,12 @@ import com.b4f2.pting.util.EmailUtil;
 @Transactional(readOnly = true)
 public class CertificationService {
 
+    private static final long CODE_EXPIRE_TIME = 5 * 60 * 1000;
+    private static final Random random = new Random();
+
     private final EmailService emailService;
     private final InMemoryCache cache;
     private final EmailUtil emailUtil;
-
-    private static final long CODE_EXPIRE_TIME = 5 * 60 * 1000;
 
     public void sendCertificationEmail(Member member, CertificationRequest request) {
         School school = getSchoolOrThrowException(member);
@@ -53,7 +54,6 @@ public class CertificationService {
     }
 
     private String generateRandomCode() {
-        Random random = new Random();
         int code = random.nextInt(900000) + 100000;
         return String.valueOf(code);
     }

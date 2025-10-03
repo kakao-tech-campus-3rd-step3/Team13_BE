@@ -68,6 +68,10 @@ public class Member {
         this.oauthProvider = oauthProvider;
     }
 
+    public boolean isEqualMember(Member member) {
+        return id.equals(member.id);
+    }
+
     public void changeName(String name) {
         this.name = name;
     }
