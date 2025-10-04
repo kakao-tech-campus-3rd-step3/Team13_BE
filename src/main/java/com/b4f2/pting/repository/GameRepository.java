@@ -25,10 +25,11 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     List<Game> findAllByGameStatusAndSportIdAndTimePeriod(Game.GameStatus status, Long sportId, LocalTime startTime, LocalTime endTime);
 
     @Modifying
-    @Query("""
-            update Game g
-            set g.gameStatus = 'END'
-            where g.gameStatus = 'ON_MATCHING' and g.startTime <= :deadline
-        """)
-    int endMatchingGames(@Param("deadline") LocalDateTime deadLine);
+    @Query(value = """
+            update game
+            set game_status = 'END'
+            where game_status = 'ON_MATCHING' and start_time <= :deadline
+            returning *
+        """, nativeQuery = true)
+    List<Game> endMatchingGames(@Param("deadline") LocalDateTime deadLine);
 }
