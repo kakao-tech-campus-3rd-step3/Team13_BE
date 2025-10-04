@@ -8,8 +8,11 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
+
 import lombok.RequiredArgsConstructor;
 
+import com.b4f2.pting.domain.FcmToken;
 import com.b4f2.pting.domain.Game;
 import com.b4f2.pting.domain.GameParticipant;
 import com.b4f2.pting.domain.GameParticipants;
@@ -20,6 +23,7 @@ import com.b4f2.pting.dto.CreateGameRequest;
 import com.b4f2.pting.dto.GameDetailResponse;
 import com.b4f2.pting.dto.GameResponse;
 import com.b4f2.pting.dto.GamesResponse;
+import com.b4f2.pting.repository.FcmTokenRepository;
 import com.b4f2.pting.repository.GameParticipantRepository;
 import com.b4f2.pting.repository.GameRepository;
 import com.b4f2.pting.repository.SportRepository;
@@ -32,6 +36,8 @@ public class GameService {
     private final GameRepository gameRepository;
     private final GameParticipantRepository gameParticipantRepository;
     private final SportRepository sportRepository;
+    private final FcmService fcmService;
+    private final FcmTokenRepository fcmTokenRepository;
 
     @Transactional
     public GameDetailResponse createGame(Member member, CreateGameRequest request) {
@@ -44,7 +50,7 @@ public class GameService {
             sport,
             request.name(),
             request.playerCount(),
-            Game.GameStatus.ON_MATCHING,
+            Game.GameStatus.ON_RECRUITING,
             request.startTime(),
             request.duration(),
             request.description()
@@ -58,17 +64,23 @@ public class GameService {
     }
 
     @Transactional
-    public void joinGame(Member member, Long gameId) {
+    public void joinGame(Member member, Long gameId) throws FirebaseMessagingException {
         validateMemberIsVerified(member);
 
         Game game = gameRepository.findById(gameId)
             .orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
 
-        if (game.getGameStatus() != Game.GameStatus.ON_MATCHING) {
+        if (game.getGameStatus() != Game.GameStatus.ON_RECRUITING) {
             throw new IllegalStateException("게임이 모집 중이 아닙니다.");
         }
 
         addParticipant(game, member);
+
+        List<GameParticipant> participants = gameParticipantRepository.findByGame(game);
+        if (participants.size() == game.getPlayerCount()) {
+            game.changeStatus(Game.GameStatus.FULL);
+            notifyMatchingCompleted(participants);
+        }
     }
 
     @Transactional
@@ -79,7 +91,7 @@ public class GameService {
     public GamesResponse findGamesBySportIdAndTimePeriod(Long sportId, TimePeriod timePeriod) {
         if (timePeriod == null) {
             List<GameResponse> gameResponseList = gameRepository
-                .findAllByGameStatusAndSportId(Game.GameStatus.ON_MATCHING, sportId)
+                .findAllByGameStatusAndSportId(Game.GameStatus.ON_RECRUITING, sportId)
                 .stream()
                 .map(GameResponse::new)
                 .toList();
@@ -89,7 +101,7 @@ public class GameService {
 
         List<GameResponse> gameResponseList = gameRepository
             .findAllByGameStatusAndSportIdAndTimePeriod(
-                Game.GameStatus.ON_MATCHING,
+                Game.GameStatus.ON_RECRUITING,
                 sportId,
                 timePeriod.getStartTime(),
                 timePeriod.getEndTime()
@@ -129,4 +141,18 @@ public class GameService {
             // TODO - call alarm method
         }
     }
+
+    private void notifyMatchingCompleted(List<GameParticipant> participants) throws FirebaseMessagingException {
+        List<Member> members = participants.stream()
+            .map(GameParticipant::getMember)
+            .toList();
+
+        List<String> tokens = fcmTokenRepository.findAllByMemberIn(members).stream()
+            .map(FcmToken::getToken)
+            .toList();
+
+        fcmService.sendMulticastPush(tokens, "매칭 완료", "매칭이 완료되었습니다.");
+    }
+
+    // TODO: 인원 모집이 완료됐던 매칭이 취소될 경우 알림 기능 구현 (참가자가 나갈 경우)
 }

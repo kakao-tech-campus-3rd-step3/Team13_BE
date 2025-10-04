@@ -40,3 +40,6 @@ bin/
 
 ### Environment Variables ###
 .env
+
+### Firebase SDK Configuration ###
+src/main/resources/firebase/*.json

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
+
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.config.Login;
@@ -38,7 +40,7 @@ public class GameController {
     public ResponseEntity<Void> joinGame(
         @Login Member member,
         @PathVariable Long gameId
-    ) {
+    ) throws FirebaseMessagingException {
         gameService.joinGame(member, gameId);
         return ResponseEntity.ok().build();
     }
