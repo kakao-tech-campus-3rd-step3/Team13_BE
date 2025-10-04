@@ -21,6 +21,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
+
 import com.b4f2.pting.domain.Game;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Sport;
@@ -65,7 +67,7 @@ class GameServiceTest {
             sport,
             "재미있는 방",
             10,
-            Game.GameStatus.ON_MATCHING,
+            Game.GameStatus.ON_RECRUITING,
             LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
             2,
             "재미있는 방 설명입니다."
@@ -102,7 +104,7 @@ class GameServiceTest {
     }
 
     @Test
-    void joinGame_게임참가_성공() {
+    void joinGame_게임참가_성공() throws FirebaseMessagingException {
         // given
         when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
         when(gameParticipantRepository.findByGame(game)).thenReturn(List.of());
