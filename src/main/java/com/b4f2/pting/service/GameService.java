@@ -130,10 +130,7 @@ public class GameService {
         final GameParticipants gameParticipants = new GameParticipants(gameParticipantRepository.findByGame(game));
 
         gameParticipants.validateNotParticipated(member);
-
-        if (gameParticipants.size() >= game.getPlayerCount()) {
-            throw new IllegalStateException("모집 인원이 마감되었습니다.");
-        }
+        gameParticipants.validateCapacity(game);
 
         gameParticipantRepository.save(new GameParticipant(member, game));
 
