@@ -22,7 +22,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle
+      - name: Build with Gradle (skip integration tests)
         run: ./gradlew build
 
       - name: Transfer JAR to EC2

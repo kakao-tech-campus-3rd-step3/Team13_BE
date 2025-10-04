@@ -27,12 +27,18 @@ public class GameController {
     private final GameService gameService;
 
     @PostMapping
-    public ResponseEntity<GameDetailResponse> createGame(@Login Member member, @RequestBody CreateGameRequest request) {
+    public ResponseEntity<GameDetailResponse> createGame(
+        @Login Member member,
+        @RequestBody CreateGameRequest request
+    ) {
         return ResponseEntity.ok(gameService.createGame(member, request));
     }
 
     @PostMapping("/{gameId}")
-    public ResponseEntity<Void> joinGame(@Login Member member, @PathVariable Long gameId) {
+    public ResponseEntity<Void> joinGame(
+        @Login Member member,
+        @PathVariable Long gameId
+    ) {
         gameService.joinGame(member, gameId);
         return ResponseEntity.ok().build();
     }

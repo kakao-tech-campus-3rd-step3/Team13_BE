@@ -25,4 +25,9 @@ public class Sport {
     @Column(name = "recommended_player_count")
     private Integer recommendedPlayerCount;
 
+    public Sport(String name, Integer recommendedPlayerCount) {
+        this.name = name;
+        this.recommendedPlayerCount = recommendedPlayerCount;
+    }
+
 }

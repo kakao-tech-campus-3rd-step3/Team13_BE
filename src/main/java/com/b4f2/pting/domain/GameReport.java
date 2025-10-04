@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -34,46 +35,42 @@ public class GameReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "game_id", nullable = false)
+    @JoinColumn(name = "game_id")
     private Game game;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reporter_id", nullable = false)
+    @JoinColumn(name = "reporter_id")
     private Member reporter;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reported_id", nullable = false)
+    @JoinColumn(name = "reported_id")
     private Member reported;
 
-    @Column(name = "reason_text", nullable = false, length = 255)
+    @NotNull
+    @Column(name = "reason_text")
     private String reasonText;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private ReportStatus status = ReportStatus.PENDING;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    public enum ReportStatus {
-        PENDING,   // 처리 전
-        RESOLVED,  // 처리 완료
-        REJECTED   // 기각
-    }
 
     public static GameReport create(Game game, Member reporter, Member reported, String reasonText,
         GameParticipants participants) {
         if (!game.isEnded()) {
             throw new IllegalStateException("게임이 종료된 후에만 신고할 수 있습니다.");
         }
-        if (!participants.hasParticipated(reporter.getId())) {
-            throw new IllegalArgumentException("신고자는 해당 게임에 참여하지 않았습니다.");
-        }
-        if (!participants.hasParticipated(reported.getId())) {
-            throw new IllegalArgumentException("피신고자는 해당 게임에 참여하지 않았습니다.");
-        }
-        if (reporter.getId().equals(reported.getId())) {
+
+        participants.validateParticipated(reporter);
+        participants.validateParticipated(reported);
+
+        if (reporter.isEqualMember(reported)) {
             throw new IllegalStateException("자기 자신을 신고할 수 없습니다.");
         }
         return new GameReport(game, reporter, reported, reasonText);
