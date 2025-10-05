@@ -2,7 +2,9 @@ package com.b4f2.pting.scheduler;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
+import com.b4f2.pting.domain.Game;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +23,14 @@ public class GameScheduler {
     @Scheduled(cron = "0 */5 * * * *")
     public void endMatchingGamesJob() {
         LocalDateTime deadLine = LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusHours(3);
-        int updated = gameService.endMatchingGames(deadLine);
-        log.info("[GameScheduler] endMatchingGamesJob finished - updated rows: {}", updated);
+        List<Game> updated = gameService.endMatchingGames(deadLine);
+
+        // TODO - call alarm method, check game is full(if game is not full -> delete game)
+        /*
+        updated.stream()
+               .forEach(this::sendAlarm);
+        */
+
+        log.info("[GameScheduler] endMatchingGamesJob finished - updated rows: {}", updated.size());
     }
 }
