@@ -33,7 +33,7 @@ public class GameParticipants {
         }
     }
 
-    private int size() {
+    public int size() {
         return participants.size();
     }
 }
