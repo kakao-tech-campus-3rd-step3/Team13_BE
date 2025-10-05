@@ -37,7 +37,7 @@ public class RankGameService {
     private final RankGameRepository rankGameRepository;
     private final MemberRepository memberRepository;
     private final MatchResultVoteRepository matchResultVoteRepository;
-    private final MmrRepository mmrRpository;
+    private final MmrRepository mmrRepository;
 
     @Transactional
     public VoteResultResponse voteMatchResult(Long gameId, VoteRequest voteRequest, Member member) {
@@ -102,14 +102,14 @@ public class RankGameService {
         Member member = rankGameParticipant.getMember();
         Sport sport = rankGameParticipant.getGame().getSport();
 
-        Optional<Mmr> mmrOptional = mmrRpository.findByMemberAndSport(
+        Optional<Mmr> mmrOptional = mmrRepository.findByMemberAndSport(
             rankGameParticipant.getMember(),
             rankGameParticipant.getGame().getSport()
         );
 
         return mmrOptional.orElseGet(() -> {
             Mmr mmr1 = new Mmr(sport, member);
-            mmrRpository.save(mmr1);
+            mmrRepository.save(mmr1);
             return mmr1;
         });
     }
