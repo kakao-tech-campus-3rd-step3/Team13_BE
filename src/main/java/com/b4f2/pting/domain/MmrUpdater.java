@@ -51,14 +51,14 @@ public class MmrUpdater {
                         mmr.updateMu(adjustment.mu());
                         mmr.updateSigma(adjustment.sigma());
                     });
-                }
-            );
+            }
+        );
     }
 
     private Optional<Mmr> findMmrById(Long id) {
         return Stream.concat(winMmrList.stream(), lossMmrList.stream())
             .filter(
-                    mmr -> mmr.isId(id)
+                mmr -> mmr.isId(id)
             )
             .findFirst();
     }
@@ -69,7 +69,7 @@ public class MmrUpdater {
             .toList();
 
         double mu = playerResults.stream().mapToDouble(SimplePlayerResult::mu).sum() / playerResults.size();
-        double sigma  = playerResults.stream().mapToDouble(SimplePlayerResult::sigma).sum() / playerResults.size();
+        double sigma = playerResults.stream().mapToDouble(SimplePlayerResult::sigma).sum() / playerResults.size();
 
         return new SimpleTeamResult<Long>(mu, sigma, isWinner ? 1 : 2, playerResults);
     }

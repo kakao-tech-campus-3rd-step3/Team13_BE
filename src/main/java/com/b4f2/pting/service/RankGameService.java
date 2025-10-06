@@ -71,7 +71,7 @@ public class RankGameService {
 
     private void checkAndHandle(RankGame game) {
         GameParticipants gameParticipants = new GameParticipants(gameParticipantRepository.findByGame(game));
-        if  (gameParticipants.size() <= game.getNumOfVote()) {
+        if (gameParticipants.size() <= game.getNumOfVote()) {
             handleVoteResult(game);
         }
     }
@@ -83,7 +83,8 @@ public class RankGameService {
             return;
         }
 
-        RankGameParticipants rankGameParticipants = new RankGameParticipants(rankGameParticipantRepository.findAllByGame(game));
+        RankGameParticipants rankGameParticipants = new RankGameParticipants(
+            rankGameParticipantRepository.findAllByGame(game));
 
         List<Mmr> winMmrList = rankGameParticipants.getGameParticipantList()
             .stream()
@@ -93,7 +94,8 @@ public class RankGameService {
 
         List<Mmr> lossTeamMmrList = rankGameParticipants.getGameParticipantList()
             .stream()
-            .filter(rankGameParticipant -> !(rankGameParticipant.isTeam(winTeam) || rankGameParticipant.isTeam(RankGameTeam.NONE)))
+            .filter(rankGameParticipant ->
+                !(rankGameParticipant.isTeam(winTeam) || rankGameParticipant.isTeam(RankGameTeam.NONE)))
             .map(this::mapRankGameParticipantToMmr)
             .toList();
 

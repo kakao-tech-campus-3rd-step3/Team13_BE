@@ -22,7 +22,12 @@ public interface GameRepository extends JpaRepository<Game, Long> {
                 and g.gameStatus = :status
                 and cast(g.startTime as localtime) between :startTime and :endTime
         """)
-    List<Game> findAllByGameStatusAndSportIdAndTimePeriod(Game.GameStatus status, Long sportId, LocalTime startTime, LocalTime endTime);
+    List<Game> findAllByGameStatusAndSportIdAndTimePeriod(
+        Game.GameStatus status,
+        Long sportId,
+        LocalTime startTime,
+        LocalTime endTime
+    );
 
     @Modifying
     @Query(value = """

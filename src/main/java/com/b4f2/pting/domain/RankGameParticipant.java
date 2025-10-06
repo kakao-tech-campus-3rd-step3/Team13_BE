@@ -18,6 +18,6 @@ public class RankGameParticipant extends GameParticipant {
     private RankGameTeam team;
 
     public boolean isTeam(RankGameTeam rankGameTeam) {
-        return  team == rankGameTeam;
+        return team == rankGameTeam;
     }
 }

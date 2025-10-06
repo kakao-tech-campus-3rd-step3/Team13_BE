@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
-import com.b4f2.pting.domain.Game;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import com.b4f2.pting.domain.Game;
 import com.b4f2.pting.service.GameService;
 
 @Slf4j
