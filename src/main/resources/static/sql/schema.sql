@@ -1,7 +1,7 @@
 CREATE TYPE game_status AS ENUM ('ON_MATCHING', 'END');
 CREATE TYPE oauth_provider AS ENUM ('KAKAO');
 CREATE TYPE report_status AS ENUM ('PENDING', 'RESOLVED', 'REJECTED');
-CREATE TYPE rank_game_team AS ENUM ('RED_TEAM', 'BLUE_TEAM');
+CREATE TYPE rank_game_team AS ENUM ('RED_TEAM', 'BLUE_TEAM', 'NONE');
 
 
 CREATE TABLE school (
