@@ -59,10 +59,15 @@ public class GameReport {
     private ReportStatus status = ReportStatus.PENDING;
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private final LocalDateTime createdAt = LocalDateTime.now();
 
-    public static GameReport create(Game game, Member reporter, Member reported, String reasonText,
-        GameParticipants participants) {
+    public static GameReport create(
+        Game game,
+        Member reporter,
+        Member reported,
+        String reasonText,
+        GameParticipants participants
+    ) {
         if (!game.isEnded()) {
             throw new IllegalStateException("게임이 종료된 후에만 신고할 수 있습니다.");
         }
