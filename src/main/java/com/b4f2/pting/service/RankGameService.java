@@ -62,7 +62,10 @@ public class RankGameService {
         checkAndHandle(game);
 
         // Result
-        List<RankGameTeam> rankGameTeams = game.getMatchResultVoteList().stream().map(MatchResultVote::getVotedTeam).toList();
+        List<RankGameTeam> rankGameTeams = game.getMatchResultVoteList()
+            .stream()
+            .map(MatchResultVote::getVotedTeam)
+            .toList();
         return new VoteResultResponse(rankGameTeams);
     }
 
