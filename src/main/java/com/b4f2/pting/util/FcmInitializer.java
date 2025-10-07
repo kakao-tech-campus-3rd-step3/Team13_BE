@@ -21,11 +21,13 @@ public class FcmInitializer {
 
     @PostConstruct
     public void initialize() throws IOException {
-        InputStream serviceAccount = firebaseCredentials.getInputStream();
-        FirebaseOptions options = FirebaseOptions.builder()
-            .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-            .build();
+        if (FirebaseApp.getApps().isEmpty()) {
+            InputStream serviceAccount = firebaseCredentials.getInputStream();
+            FirebaseOptions options = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .build();
 
-        FirebaseApp.initializeApp(options);
+            FirebaseApp.initializeApp(options);
+        }
     }
 }
