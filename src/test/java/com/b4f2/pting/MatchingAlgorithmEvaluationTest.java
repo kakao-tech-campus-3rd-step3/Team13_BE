@@ -42,34 +42,46 @@ public class MatchingAlgorithmEvaluationTest {
         int totalPlayers = 50;
         int mean = 1500;
         int stddev = 200;
+        int rounds = 10;
 
-        // 데이터
-        List<Member> players = generatePlayers(totalPlayers, mean, stddev, sport);
+        Map<String, List<Double>> algorithmScores = new HashMap<>();
 
-        Map<Member, Integer> matchCounts = new HashMap<>();
-        players.forEach(m -> matchCounts.put(m, 0));
-
-        // 매칭
-        Map<String, Double> scores = new HashMap<>();
         for (MatchingAlgorithm algorithm : algorithms) {
-            List<List<Member>> matches = algorithm.match(players, sport);
+            for (int round = 0; round < rounds; round++) {
+                // 시드
+                long seed = 42L + round;
 
-            for (List<Member> match : matches) {
-                for (Member player : match) {
-                    matchCounts.put(player, matchCounts.get(player) + 1);
+                // 데이터
+                List<Member> players = generatePlayers(totalPlayers, mean, stddev, sport, seed);
+
+                Map<Member, Integer> matchCounts = new HashMap<>();
+                players.forEach(m -> matchCounts.put(m, 0));
+
+                // 매칭
+                List<List<Member>> matches = algorithm.match(players, sport);
+
+                for (List<Member> match : matches) {
+                    for (Member player : match) {
+                        matchCounts.put(player, matchCounts.get(player) + 1);
+                    }
                 }
-            }
 
-            double score = evaluate(sport, matches, players, totalPlayers, matchCounts);
-            scores.put(algorithm.getName(), score);
+                double score = evaluate(sport, matches, players, totalPlayers, matchCounts);
+                algorithmScores.computeIfAbsent(algorithm.getName(), k -> new ArrayList<>()).add(score);
+            }
         }
 
+        Map<String, Double> avgScores = algorithmScores.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue().stream().mapToDouble(d -> d).average().orElse(0)
+                ));
+
         // 평가
-        printRanking(sport.getName(), scores);
+        printRanking(sport.getName(), avgScores);
     }
 
-    private List<Member> generatePlayers(int count, double mean, double stddev, Sport sport) {
-        long seed = 42L;
+    private List<Member> generatePlayers(int count, double mean, double stddev, Sport sport, Long seed) {
         Random random = new Random(seed);
 
         List<Member> players = new ArrayList<>();
