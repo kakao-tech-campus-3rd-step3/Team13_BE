@@ -80,16 +80,17 @@ class FcmServiceTest {
         String title = "테스트 제목";
         String body = "테스트 내용";
 
-        MockedStatic<FirebaseMessaging> mockStatic = mockStatic(FirebaseMessaging.class);
         FirebaseMessaging firebaseMessaging = mock(FirebaseMessaging.class);
-        given(FirebaseMessaging.getInstance()).willReturn(firebaseMessaging);
 
-        // when
-        fcmService.sendSinglePush(token, title, body);
+        try (MockedStatic<FirebaseMessaging> mockStatic = mockStatic(FirebaseMessaging.class)) {
+            mockStatic.when(FirebaseMessaging::getInstance).thenReturn(firebaseMessaging);
 
-        // then
-        verify(firebaseMessaging).send(any(Message.class));
-        mockStatic.close();
+            // when
+            fcmService.sendSinglePush(token, title, body);
+
+            // then
+            verify(firebaseMessaging).send(any(Message.class));
+        }
     }
 
     @Test
@@ -99,15 +100,16 @@ class FcmServiceTest {
         String title = "테스트 제목";
         String body = "테스트 내용";
 
-        MockedStatic<FirebaseMessaging> mockStatic = mockStatic(FirebaseMessaging.class);
         FirebaseMessaging firebaseMessaging = mock(FirebaseMessaging.class);
-        given(FirebaseMessaging.getInstance()).willReturn(firebaseMessaging);
 
-        // when
-        fcmService.sendMulticastPush(tokens, title, body);
+        try (MockedStatic<FirebaseMessaging> mockStatic = mockStatic(FirebaseMessaging.class)) {
+            mockStatic.when(FirebaseMessaging::getInstance).thenReturn(firebaseMessaging);
 
-        // then
-        verify(firebaseMessaging).sendEachForMulticast(any(MulticastMessage.class));
-        mockStatic.close();
+            // when
+            fcmService.sendMulticastPush(tokens, title, body);
+
+            // then
+            verify(firebaseMessaging).sendEachForMulticast(any(MulticastMessage.class));
+        }
     }
 }
