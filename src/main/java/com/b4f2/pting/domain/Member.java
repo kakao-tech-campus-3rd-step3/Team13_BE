@@ -80,6 +80,14 @@ public class Member {
         return Optional.ofNullable(school);
     }
 
+    public double getMmr(Sport sport) {
+        return mmrList.stream()
+            .filter(m -> m.getSport().equals(sport))
+            .findFirst()
+            .map(Mmr::getMu)
+            .orElse(25.0);
+    }
+
     public void changeName(String name) {
         this.name = name;
     }

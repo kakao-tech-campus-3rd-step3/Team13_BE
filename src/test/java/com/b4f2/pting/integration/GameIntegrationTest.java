@@ -114,7 +114,7 @@ class GameIntegrationTest {
             testSport,
             "축구 매치",
             10,
-            Game.GameStatus.ON_MATCHING,
+            Game.GameStatus.ON_RECRUITING,
             LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
             2,
             "친구들과 함께하는 축구 경기"
@@ -147,7 +147,7 @@ class GameIntegrationTest {
             testSport,
             "축구 매치 1",
             10,
-            Game.GameStatus.ON_MATCHING,
+            Game.GameStatus.ON_RECRUITING,
             LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
             2,
             "친구들과 함께하는 축구 경기"
@@ -158,7 +158,7 @@ class GameIntegrationTest {
             testSport,
             "축구 매치 2",
             10,
-            Game.GameStatus.ON_MATCHING,
+            Game.GameStatus.ON_RECRUITING,
             LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
             2,
             "친구들과 함께하는 축구 경기"
@@ -183,7 +183,7 @@ class GameIntegrationTest {
             testSport,
             "축구 매치",
             10,
-            Game.GameStatus.ON_MATCHING,
+            Game.GameStatus.ON_RECRUITING,
             LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
             2,
             "친구들과 함께하는 축구 경기"

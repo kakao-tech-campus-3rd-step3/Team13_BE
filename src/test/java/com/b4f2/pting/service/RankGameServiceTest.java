@@ -9,7 +9,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.b4f2.pting.domain.Game;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import com.b4f2.pting.domain.Game.GameStatus;
 import com.b4f2.pting.domain.GameParticipant;
 import com.b4f2.pting.domain.Member;
@@ -23,17 +35,6 @@ import com.b4f2.pting.repository.MemberRepository;
 import com.b4f2.pting.repository.MmrRepository;
 import com.b4f2.pting.repository.RankGameParticipantRepository;
 import com.b4f2.pting.repository.RankGameRepository;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -63,7 +64,9 @@ class RankGameServiceTest {
 
     @BeforeEach
     void setUp() {
-        rankGameService = spy(new RankGameService(rankGameParticipantRepository, gameParticipantRepository, rankGameRepository, memberRepository, matchResultVoteRepository, mmrRepository));
+        rankGameService = spy(
+            new RankGameService(rankGameParticipantRepository, gameParticipantRepository, rankGameRepository,
+                memberRepository, matchResultVoteRepository, mmrRepository));
 
         member = new Member(1L, Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(member, "id", memberId);
@@ -74,7 +77,7 @@ class RankGameServiceTest {
 
         ongoingGame = new RankGame();
         ReflectionTestUtils.setField(ongoingGame, "id", gameId);
-        ReflectionTestUtils.setField(ongoingGame, "gameStatus", GameStatus.ON_MATCHING);
+        ReflectionTestUtils.setField(ongoingGame, "gameStatus", GameStatus.ON_RECRUITING);
     }
 
     @Test
