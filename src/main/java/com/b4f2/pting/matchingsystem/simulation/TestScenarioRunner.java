@@ -23,8 +23,6 @@ public class TestScenarioRunner {
         double mean = 1500;
         double stddev = 200;
 
-        List<AlgorithmResult> results = new ArrayList<>();
-
         List<Player> data = new TestDataGenerator().generatePlayers(count, mean, stddev);
 
         // 농구(10인 게임)
