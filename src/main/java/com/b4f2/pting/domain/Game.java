@@ -11,6 +11,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -24,6 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Game {
 
     @Id
@@ -53,8 +56,9 @@ public class Game {
     private String description;
 
     public enum GameStatus {
-        ON_MATCHING,
-        END
+        ON_RECRUITING, // 모집 중
+        FULL, // 모집 완료
+        END // 게임 종료
     }
 
     public static Game create(
@@ -77,5 +81,9 @@ public class Game {
 
     public boolean isEnded() {
         return this.gameStatus == GameStatus.END;
+    }
+
+    public void changeStatus(GameStatus status) {
+        this.gameStatus = status;
     }
 }

@@ -43,5 +43,8 @@ spring:
           starttls:
             enable: true
 
+firebase:
+  credentials: classpath:firebase/pting-sdk-credentials.json
+
 app:
   domain: ${SERVER_ADDRESS}

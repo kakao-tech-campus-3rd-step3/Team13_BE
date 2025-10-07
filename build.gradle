@@ -41,10 +41,15 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+    implementation 'com.google.firebase:firebase-admin:9.6.0'
+
     implementation 'org.postgresql:postgresql:42.7.2'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.testcontainers:junit-jupiter:1.21.3'
     testImplementation 'org.testcontainers:postgresql:1.21.3'
+
+    // Open Skill for MMR
+    implementation 'com.pocketcombats:openskill:1.0'
 }
 
 tasks.named('test') {
