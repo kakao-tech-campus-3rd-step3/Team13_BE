@@ -114,12 +114,13 @@ public class MatchingAlgorithmEvaluationTest {
                 .map(m -> m.stream().mapToDouble(p -> p.getMmr(sport)).average().orElse(0))
                 .toList();
         double overallAvg = teamAverages.stream().mapToDouble(d -> d).average().orElse(0);
-        double interVar = teamAverages.stream().mapToDouble(avg -> Math.pow(avg - overallAvg, 2)).sum();
+        double interVar = teamAverages.stream().mapToDouble(avg -> Math.pow(avg - overallAvg, 2)).average().orElse(0);
         double interScore = 1 / (1 + interVar / 1000);
 
         // 공정성 점수
         double avgMatches = players.stream().mapToInt(m -> matchCounts.getOrDefault(m, 0)).average().orElse(0);
-        double fairnessVar = players.stream().mapToDouble(m -> matchCounts.getOrDefault(m, 0)).average().orElse(0);
+        double fairnessVar = players.stream().mapToDouble(m -> Math.pow(matchCounts.getOrDefault(m, 0) - avgMatches, 2))
+                .average().orElse(0);
         double fairnessScore = 1 / (1 + fairnessVar);
 
         // 최종 점수
