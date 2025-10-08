@@ -1,5 +1,22 @@
 package com.b4f2.pting.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import com.b4f2.pting.config.TestContainersConfig;
+import com.b4f2.pting.domain.Game.GameStatus;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Mmr;
 import com.b4f2.pting.domain.RankGame;
@@ -14,24 +31,12 @@ import com.b4f2.pting.repository.RankGameRepository;
 import com.b4f2.pting.repository.SportRepository;
 import com.b4f2.pting.service.RankGameService;
 import com.b4f2.pting.util.KakaoOAuthClient;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest
-@Transactional
-@ActiveProfiles("test")
-public class MmrIntegrationTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
+@Import(TestContainersConfig.class)
+@Tag("integration")
+class MmrIntegrationTest {
 
     @Autowired
     private RankGameService rankGameService;
@@ -76,8 +81,9 @@ public class MmrIntegrationTest {
         org.springframework.test.util.ReflectionTestUtils.setField(game, "sport", sport);
         org.springframework.test.util.ReflectionTestUtils.setField(game, "name", "테스트 게임");
         org.springframework.test.util.ReflectionTestUtils.setField(game, "playerCount", 2);
-        org.springframework.test.util.ReflectionTestUtils.setField(game, "gameStatus", com.b4f2.pting.domain.Game.GameStatus.END);
-        org.springframework.test.util.ReflectionTestUtils.setField(game, "startTime", LocalDateTime.now().minusHours(1));
+        org.springframework.test.util.ReflectionTestUtils.setField(game, "gameStatus", GameStatus.END);
+        org.springframework.test.util.ReflectionTestUtils.setField(
+            game, "startTime", LocalDateTime.now().minusHours(1));
         org.springframework.test.util.ReflectionTestUtils.setField(game, "duration", 60);
         org.springframework.test.util.ReflectionTestUtils.setField(game, "description", "테스트용 게임");
         this.game = rankGameRepository.save(game);

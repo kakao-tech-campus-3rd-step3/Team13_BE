@@ -54,6 +54,8 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform {
-        excludeTags("integration")
+        if (System.getProperty('ci') != null) {
+            excludeTags('integration')
+        }
     }
 }
