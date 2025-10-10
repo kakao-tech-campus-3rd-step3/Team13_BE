@@ -1,4 +1,4 @@
-package com.b4f2.pting;
+package com.b4f2.pting.algorithm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,22 +9,25 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.b4f2.pting.algorithm.MatchingAlgorithm;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Mmr;
 import com.b4f2.pting.domain.Sport;
 
-@SpringBootTest
-public class MatchingAlgorithmEvaluationTest {
+class MatchingAlgorithmEvaluationTest {
 
-    @Autowired
     private List<MatchingAlgorithm> algorithms;
+
+    @BeforeEach
+    void setUp() {
+        algorithms = List.of(
+            new SimpleMMRMatching() // 추후 다른 매칭 알고리즘 추가 가능
+        );
+    }
 
     static Stream<Sport> sportsProvider() {
         Sport basketball = new Sport("농구", 10);
@@ -72,10 +75,10 @@ public class MatchingAlgorithmEvaluationTest {
         }
 
         Map<String, Double> avgScores = algorithmScores.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> e.getValue().stream().mapToDouble(d -> d).average().orElse(0)
-                ));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                e -> e.getValue().stream().mapToDouble(d -> d).average().orElse(0)
+            ));
 
         // 평가
         printRanking(sport.getName(), avgScores);
@@ -105,12 +108,12 @@ public class MatchingAlgorithmEvaluationTest {
     }
 
     private double evaluate(Sport sport, List<List<Member>> matches, List<Member> players, int totalPlayers,
-            Map<Member, Integer> matchCounts) {
+        Map<Member, Integer> matchCounts) {
         // 매칭률 계산
         Set<Long> matchedIds = matches.stream()
-                .flatMap(List::stream)
-                .map(Member::getId)
-                .collect(Collectors.toSet());
+            .flatMap(List::stream)
+            .map(Member::getId)
+            .collect(Collectors.toSet());
         double matchingRate = (double) matchedIds.size() / totalPlayers;
 
         // 팀 내 분산 평균 계산
@@ -123,8 +126,8 @@ public class MatchingAlgorithmEvaluationTest {
 
         // 팀 간 평균 MMR 분산 계산
         List<Double> teamAverages = matches.stream()
-                .map(m -> m.stream().mapToDouble(p -> p.getMmr(sport)).average().orElse(0))
-                .toList();
+            .map(m -> m.stream().mapToDouble(p -> p.getMmr(sport)).average().orElse(0))
+            .toList();
         double overallAvg = teamAverages.stream().mapToDouble(d -> d).average().orElse(0);
         double interVar = teamAverages.stream().mapToDouble(avg -> Math.pow(avg - overallAvg, 2)).average().orElse(0);
         double interScore = 1 / (1 + interVar / 1000);
@@ -132,7 +135,7 @@ public class MatchingAlgorithmEvaluationTest {
         // 공정성 점수
         double avgMatches = players.stream().mapToInt(m -> matchCounts.getOrDefault(m, 0)).average().orElse(0);
         double fairnessVar = players.stream().mapToDouble(m -> Math.pow(matchCounts.getOrDefault(m, 0) - avgMatches, 2))
-                .average().orElse(0);
+            .average().orElse(0);
         double fairnessScore = 1 / (1 + fairnessVar);
 
         // 최종 점수
@@ -143,7 +146,7 @@ public class MatchingAlgorithmEvaluationTest {
     private void printRanking(String title, Map<String, Double> scores) {
         System.out.println("\n=== " + title + " ===");
         scores.entrySet().stream()
-                .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
-                .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
+            .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
+            .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
     }
 }
