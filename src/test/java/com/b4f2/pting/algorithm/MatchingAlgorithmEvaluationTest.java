@@ -25,7 +25,8 @@ class MatchingAlgorithmEvaluationTest {
     @BeforeEach
     void setUp() {
         algorithms = List.of(
-            new SimpleMMRMatching() // 추후 다른 매칭 알고리즘 추가 가능
+            new SimpleMMRMatching(),
+            new BalancedKMeansClusterMatching()
         );
     }
 
