@@ -33,7 +33,7 @@ public class MatchingService {
         }
 
         // 첫 번째 매칭 그룹만 뽑는다고 가정
-        List<Member> selectedPlayers = matchedGroups.get(0);
+        List<Member> selectedPlayers = matchedGroups.getFirst();
 
         matchingQueue.removePlayers(sportId, selectedPlayers);
 

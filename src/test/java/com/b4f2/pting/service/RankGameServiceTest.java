@@ -92,7 +92,7 @@ class RankGameServiceTest {
 
         // then
         assertThat(response.votedTeams()).hasSize(1);
-        assertThat(response.votedTeams().get(0)).isEqualTo(RankGameTeam.RED_TEAM);
+        assertThat(response.votedTeams().getFirst()).isEqualTo(RankGameTeam.RED_TEAM);
         verify(matchResultVoteRepository).save(any());
     }
 

@@ -52,7 +52,7 @@ class SportServiceTest {
         // then
         assertThat(response).isNotNull();
         assertThat(response.sports()).hasSize(2);
-        assertThat(response.sports().get(0).name()).isEqualTo("축구");
+        assertThat(response.sports().getFirst().name()).isEqualTo("축구");
         assertThat(response.sports().get(1).name()).isEqualTo("농구");
     }
 
