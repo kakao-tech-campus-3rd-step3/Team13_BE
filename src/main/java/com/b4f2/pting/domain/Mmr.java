@@ -46,7 +46,6 @@ public class Mmr {
         this(null, sport, member, 25.0, 8.3);
     }
 
-
     public SimplePlayerResult<Long> getSimplePlayerResult() {
         return new SimplePlayerResult<>(id, mu, sigma);
     }

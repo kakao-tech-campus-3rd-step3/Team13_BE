@@ -27,26 +27,20 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping("/me/profile")
-    public ResponseEntity<ProfileResponse> getMyProfile(
-        @Login Member member
-    ) {
+    public ResponseEntity<ProfileResponse> getMyProfile(@Login Member member) {
         ProfileResponse profileResponse = profileService.getProfile(member.getId());
         return ResponseEntity.ok(profileResponse);
     }
 
     @GetMapping("/{memberId}/profile")
-    public ResponseEntity<ProfileResponse> getProfile(
-        @PathVariable Long memberId
-    ) {
+    public ResponseEntity<ProfileResponse> getProfile(@PathVariable Long memberId) {
         ProfileResponse profileResponse = profileService.getProfile(memberId);
         return ResponseEntity.ok(profileResponse);
     }
 
     @PatchMapping("/me/profile/name")
     public ResponseEntity<ProfileResponse> updateName(
-        @Login Member member,
-        @Validated @RequestBody ChangeProfileNameRequest request
-    ) {
+            @Login Member member, @Validated @RequestBody ChangeProfileNameRequest request) {
         ProfileResponse profileResponse = profileService.updateName(member.getId(), request.name());
 
         return ResponseEntity.ok(profileResponse);
@@ -54,9 +48,7 @@ public class ProfileController {
 
     @PatchMapping("/me/profile/description")
     public ResponseEntity<ProfileResponse> updateDescription(
-        @Login Member member,
-        @Validated @RequestBody ChangeProfileDescriptionRequest request
-    ) {
+            @Login Member member, @Validated @RequestBody ChangeProfileDescriptionRequest request) {
         ProfileResponse profileResponse = profileService.updateDescription(member.getId(), request.description());
 
         return ResponseEntity.ok(profileResponse);
@@ -64,9 +56,7 @@ public class ProfileController {
 
     @PatchMapping("/me/profile/image-url")
     public ResponseEntity<ProfileResponse> updateImageUrl(
-        @Login Member member,
-        @Validated @RequestBody ChangeProfileImageUrlRequest request
-    ) {
+            @Login Member member, @Validated @RequestBody ChangeProfileImageUrlRequest request) {
         ProfileResponse profileResponse = profileService.updateImageUrl(member.getId(), request.imageUrl());
 
         return ResponseEntity.ok(profileResponse);

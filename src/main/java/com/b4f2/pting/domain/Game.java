@@ -62,14 +62,13 @@ public class Game {
     }
 
     public static Game create(
-        Sport sport,
-        String name,
-        Integer playerCount,
-        GameStatus gameStatus,
-        LocalDateTime startTime,
-        Integer duration,
-        String description
-    ) {
+            Sport sport,
+            String name,
+            Integer playerCount,
+            GameStatus gameStatus,
+            LocalDateTime startTime,
+            Integer duration,
+            String description) {
         LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         if (startTime.isBefore(nowInSeoul)) {

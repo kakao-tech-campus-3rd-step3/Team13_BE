@@ -22,12 +22,10 @@ public class School {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(name = "name")
+    @NotNull @Column(name = "name")
     private String name;
 
-    @NotNull
-    @Column(name = "postfix", unique = true)
+    @NotNull @Column(name = "postfix", unique = true)
     private String postfix;
 
     public School(String name, String postfix) {

@@ -41,5 +41,4 @@ public class InMemoryCache {
     public void delete(String key) {
         cache.remove(key);
     }
-
 }

@@ -18,7 +18,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public Member getMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
+        return memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
     }
 }

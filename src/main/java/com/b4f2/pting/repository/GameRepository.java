@@ -15,7 +15,8 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
     List<Game> findAllByGameStatusAndSportId(Game.GameStatus status, Long sportId);
 
-    @Query("""
+    @Query(
+            """
             select g
             from Game g
             where g.sport.id = :sportId
@@ -23,18 +24,17 @@ public interface GameRepository extends JpaRepository<Game, Long> {
                 and cast(g.startTime as localtime) between :startTime and :endTime
         """)
     List<Game> findAllByGameStatusAndSportIdAndTimePeriod(
-        Game.GameStatus status,
-        Long sportId,
-        LocalTime startTime,
-        LocalTime endTime
-    );
+            Game.GameStatus status, Long sportId, LocalTime startTime, LocalTime endTime);
 
     @Modifying
-    @Query(value = """
+    @Query(
+            value =
+                    """
             update game
             set game_status = 'END'
             where game_status = 'ON_MATCHING' and start_time <= :deadline
             returning *
-        """, nativeQuery = true)
+        """,
+            nativeQuery = true)
     List<Game> endMatchingGames(@Param("deadline") LocalDateTime deadLine);
 }

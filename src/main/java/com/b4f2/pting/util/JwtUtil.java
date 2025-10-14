@@ -24,18 +24,18 @@ public class JwtUtil {
 
     public String createToken(Member member) {
         return Jwts.builder()
-            .claim("memberId", member.getId())
-            .signWith(secretKey)
-            .compact();
+                .claim("memberId", member.getId())
+                .signWith(secretKey)
+                .compact();
     }
 
     public Long getMemberId(String token) {
         return Jwts.parser()
-            .verifyWith(secretKey)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload()
-            .get("memberId", Long.class);
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("memberId", Long.class);
     }
 
     public String createEmailToken(Member member, String schoolEmail) {
@@ -43,21 +43,20 @@ public class JwtUtil {
         Date expiryDate = new Date(now.getTime() + 30 * 60 * 1000);
 
         return Jwts.builder()
-            .claim("memberId", member.getId())
-            .claim("schoolEmail", schoolEmail)
-            .issuedAt(now)
-            .expiration(expiryDate)
-            .signWith(secretKey)
-            .compact();
+                .claim("memberId", member.getId())
+                .claim("schoolEmail", schoolEmail)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(secretKey)
+                .compact();
     }
 
     public String getSchoolEmail(String token) {
         return Jwts.parser()
-            .verifyWith(secretKey)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload()
-            .get("schoolEmail", String.class);
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("schoolEmail", String.class);
     }
-
 }
