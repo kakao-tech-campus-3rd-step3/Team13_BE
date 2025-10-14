@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.diffplug.spotless' version '8.0.0'
     id 'org.springframework.boot' version '3.5.5'
     id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -11,6 +12,27 @@ description = '종합 스포츠 매칭 플랫폼 pting'
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+spotless {
+    java {
+        forbidWildcardImports()
+        removeUnusedImports()
+        palantirJavaFormat('2.77.0')
+        formatAnnotations()
+        importOrder(
+            '\\#',
+            'java',
+            'javax',
+            'jakarta',
+            'org',
+            'com',
+            '',
+            'com.b4f2'
+        )
+        trimTrailingWhitespace()
+        endWithNewline()
     }
 }
 
@@ -53,9 +75,14 @@ dependencies {
 }
 
 tasks.named('test') {
+    dependsOn('spotlessApply')
     useJUnitPlatform {
         if (System.getProperty('ci') != null) {
             excludeTags('integration')
         }
     }
+}
+
+tasks.named('compileJava') {
+    dependsOn('spotlessApply')
 }
