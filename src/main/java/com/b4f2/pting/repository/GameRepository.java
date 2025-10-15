@@ -34,7 +34,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
             update game
             set game_status = 'END'
             where game_status = 'ON_MATCHING' and start_time <= :deadline
-            returning *
+            returning *, 'Game' as clazz_
         """, nativeQuery = true)
     List<Game> endMatchingGames(@Param("deadline") LocalDateTime deadLine);
 }
