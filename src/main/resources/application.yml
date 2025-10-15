@@ -21,10 +21,10 @@ spring:
       path: /h2-console
 
   datasource:
-    url: jdbc:h2:mem:p-ting-db
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: ${DB_URL}
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
