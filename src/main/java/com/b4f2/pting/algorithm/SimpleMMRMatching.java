@@ -1,12 +1,11 @@
 package com.b4f2.pting.algorithm;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.b4f2.pting.domain.Member;
+import com.b4f2.pting.domain.RankGameParticipant;
 import com.b4f2.pting.domain.Sport;
 
 @Component
@@ -18,15 +17,22 @@ public class SimpleMMRMatching implements MatchingAlgorithm {
     }
 
     @Override
-    public List<List<Member>> match(List<Member> players, Sport sport) {
-        List<List<Member>> results = new ArrayList<>();
+    public List<List<RankGameParticipant>> match(List<RankGameParticipant> participants, Sport sport) {
+        List<List<RankGameParticipant>> results = new ArrayList<>();
 
         int playersPerGame = sport.getRecommendedPlayerCount();
 
-        players.sort(Comparator.comparingDouble(m -> m.getMmr(sport)));
+        if (participants == null || participants.isEmpty()) {
+            return results;
+        }
 
-        for (int i = 0; i + playersPerGame < players.size(); i += playersPerGame) {
-            results.add(players.subList(i, i + playersPerGame));
+        participants.sort((p1, p2) -> Double.compare(
+            p2.getMember().getMmr(sport),
+            p1.getMember().getMmr(sport)
+        ));
+
+        for (int i = 0; i + playersPerGame <= participants.size(); i += playersPerGame) {
+            results.add(new ArrayList<>(participants.subList(i, i + playersPerGame)));
         }
 
         return results;
