@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.b4f2.pting.domain.Member;
+import com.b4f2.pting.domain.RankGameParticipant;
 import com.b4f2.pting.domain.Sport;
 
 public class BalancedKMeansClusterMatching implements MatchingAlgorithm {
@@ -19,30 +19,30 @@ public class BalancedKMeansClusterMatching implements MatchingAlgorithm {
     }
 
     @Override
-    public List<List<Member>> match(List<Member> players, Sport sport) {
+    public List<List<RankGameParticipant>> match(List<RankGameParticipant> participants, Sport sport) {
         int teamSize = sport.getRecommendedPlayerCount();
 
-        if (players == null || players.isEmpty() || teamSize <= 0) {
+        if (participants == null || participants.isEmpty() || teamSize <= 0) {
             return List.of();
         }
 
-        int totalPlayers = players.size();
+        int totalPlayers = participants.size();
         int numTeams = (int) Math.ceil((double) totalPlayers / teamSize);
 
-        List<List<Member>> teams = new ArrayList<>();
+        List<List<RankGameParticipant>> teams = new ArrayList<>();
 
         for (int i = 0; i < numTeams; i++) {
             teams.add(new ArrayList<>());
         }
 
-        List<Double> mmrs = players.stream()
-            .map(member -> member.getMmr(sport))
+        List<Double> mmrs = participants.stream()
+            .map(participant -> participant.getMember().getMmr(sport))
             .toList();
 
         List<Double> centroids = initialCentroids(mmrs, numTeams);
 
         for (int iter = 0; iter < MAX_ITER; iter++) {
-            allocateMembersToTeams(players, sport, numTeams, centroids, teams, teamSize);
+            allocateMembersToTeams(participants, sport, numTeams, centroids, teams, teamSize);
 
             List<Double> newCentroids = renewalCentroids(sport, teams, centroids);
 
@@ -67,17 +67,17 @@ public class BalancedKMeansClusterMatching implements MatchingAlgorithm {
     }
 
     private void allocateMembersToTeams(
-        List<Member> players,
+        List<RankGameParticipant> players,
         Sport sport,
         int numTeams,
         List<Double> centroids,
-        List<List<Member>> teams,
+        List<List<RankGameParticipant>> teams,
         int teamSize
     ) {
         teams.forEach(List::clear);
 
-        for (Member m : players) {
-            double mmr = m.getMmr(sport);
+        for (RankGameParticipant p : players) {
+            double mmr = p.getMember().getMmr(sport);
 
             List<Integer> sortedTeams = new ArrayList<>();
             for (int i = 0; i < numTeams; i++) {
@@ -88,20 +88,22 @@ public class BalancedKMeansClusterMatching implements MatchingAlgorithm {
 
             for (int idx : sortedTeams) {
                 if (teams.get(idx).size() < teamSize) {
-                    teams.get(idx).add(m);
+                    teams.get(idx).add(p);
                     break;
                 }
             }
         }
     }
 
-    private static List<Double> renewalCentroids(Sport sport, List<List<Member>> teams, List<Double> centroids) {
+    private static List<Double> renewalCentroids(Sport sport, List<List<RankGameParticipant>> teams,
+        List<Double> centroids) {
         List<Double> newCentroids = new ArrayList<>();
-        for (List<Member> team : teams) {
+        for (List<RankGameParticipant> team : teams) {
             if (team.isEmpty()) {
                 newCentroids.add(centroids.get(newCentroids.size()));
             } else {
-                double avg = team.stream().mapToDouble(member -> member.getMmr(sport)).average().orElse(0);
+                double avg = team.stream().mapToDouble(participant -> participant.getMember().getMmr(sport)).average()
+                    .orElse(0);
                 newCentroids.add(avg);
             }
         }
