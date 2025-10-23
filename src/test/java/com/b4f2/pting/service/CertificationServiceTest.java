@@ -70,8 +70,8 @@ class CertificationServiceTest {
         CertificationRequest request = new CertificationRequest(localPart);
 
         given(emailUtil.getEmailAddress(localPart, school.getPostfix())).willReturn(schoolEmail);
-        given(emailUtil.getEmailCertificationKey(member.getId(), schoolEmail)).willReturn(
-            "cert:" + member.getId() + ":" + schoolEmail);
+        given(emailUtil.getEmailCertificationKey(member.getId(), schoolEmail))
+                .willReturn("cert:" + member.getId() + ":" + schoolEmail);
         given(emailUtil.isSchoolEmail(schoolEmail)).willReturn(true);
 
         doNothing().when(cache).delete(anyString());
@@ -95,8 +95,8 @@ class CertificationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("학교를 먼저 선택해야 합니다.");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("학교를 먼저 선택해야 합니다.");
     }
 
     @Test
@@ -109,8 +109,8 @@ class CertificationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("학교 이메일만 인증 가능합니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("학교 이메일만 인증 가능합니다.");
     }
 
     @Test
@@ -126,8 +126,8 @@ class CertificationServiceTest {
 
         // when & then
         assertThatThrownBy(() -> certificationService.sendCertificationEmail(member, request))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("이미 인증된 이메일입니다.");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("이미 인증된 이메일입니다.");
     }
 
     @Test
@@ -138,8 +138,8 @@ class CertificationServiceTest {
         CertificationVerifyRequest request = new CertificationVerifyRequest(localPart, code);
 
         given(emailUtil.getEmailAddress(localPart, school.getPostfix())).willReturn(schoolEmail);
-        given(emailUtil.getEmailCertificationKey(member.getId(), schoolEmail)).willReturn(
-            "cert:" + member.getId() + ":" + schoolEmail);
+        given(emailUtil.getEmailCertificationKey(member.getId(), schoolEmail))
+                .willReturn("cert:" + member.getId() + ":" + schoolEmail);
 
         given(cache.get(key)).willReturn(code);
 
@@ -163,14 +163,14 @@ class CertificationServiceTest {
         CertificationVerifyRequest request = new CertificationVerifyRequest(localPart, code);
 
         given(emailUtil.getEmailAddress(localPart, school.getPostfix())).willReturn(schoolEmail);
-        given(emailUtil.getEmailCertificationKey(member.getId(), schoolEmail)).willReturn(
-            "cert:" + member.getId() + ":" + schoolEmail);
+        given(emailUtil.getEmailCertificationKey(member.getId(), schoolEmail))
+                .willReturn("cert:" + member.getId() + ":" + schoolEmail);
 
         given(cache.get(key)).willReturn(null);
 
         assertThatThrownBy(() -> certificationService.verifyCertification(member, request))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("인증 코드가 만료되었습니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("인증 코드가 만료되었습니다.");
     }
 
     @Test

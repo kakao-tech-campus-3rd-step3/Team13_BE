@@ -26,8 +26,7 @@ public class SchoolService {
     }
 
     public School getSchoolById(Long schoolId) {
-        return schoolRepository.findById(schoolId)
-            .orElseThrow(() -> new EntityNotFoundException("학교 정보가 존재하지 않습니다."));
+        return schoolRepository.findById(schoolId).orElseThrow(() -> new EntityNotFoundException("학교 정보가 존재하지 않습니다."));
     }
 
     @Transactional
@@ -38,8 +37,8 @@ public class SchoolService {
 
     @Transactional
     public School selectSchool(Member member, Long schoolId) {
-        School school = schoolRepository.findById(schoolId)
-            .orElseThrow(() -> new EntityNotFoundException("학교 정보가 존재하지 않습니다."));
+        School school =
+                schoolRepository.findById(schoolId).orElseThrow(() -> new EntityNotFoundException("학교 정보가 존재하지 않습니다."));
 
         member.updateSchool(school);
 

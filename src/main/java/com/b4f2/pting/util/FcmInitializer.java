@@ -24,8 +24,8 @@ public class FcmInitializer {
         if (FirebaseApp.getApps().isEmpty()) {
             InputStream serviceAccount = firebaseCredentials.getInputStream();
             FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .build();
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .build();
 
             FirebaseApp.initializeApp(options);
         }

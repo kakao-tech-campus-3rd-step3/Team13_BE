@@ -35,11 +35,13 @@ public class GameReportService {
     @Transactional
     public GameReportResponse createReport(Member reporter, GameReportRequest request) {
 
-        Game game = gameRepository.findById(request.gameId())
-            .orElseThrow(() -> new EntityNotFoundException("해당 게임이 존재하지 않습니다."));
+        Game game = gameRepository
+                .findById(request.gameId())
+                .orElseThrow(() -> new EntityNotFoundException("해당 게임이 존재하지 않습니다."));
 
-        Member reported = memberRepository.findById(request.reportedId())
-            .orElseThrow(() -> new IllegalArgumentException("피신고자를 찾을 수 없습니다."));
+        Member reported = memberRepository
+                .findById(request.reportedId())
+                .orElseThrow(() -> new IllegalArgumentException("피신고자를 찾을 수 없습니다."));
 
         GameParticipants participants = new GameParticipants(participantRepository.findByGame(game));
 
@@ -52,29 +54,29 @@ public class GameReportService {
 
     public GameReportsResponse getAllReports() {
         List<GameReportResponse> reports = reportRepository.findAll().stream()
-            .map(GameReportResponse::from)
-            .toList();
+                .map(GameReportResponse::from)
+                .toList();
         return new GameReportsResponse(reports);
     }
 
     public GameReportsResponse getReportsByGame(Long gameId) {
         List<GameReportResponse> reports = reportRepository.findByGameId(gameId).stream()
-            .map(GameReportResponse::from)
-            .toList();
+                .map(GameReportResponse::from)
+                .toList();
         return new GameReportsResponse(reports);
     }
 
     public GameReportsResponse getReportsByReporter(Long memberId) {
         List<GameReportResponse> reports = reportRepository.findByReporterId(memberId).stream()
-            .map(GameReportResponse::from)
-            .toList();
+                .map(GameReportResponse::from)
+                .toList();
         return new GameReportsResponse(reports);
     }
 
     @Transactional
     public GameReportResponse updateReportStatus(Long reportId, GameReportStatusUpdateRequest request) {
-        GameReport report = reportRepository.findById(reportId)
-            .orElseThrow(() -> new EntityNotFoundException("신고를 찾을 수 없습니다."));
+        GameReport report =
+                reportRepository.findById(reportId).orElseThrow(() -> new EntityNotFoundException("신고를 찾을 수 없습니다."));
 
         report.changeStatus(request.status());
 

@@ -34,19 +34,13 @@ public class FcmController {
     public void testSingleNotification() throws FirebaseMessagingException {
         String title = "FCM 알람 테스트!";
         String body = "테스트입니다~~";
-        fcmService.sendSinglePush(
-            "token",
-            title, body);
+        fcmService.sendSinglePush("token", title, body);
     }
 
     @PostMapping("/multicast")
     public void testMulticastNotification() throws FirebaseMessagingException {
         String title = "FCM 알람 테스트!";
         String body = "테스트입니다~~~";
-        fcmService.sendMulticastPush(
-            List.of(
-                "token1",
-                "token2"
-            ), title, body);
+        fcmService.sendMulticastPush(List.of("token1", "token2"), title, body);
     }
 }

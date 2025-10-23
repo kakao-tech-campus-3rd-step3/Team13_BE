@@ -65,8 +65,8 @@ class ProfileServiceTest {
 
         // when, then
         assertThatThrownBy(() -> profileService.getProfile(1L))
-            .isInstanceOf(EntityNotFoundException.class)
-            .hasMessage("해당 유저는 존재하지 않습니다.");
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("해당 유저는 존재하지 않습니다.");
     }
 
     @Test
