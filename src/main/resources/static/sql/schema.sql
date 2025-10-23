@@ -1,6 +1,7 @@
-CREATE TYPE game_status AS ENUM ('ON_MATCHING', 'END');
+CREATE TYPE game_status AS ENUM ('ON_RECRUITING', 'ON_MATCHING', 'END');
 CREATE TYPE oauth_provider AS ENUM ('KAKAO');
 CREATE TYPE report_status AS ENUM ('PENDING', 'RESOLVED', 'REJECTED');
+CREATE TYPE rank_game_team AS ENUM ('RED_TEAM', 'BLUE_TEAM', 'NONE');
 
 
 CREATE TABLE school (
@@ -42,10 +43,19 @@ CREATE TABLE game (
     game_status game_status NOT NULL DEFAULT 'ON_MATCHING'
 );
 
+CREATE TABLE rank_game (
+    id BIGINT PRIMARY KEY REFERENCES game(id),
+    win_team rank_game_team
+);
+
 CREATE TABLE game_user (
     id BIGSERIAL PRIMARY KEY,
     member_id BIGINT NOT NULL REFERENCES member(id),
     game_id BIGINT NOT NULL REFERENCES game(id)
+);
+
+CREATE TABLE rank_game_user (
+    team rank_game_team
 );
 
 CREATE TABLE game_report (
@@ -58,4 +68,21 @@ CREATE TABLE game_report (
     created_at TIMESTAMP NOT NULL DEFAULT now(),
     CONSTRAINT chk_different_users CHECK (reporter_id <> reported_id),
     CONSTRAINT unique_report UNIQUE (game_id, reporter_id, reported_id)
+);
+
+CREATE TABLE mmr (
+    id BIGSERIAL PRIMARY KEY,
+    sport_id BIGINT NOT NULL REFERENCES sport(id),
+    member_id BIGINT NOT NULL REFERENCES member(id),
+    mu DOUBLE PRECISION DEFAULT 25,
+    sigma DOUBLE PRECISION DEFAULT 8.3
+);
+
+ALTER TABLE mmr ADD CONSTRAINT uq_mmr_sport_id_member_id UNIQUE (sport_id, member_id);
+
+CREATE TABLE match_result_vote (
+    id BIGSERIAL PRIMARY KEY,
+    member_id BIGINT NOT NULL REFERENCES member(id),
+    game_id BIGINT NOT NULL REFERENCES game(id),
+    win_team rank_game_team NOT NULL
 );

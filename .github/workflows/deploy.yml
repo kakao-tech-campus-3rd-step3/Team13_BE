@@ -19,10 +19,17 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Setup Firebase Credentials
+        run: |
+          mkdir -p ./src/main/resources/firebase
+          echo "${{ secrets.FIREBASE_CREDENTIALS }}" > ./src/main/resources/firebase/pting-sdk-credentials.json
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
       - name: Build with Gradle (skip integration tests)
+        env:
+          GRADLE_OPTS: "-Dci=true" # 통합 테스트가 제외될 수 있도록 ci 프로퍼티 설정
         run: ./gradlew build
 
       - name: Transfer JAR to EC2

@@ -45,8 +45,8 @@ public class JwtUtil {
         return Jwts.builder()
             .claim("memberId", member.getId())
             .claim("schoolEmail", schoolEmail)
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
+            .issuedAt(now)
+            .expiration(expiryDate)
             .signWith(secretKey)
             .compact();
     }

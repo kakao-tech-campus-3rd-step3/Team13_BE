@@ -1,5 +1,9 @@
 package com.b4f2.pting.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
@@ -59,6 +64,9 @@ public class Member {
     @JoinColumn(name = "school_id")
     private School school;
 
+    @OneToMany(mappedBy = "member")
+    private final List<Mmr> mmrList = new ArrayList<>();
+
     public enum OAuthProvider {
         KAKAO
     }
@@ -68,8 +76,16 @@ public class Member {
         this.oauthProvider = oauthProvider;
     }
 
-    public boolean isEqualMember(Member member) {
-        return id.equals(member.id);
+    public Optional<School> getSchool() {
+        return Optional.ofNullable(school);
+    }
+
+    public double getMmr(Sport sport) {
+        return mmrList.stream()
+            .filter(m -> m.getSport().equals(sport))
+            .findFirst()
+            .map(Mmr::getMu)
+            .orElse(25.0);
     }
 
     public void changeName(String name) {
@@ -96,7 +112,15 @@ public class Member {
         this.school = school;
     }
 
+    public boolean isEqualMember(Member member) {
+        return id.equals(member.id);
+    }
+
     public boolean isMySchoolEmail(String email) {
         return schoolEmail.equals(email);
+    }
+
+    public boolean isVerifiedEmail(String email) {
+        return isVerified && isMySchoolEmail(email);
     }
 }
