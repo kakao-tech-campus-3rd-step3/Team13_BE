@@ -36,9 +36,9 @@ class AuthServiceTest {
         OAuthUrlResponse urlResponse = authService.getKakaoOAuthUrl();
 
         // then
-        assertThat(urlResponse).isEqualTo(
-            new OAuthUrlResponse("kakao_auth_uri?client_id=client_id&redirect_uri=redirect_uri&response_type=code")
-        );
+        assertThat(urlResponse)
+                .isEqualTo(new OAuthUrlResponse(
+                        "kakao_auth_uri?client_id=client_id&redirect_uri=redirect_uri&response_type=code"));
     }
 
     // TODO: 로그인 처리 메서드에 대한 테스트코드 작성하기!

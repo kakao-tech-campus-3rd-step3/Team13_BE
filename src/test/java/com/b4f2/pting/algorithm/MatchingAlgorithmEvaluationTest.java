@@ -25,8 +25,8 @@ class MatchingAlgorithmEvaluationTest {
     @BeforeEach
     void setUp() {
         algorithms = List.of(
-            new SimpleMMRMatching() // 추후 다른 매칭 알고리즘 추가 가능
-        );
+                new SimpleMMRMatching() // 추후 다른 매칭 알고리즘 추가 가능
+                );
     }
 
     static Stream<Sport> sportsProvider() {
@@ -70,15 +70,16 @@ class MatchingAlgorithmEvaluationTest {
                 }
 
                 double score = evaluate(sport, matches, players, totalPlayers, matchCounts);
-                algorithmScores.computeIfAbsent(algorithm.getName(), k -> new ArrayList<>()).add(score);
+                algorithmScores
+                        .computeIfAbsent(algorithm.getName(), k -> new ArrayList<>())
+                        .add(score);
             }
         }
 
         Map<String, Double> avgScores = algorithmScores.entrySet().stream()
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                e -> e.getValue().stream().mapToDouble(d -> d).average().orElse(0)
-            ));
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue().stream().mapToDouble(d -> d).average().orElse(0)));
 
         // 평가
         printRanking(sport.getName(), avgScores);
@@ -107,35 +108,54 @@ class MatchingAlgorithmEvaluationTest {
         return players;
     }
 
-    private double evaluate(Sport sport, List<List<Member>> matches, List<Member> players, int totalPlayers,
-        Map<Member, Integer> matchCounts) {
+    private double evaluate(
+            Sport sport,
+            List<List<Member>> matches,
+            List<Member> players,
+            int totalPlayers,
+            Map<Member, Integer> matchCounts) {
         // 매칭률 계산
-        Set<Long> matchedIds = matches.stream()
-            .flatMap(List::stream)
-            .map(Member::getId)
-            .collect(Collectors.toSet());
+        Set<Long> matchedIds =
+                matches.stream().flatMap(List::stream).map(Member::getId).collect(Collectors.toSet());
         double matchingRate = (double) matchedIds.size() / totalPlayers;
 
         // 팀 내 분산 평균 계산
-        double avgIntraVar = matches.stream().mapToDouble(match -> {
-            double avg = match.stream().mapToDouble(m -> m.getMmr(sport)).average().orElse(0);
-            return match.stream().mapToDouble(m -> Math.pow(m.getMmr(sport) - avg, 2)).average().orElse(0);
-        }).average().orElse(0);
+        double avgIntraVar = matches.stream()
+                .mapToDouble(match -> {
+                    double avg = match.stream()
+                            .mapToDouble(m -> m.getMmr(sport))
+                            .average()
+                            .orElse(0);
+                    return match.stream()
+                            .mapToDouble(m -> Math.pow(m.getMmr(sport) - avg, 2))
+                            .average()
+                            .orElse(0);
+                })
+                .average()
+                .orElse(0);
 
         double intraScore = 1 / (1 + avgIntraVar / 1000);
 
         // 팀 간 평균 MMR 분산 계산
         List<Double> teamAverages = matches.stream()
-            .map(m -> m.stream().mapToDouble(p -> p.getMmr(sport)).average().orElse(0))
-            .toList();
+                .map(m -> m.stream().mapToDouble(p -> p.getMmr(sport)).average().orElse(0))
+                .toList();
         double overallAvg = teamAverages.stream().mapToDouble(d -> d).average().orElse(0);
-        double interVar = teamAverages.stream().mapToDouble(avg -> Math.pow(avg - overallAvg, 2)).average().orElse(0);
+        double interVar = teamAverages.stream()
+                .mapToDouble(avg -> Math.pow(avg - overallAvg, 2))
+                .average()
+                .orElse(0);
         double interScore = 1 / (1 + interVar / 1000);
 
         // 공정성 점수
-        double avgMatches = players.stream().mapToInt(m -> matchCounts.getOrDefault(m, 0)).average().orElse(0);
-        double fairnessVar = players.stream().mapToDouble(m -> Math.pow(matchCounts.getOrDefault(m, 0) - avgMatches, 2))
-            .average().orElse(0);
+        double avgMatches = players.stream()
+                .mapToInt(m -> matchCounts.getOrDefault(m, 0))
+                .average()
+                .orElse(0);
+        double fairnessVar = players.stream()
+                .mapToDouble(m -> Math.pow(matchCounts.getOrDefault(m, 0) - avgMatches, 2))
+                .average()
+                .orElse(0);
         double fairnessScore = 1 / (1 + fairnessVar);
 
         // 최종 점수
@@ -146,7 +166,7 @@ class MatchingAlgorithmEvaluationTest {
     private void printRanking(String title, Map<String, Double> scores) {
         System.out.println("\n=== " + title + " ===");
         scores.entrySet().stream()
-            .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
-            .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
+                .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
+                .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
     }
 }

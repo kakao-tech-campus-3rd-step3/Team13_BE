@@ -70,8 +70,8 @@ class MemberServiceTest {
 
         // when & then
         assertThatThrownBy(() -> memberService.getMemberById(member.getId()))
-            .isInstanceOf(EntityNotFoundException.class)
-            .hasMessage("회원 정보가 존재하지 않습니다.");
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("회원 정보가 존재하지 않습니다.");
         verify(memberRepository, times(1)).findById(member.getId());
     }
 }
