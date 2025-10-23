@@ -32,11 +32,11 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public Object resolveArgument(
-        MethodParameter parameter,
-        ModelAndViewContainer mavContainer,
-        NativeWebRequest webRequest,
-        WebDataBinderFactory binderFactory
-    ) throws Exception {
+            MethodParameter parameter,
+            ModelAndViewContainer mavContainer,
+            NativeWebRequest webRequest,
+            WebDataBinderFactory binderFactory)
+            throws Exception {
         String authHeader = webRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (StringUtils.isBlank(authHeader) || !authHeader.startsWith(AUTHORIZATION_PREFIX)) {
@@ -46,7 +46,6 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
         String token = authHeader.substring(AUTHORIZATION_PREFIX.length());
         Long memberId = jwtUtil.getMemberId(token);
 
-        return memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
+        return memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException("회원 정보가 존재하지 않습니다."));
     }
 }

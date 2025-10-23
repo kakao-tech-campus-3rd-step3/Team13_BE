@@ -19,10 +19,8 @@ public class SportService {
     private final SportRepository sportRepository;
 
     public SportsResponse findAllSports() {
-        List<SportResponse> sportResponseList = sportRepository.findAll()
-            .stream()
-            .map(SportResponse::new)
-            .toList();
+        List<SportResponse> sportResponseList =
+                sportRepository.findAll().stream().map(SportResponse::new).toList();
 
         return new SportsResponse(sportResponseList);
     }

@@ -71,20 +71,13 @@ class GameReportServiceTest {
         ReflectionTestUtils.setField(game, "id", 1L);
         ReflectionTestUtils.setField(game, "gameStatus", GameStatus.END);
 
-        participants = List.of(
-            new GameParticipant(reporter, game),
-            new GameParticipant(reported, game)
-        );
+        participants = List.of(new GameParticipant(reporter, game), new GameParticipant(reported, game));
     }
 
     @Test
     void createReport_신고하기_성공() {
         // given
-        GameReportRequest request = new GameReportRequest(
-            game.getId(),
-            reported.getId(),
-            "테스트 신고 사유"
-        );
+        GameReportRequest request = new GameReportRequest(game.getId(), reported.getId(), "테스트 신고 사유");
 
         when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
         when(memberRepository.findById(reported.getId())).thenReturn(Optional.of(reported));
@@ -106,11 +99,7 @@ class GameReportServiceTest {
     @Test
     void createReport_자기자신신고_예외발생() {
         // given
-        GameReportRequest request = new GameReportRequest(
-            game.getId(),
-            reporter.getId(),
-            "자기 자신 신고"
-        );
+        GameReportRequest request = new GameReportRequest(game.getId(), reporter.getId(), "자기 자신 신고");
 
         when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
         when(memberRepository.findById(reporter.getId())).thenReturn(Optional.of(reporter));
@@ -118,8 +107,8 @@ class GameReportServiceTest {
 
         // when & then
         assertThatThrownBy(() -> reportService.createReport(reporter, request))
-            .isInstanceOf(IllegalStateException.class)
-            .hasMessage("자기 자신을 신고할 수 없습니다.");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("자기 자신을 신고할 수 없습니다.");
     }
 
     @Test
@@ -138,5 +127,4 @@ class GameReportServiceTest {
         // then
         assertEquals(ReportStatus.RESOLVED, response.status());
     }
-
 }

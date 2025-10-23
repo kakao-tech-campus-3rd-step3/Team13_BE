@@ -169,7 +169,7 @@ class MatchingAlgorithmEvaluationTest {
     private void printRanking(String title, Map<String, Double> scores) {
         System.out.println("\n=== " + title + " ===");
         scores.entrySet().stream()
-            .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
-            .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
+                .sorted((a, b) -> Double.compare(b.getValue(), a.getValue()))
+                .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
     }
 }

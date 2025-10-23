@@ -43,14 +43,19 @@ class RankGameServiceTest {
 
     @Mock
     private RankGameParticipantRepository rankGameParticipantRepository;
+
     @Mock
     private GameParticipantRepository gameParticipantRepository;
+
     @Mock
     private RankGameRepository rankGameRepository;
+
     @Mock
     private MemberRepository memberRepository;
+
     @Mock
     private MatchResultVoteRepository matchResultVoteRepository;
+
     @Mock
     private MmrRepository mmrRepository;
 
@@ -64,9 +69,13 @@ class RankGameServiceTest {
 
     @BeforeEach
     void setUp() {
-        rankGameService = spy(
-            new RankGameService(rankGameParticipantRepository, gameParticipantRepository, rankGameRepository,
-                memberRepository, matchResultVoteRepository, mmrRepository));
+        rankGameService = spy(new RankGameService(
+                rankGameParticipantRepository,
+                gameParticipantRepository,
+                rankGameRepository,
+                memberRepository,
+                matchResultVoteRepository,
+                mmrRepository));
 
         member = new Member(1L, Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(member, "id", memberId);
@@ -104,8 +113,8 @@ class RankGameServiceTest {
 
         // when & then
         assertThatThrownBy(() -> rankGameService.voteMatchResult(gameId, request, member))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("게임을 찾을 수 없습니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("게임을 찾을 수 없습니다.");
     }
 
     @Test
@@ -116,8 +125,8 @@ class RankGameServiceTest {
 
         // when & then
         assertThatThrownBy(() -> rankGameService.voteMatchResult(gameId, request, member))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("아직 게임이 끝나지 않았습니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("아직 게임이 끝나지 않았습니다.");
     }
 
     @Test
@@ -129,8 +138,8 @@ class RankGameServiceTest {
 
         // when & then
         assertThatThrownBy(() -> rankGameService.voteMatchResult(gameId, request, member))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("이미 투표를 완료했습니다.");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 투표를 완료했습니다.");
     }
 
     @Test

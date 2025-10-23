@@ -49,8 +49,7 @@ public class RankGame extends Game {
     }
 
     public boolean hasMemberVote(Member member) {
-        return matchResultVoteList.stream()
-            .anyMatch(matchResultVote -> matchResultVote.isMemberVote(member));
+        return matchResultVoteList.stream().anyMatch(matchResultVote -> matchResultVote.isMemberVote(member));
     }
 
     public void vote(MatchResultVote matchResultVote) {
@@ -63,11 +62,11 @@ public class RankGame extends Game {
 
     public RankGameTeam getWinTeam() {
         long numOfBlueVote = matchResultVoteList.stream()
-            .filter(matchResultVote -> matchResultVote.isWinTeam(RankGameTeam.BLUE_TEAM))
-            .count();
+                .filter(matchResultVote -> matchResultVote.isWinTeam(RankGameTeam.BLUE_TEAM))
+                .count();
         long numOfRedVote = matchResultVoteList.stream()
-            .filter(matchResultVote -> matchResultVote.isWinTeam(RankGameTeam.RED_TEAM))
-            .count();
+                .filter(matchResultVote -> matchResultVote.isWinTeam(RankGameTeam.RED_TEAM))
+                .count();
         long numOfVote = getNumOfVote();
 
         if (numOfVote == 0) {

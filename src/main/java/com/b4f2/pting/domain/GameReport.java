@@ -22,11 +22,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(
-    name = "game_report",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"game_id", "reporter_id", "reported_id"})
-    }
-)
+        name = "game_report",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"game_id", "reporter_id", "reported_id"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class GameReport {
@@ -35,23 +32,19 @@ public class GameReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id")
     private Game game;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporter_id")
     private Member reporter;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reported_id")
     private Member reported;
 
-    @NotNull
-    @Column(name = "reason_text")
+    @NotNull @Column(name = "reason_text")
     private String reasonText;
 
     @Enumerated(EnumType.STRING)
@@ -62,12 +55,7 @@ public class GameReport {
     private final LocalDateTime createdAt = LocalDateTime.now();
 
     public static GameReport create(
-        Game game,
-        Member reporter,
-        Member reported,
-        String reasonText,
-        GameParticipants participants
-    ) {
+            Game game, Member reporter, Member reported, String reasonText, GameParticipants participants) {
         if (!game.isEnded()) {
             throw new IllegalStateException("게임이 종료된 후에만 신고할 수 있습니다.");
         }

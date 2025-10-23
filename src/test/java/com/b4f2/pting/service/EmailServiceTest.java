@@ -66,7 +66,7 @@ class EmailServiceTest {
 
         // when & then
         assertThatThrownBy(() -> spyService.loadTemplate("not_exist.txt"))
-            .isInstanceOf(RuntimeException.class)
-            .hasMessage("메일 템플릿 로드 실패");
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("메일 템플릿 로드 실패");
     }
 }

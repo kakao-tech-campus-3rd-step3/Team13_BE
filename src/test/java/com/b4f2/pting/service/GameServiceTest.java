@@ -64,14 +64,13 @@ class GameServiceTest {
         ReflectionTestUtils.setField(sport, "name", "축구");
 
         game = Game.create(
-            sport,
-            "재미있는 방",
-            10,
-            Game.GameStatus.ON_RECRUITING,
-            LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
-            2,
-            "재미있는 방 설명입니다."
-        );
+                sport,
+                "재미있는 방",
+                10,
+                Game.GameStatus.ON_RECRUITING,
+                LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
+                2,
+                "재미있는 방 설명입니다.");
         ReflectionTestUtils.setField(game, "id", 1L);
     }
 
@@ -79,13 +78,7 @@ class GameServiceTest {
     void createGame_게임생성_성공() {
         // given
         CreateGameRequest request = new CreateGameRequest(
-            1L,
-            "재미있는 방",
-            10,
-            LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
-            2,
-            "재미있는 방 설명입니다."
-        );
+                1L, "재미있는 방", 10, LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1), 2, "재미있는 방 설명입니다.");
 
         when(sportRepository.findById(request.sportId())).thenReturn(Optional.of(sport));
         when(gameRepository.save(any(Game.class))).thenReturn(game);
@@ -113,9 +106,8 @@ class GameServiceTest {
         gameService.joinGame(member, game.getId());
 
         // then
-        verify(gameParticipantRepository).save(argThat(gp ->
-            gp.getGame().equals(game) && gp.getMember().equals(member)
-        ));
+        verify(gameParticipantRepository)
+                .save(argThat(gp -> gp.getGame().equals(game) && gp.getMember().equals(member)));
     }
 
     @Test

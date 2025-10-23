@@ -43,18 +43,18 @@ public class GameService {
     public GameDetailResponse createGame(Member member, CreateGameRequest request) {
         validateMemberIsVerified(member);
 
-        Sport sport = sportRepository.findById(request.sportId())
-            .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
+        Sport sport = sportRepository
+                .findById(request.sportId())
+                .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
 
         Game game = Game.create(
-            sport,
-            request.name(),
-            request.playerCount(),
-            Game.GameStatus.ON_RECRUITING,
-            request.startTime(),
-            request.duration(),
-            request.description()
-        );
+                sport,
+                request.name(),
+                request.playerCount(),
+                Game.GameStatus.ON_RECRUITING,
+                request.startTime(),
+                request.duration(),
+                request.description());
 
         gameRepository.save(game);
 
@@ -67,8 +67,7 @@ public class GameService {
     public void joinGame(Member member, Long gameId) throws FirebaseMessagingException {
         validateMemberIsVerified(member);
 
-        Game game = gameRepository.findById(gameId)
-            .orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
+        Game game = gameRepository.findById(gameId).orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
 
         if (game.getGameStatus() != Game.GameStatus.ON_RECRUITING) {
             throw new IllegalStateException("게임이 모집 중이 아닙니다.");
@@ -90,32 +89,26 @@ public class GameService {
 
     public GamesResponse findGamesBySportIdAndTimePeriod(Long sportId, TimePeriod timePeriod) {
         if (timePeriod == null) {
-            List<GameResponse> gameResponseList = gameRepository
-                .findAllByGameStatusAndSportId(Game.GameStatus.ON_RECRUITING, sportId)
-                .stream()
-                .map(GameResponse::new)
-                .toList();
+            List<GameResponse> gameResponseList =
+                    gameRepository.findAllByGameStatusAndSportId(Game.GameStatus.ON_RECRUITING, sportId).stream()
+                            .map(GameResponse::new)
+                            .toList();
 
             return new GamesResponse(gameResponseList);
         }
 
         List<GameResponse> gameResponseList = gameRepository
-            .findAllByGameStatusAndSportIdAndTimePeriod(
-                Game.GameStatus.ON_RECRUITING,
-                sportId,
-                timePeriod.getStartTime(),
-                timePeriod.getEndTime()
-            )
-            .stream()
-            .map(GameResponse::new)
-            .toList();
+                .findAllByGameStatusAndSportIdAndTimePeriod(
+                        Game.GameStatus.ON_RECRUITING, sportId, timePeriod.getStartTime(), timePeriod.getEndTime())
+                .stream()
+                .map(GameResponse::new)
+                .toList();
 
         return new GamesResponse(gameResponseList);
     }
 
     public GameDetailResponse findGameById(Long gameId) {
-        Game game = gameRepository.findById(gameId)
-            .orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
+        Game game = gameRepository.findById(gameId).orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
 
         return new GameDetailResponse(game);
     }
@@ -140,13 +133,12 @@ public class GameService {
     }
 
     private void notifyMatchingCompleted(List<GameParticipant> participants) throws FirebaseMessagingException {
-        List<Member> members = participants.stream()
-            .map(GameParticipant::getMember)
-            .toList();
+        List<Member> members =
+                participants.stream().map(GameParticipant::getMember).toList();
 
         List<String> tokens = fcmTokenRepository.findAllByMemberIn(members).stream()
-            .map(FcmToken::getToken)
-            .toList();
+                .map(FcmToken::getToken)
+                .toList();
 
         fcmService.sendMulticastPush(tokens, "매칭 완료", "매칭이 완료되었습니다.");
     }

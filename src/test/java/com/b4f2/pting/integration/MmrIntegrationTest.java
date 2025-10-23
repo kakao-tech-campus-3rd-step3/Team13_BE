@@ -83,7 +83,7 @@ class MmrIntegrationTest {
         org.springframework.test.util.ReflectionTestUtils.setField(game, "playerCount", 2);
         org.springframework.test.util.ReflectionTestUtils.setField(game, "gameStatus", GameStatus.END);
         org.springframework.test.util.ReflectionTestUtils.setField(
-            game, "startTime", LocalDateTime.now().minusHours(1));
+                game, "startTime", LocalDateTime.now().minusHours(1));
         org.springframework.test.util.ReflectionTestUtils.setField(game, "duration", 60);
         org.springframework.test.util.ReflectionTestUtils.setField(game, "description", "테스트용 게임");
         this.game = rankGameRepository.save(game);
@@ -105,8 +105,10 @@ class MmrIntegrationTest {
     @DisplayName("경기 결과 투표 완료 시 MMR이 정상적으로 업데이트되고 데이터베이스에 반영된다.")
     void testMmrUpdateOnVoteCompletion() {
         // given
-        double initialWinnerMu = mmrRepository.findByMemberAndSport(winner, sport).get().getMu();
-        double initialLoserMu = mmrRepository.findByMemberAndSport(loser, sport).get().getMu();
+        double initialWinnerMu =
+                mmrRepository.findByMemberAndSport(winner, sport).get().getMu();
+        double initialLoserMu =
+                mmrRepository.findByMemberAndSport(loser, sport).get().getMu();
 
         VoteRequest voteRequest = new VoteRequest(RankGameTeam.RED_TEAM);
 

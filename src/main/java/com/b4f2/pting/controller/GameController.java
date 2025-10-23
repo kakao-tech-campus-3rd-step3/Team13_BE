@@ -33,27 +33,20 @@ public class GameController {
     private final RankGameService rankGameService;
 
     @PostMapping
-    public ResponseEntity<GameDetailResponse> createGame(
-        @Login Member member,
-        @RequestBody CreateGameRequest request
-    ) {
+    public ResponseEntity<GameDetailResponse> createGame(@Login Member member, @RequestBody CreateGameRequest request) {
         return ResponseEntity.ok(gameService.createGame(member, request));
     }
 
     @PostMapping("/{gameId}")
-    public ResponseEntity<Void> joinGame(
-        @Login Member member,
-        @PathVariable Long gameId
-    ) throws FirebaseMessagingException {
+    public ResponseEntity<Void> joinGame(@Login Member member, @PathVariable Long gameId)
+            throws FirebaseMessagingException {
         gameService.joinGame(member, gameId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
     public ResponseEntity<GamesResponse> getGamesBySportIdAndTimePeriod(
-        @RequestParam Long sportId,
-        @RequestParam(required = false) TimePeriod timePeriod
-    ) {
+            @RequestParam Long sportId, @RequestParam(required = false) TimePeriod timePeriod) {
         return ResponseEntity.ok(gameService.findGamesBySportIdAndTimePeriod(sportId, timePeriod));
     }
 
@@ -64,10 +57,7 @@ public class GameController {
 
     @PostMapping("/{gameId}/votes")
     public ResponseEntity<VoteResultResponse> voteMatchResult(
-        @Login Member member,
-        @RequestBody VoteRequest voteRequest,
-        @PathVariable Long gameId
-    ) {
+            @Login Member member, @RequestBody VoteRequest voteRequest, @PathVariable Long gameId) {
         return ResponseEntity.ok(rankGameService.voteMatchResult(gameId, voteRequest, member));
     }
 }
