@@ -2,11 +2,11 @@ package com.b4f2.pting.algorithm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +16,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Mmr;
+import com.b4f2.pting.domain.RankGameParticipant;
 import com.b4f2.pting.domain.Sport;
 
 class MatchingAlgorithmEvaluationTest {
@@ -34,7 +35,7 @@ class MatchingAlgorithmEvaluationTest {
         Sport basketball = new Sport("농구", 10);
         ReflectionTestUtils.setField(basketball, "id", 1L);
 
-        Sport futsal = new Sport("풋살", 20);
+        Sport futsal = new Sport("풋살", 10);
         ReflectionTestUtils.setField(futsal, "id", 2L);
 
         return Stream.of(basketball, futsal);
@@ -43,52 +44,89 @@ class MatchingAlgorithmEvaluationTest {
     @ParameterizedTest
     @MethodSource("sportsProvider")
     void testAllAlgorithms(Sport sport) {
-        int totalPlayers = 50;
+        int totalPlayers = 100;
         int mean = 1500;
         int stddev = 200;
         int rounds = 10;
+        int maxNewPerRound = 15;
 
         Map<String, List<Double>> algorithmScores = new HashMap<>();
+        long seed = 42L;
+        Random random = new Random(seed); // 한 번만 생성
 
         for (MatchingAlgorithm algorithm : algorithms) {
+            // 전체 참가자 생성
+            List<RankGameParticipant> allParticipants = generatePlayers(totalPlayers, mean, stddev, sport, seed);
+            List<RankGameParticipant> remainingParticipants = new ArrayList<>();
+
+            // 대기 라운드 기록
+            Map<RankGameParticipant, Integer> waitRoundsMap = new HashMap<>();
+            for (RankGameParticipant p : allParticipants) {
+                waitRoundsMap.put(p, 0);
+            }
+
             for (int round = 0; round < rounds; round++) {
-                // 시드
-                long seed = 42L + round;
+                // 라운드마다 랜덤 수의 신규 참가자 추가
+                int newCount = 1 + random.nextInt(maxNewPerRound);
 
-                // 데이터
-                List<Member> players = generatePlayers(totalPlayers, mean, stddev, sport, seed);
-
-                Map<Member, Integer> matchCounts = new HashMap<>();
-                players.forEach(m -> matchCounts.put(m, 0));
-
-                // 매칭
-                List<List<Member>> matches = algorithm.match(players, sport);
-
-                for (List<Member> match : matches) {
-                    for (Member player : match) {
-                        matchCounts.put(player, matchCounts.get(player) + 1);
+                // remainingParticipants에 없는 참가자만 선택
+                List<RankGameParticipant> availableParticipants = new ArrayList<>();
+                for (RankGameParticipant p : allParticipants) {
+                    if (!remainingParticipants.contains(p)) {
+                        availableParticipants.add(p);
                     }
                 }
 
-                double score = evaluate(sport, matches, players, totalPlayers, matchCounts);
+                List<RankGameParticipant> newParticipants = new ArrayList<>();
+                for (int i = 0; i < Math.min(newCount, availableParticipants.size()); i++) {
+                    newParticipants.add(availableParticipants.get(i));
+                }
+
+                remainingParticipants.addAll(newParticipants);
+
+                // 매칭
+                List<List<RankGameParticipant>> matches = algorithm.match(remainingParticipants, sport);
+
+                // 매칭된 사람 제거, 남은 사람은 다음 라운드로
+                Set<RankGameParticipant> matchedThisRound = new HashSet<>();
+                for (List<RankGameParticipant> match : matches) {
+                    matchedThisRound.addAll(match);
+                }
+
+                List<RankGameParticipant> newRemaining = new ArrayList<>();
+                for (RankGameParticipant p : remainingParticipants) {
+                    if (!matchedThisRound.contains(p)) {
+                        newRemaining.add(p);
+                    }
+                }
+                remainingParticipants = newRemaining;
+
+                // 대기 라운드 누적
+                for (RankGameParticipant p : remainingParticipants) {
+                    waitRoundsMap.put(p, waitRoundsMap.get(p) + 1);
+                }
+
+                // 라운드 점수 계산
+                double score = evaluateWithWaitTime(sport, matches, waitRoundsMap);
                 algorithmScores.computeIfAbsent(algorithm.getName(), k -> new ArrayList<>()).add(score);
             }
         }
 
-        Map<String, Double> avgScores = algorithmScores.entrySet().stream()
-            .collect(Collectors.toMap(
-                Map.Entry::getKey,
-                e -> e.getValue().stream().mapToDouble(d -> d).average().orElse(0)
-            ));
+        // 평균 점수 계산
+        Map<String, Double> avgScores = new HashMap<>();
+        for (Map.Entry<String, List<Double>> entry : algorithmScores.entrySet()) {
+            double avg = entry.getValue().stream().mapToDouble(d -> d).average().orElse(0);
+            avgScores.put(entry.getKey(), avg);
+        }
 
-        // 평가
         printRanking(sport.getName(), avgScores);
     }
 
-    private List<Member> generatePlayers(int count, double mean, double stddev, Sport sport, Long seed) {
+    private List<RankGameParticipant> generatePlayers(int count, double mean, double stddev, Sport sport, Long seed) {
         Random random = new Random(seed);
 
-        List<Member> players = new ArrayList<>();
+        List<RankGameParticipant> participants = new ArrayList<>();
+
         for (int i = 0; i < count; i++) {
             double gaussian = random.nextGaussian();
             double mmrValue = mean + gaussian * stddev;
@@ -99,49 +137,33 @@ class MatchingAlgorithmEvaluationTest {
 
             Mmr mmr = new Mmr(sport, member);
             ReflectionTestUtils.setField(mmr, "mu", mmrValue);
-
             ReflectionTestUtils.setField(member, "mmrList", List.of(mmr));
 
-            players.add(member);
+            RankGameParticipant participant = new RankGameParticipant();
+            ReflectionTestUtils.setField(participant, "member", member);
+
+            participants.add(participant);
         }
 
-        return players;
+        return participants;
     }
 
-    private double evaluate(Sport sport, List<List<Member>> matches, List<Member> players, int totalPlayers,
-        Map<Member, Integer> matchCounts) {
-        // 매칭률 계산
-        Set<Long> matchedIds = matches.stream()
-            .flatMap(List::stream)
-            .map(Member::getId)
-            .collect(Collectors.toSet());
-        double matchingRate = (double) matchedIds.size() / totalPlayers;
-
-        // 팀 내 분산 평균 계산
+    private double evaluateWithWaitTime(Sport sport, List<List<RankGameParticipant>> matches,
+        Map<RankGameParticipant, Integer> waitRoundsMap) {
+        // 팀 내 MMR 분산 계산
         double avgIntraVar = matches.stream().mapToDouble(match -> {
-            double avg = match.stream().mapToDouble(m -> m.getMmr(sport)).average().orElse(0);
-            return match.stream().mapToDouble(m -> Math.pow(m.getMmr(sport) - avg, 2)).average().orElse(0);
+            double avg = match.stream().mapToDouble(p -> p.getMember().getMmr(sport)).average().orElse(0);
+            return match.stream().mapToDouble(p -> Math.pow(p.getMember().getMmr(sport) - avg, 2)).average().orElse(0);
         }).average().orElse(0);
-
         double intraScore = 1 / (1 + avgIntraVar / 1000);
 
-        // 팀 간 평균 MMR 분산 계산
-        List<Double> teamAverages = matches.stream()
-            .map(m -> m.stream().mapToDouble(p -> p.getMmr(sport)).average().orElse(0))
-            .toList();
-        double overallAvg = teamAverages.stream().mapToDouble(d -> d).average().orElse(0);
-        double interVar = teamAverages.stream().mapToDouble(avg -> Math.pow(avg - overallAvg, 2)).average().orElse(0);
-        double interScore = 1 / (1 + interVar / 1000);
-
-        // 공정성 점수
-        double avgMatches = players.stream().mapToInt(m -> matchCounts.getOrDefault(m, 0)).average().orElse(0);
-        double fairnessVar = players.stream().mapToDouble(m -> Math.pow(matchCounts.getOrDefault(m, 0) - avgMatches, 2))
-            .average().orElse(0);
-        double fairnessScore = 1 / (1 + fairnessVar);
+        // 대기 라운드 점수
+        double avgWait = waitRoundsMap.values().stream().mapToInt(v -> v).average().orElse(0);
+        double waitScore = 1 / (1 + avgWait / 10);
 
         // 최종 점수
-        double sumScore = 100 * matchingRate + 100 * intraScore + 100 * interScore + 100 * fairnessScore;
-        return sumScore / 4;
+        double sumScore = 100 * intraScore + 100 * waitScore;
+        return sumScore / 2;
     }
 
     private void printRanking(String title, Map<String, Double> scores) {
