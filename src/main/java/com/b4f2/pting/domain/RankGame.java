@@ -1,5 +1,7 @@
 package com.b4f2.pting.domain;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,33 @@ public class RankGame extends Game {
 
     @OneToMany(mappedBy = "game")
     private List<MatchResultVote> matchResultVoteList = new ArrayList<>();
+
+    public RankGame() {
+        super();
+    }
+
+    public RankGame(Long id, Sport sport, String name, Integer playerCount,
+        GameStatus gameStatus, LocalDateTime startTime,
+        Integer duration, String description) {
+        super(id, sport, name, playerCount, gameStatus, startTime, duration, description);
+    }
+
+    public static RankGame create(
+        Sport sport,
+        String name,
+        Integer playerCount,
+        GameStatus gameStatus,
+        LocalDateTime startTime,
+        Integer duration,
+        String description
+    ) {
+        LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        if (startTime.isBefore(nowInSeoul)) {
+            throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
+        }
+
+        return new RankGame(null, sport, name, playerCount, gameStatus, startTime, duration, description);
+    }
 
     public boolean hasMemberVote(Member member) {
         return matchResultVoteList.stream()
