@@ -42,8 +42,8 @@ class MatchingAlgorithmEvaluationTest {
     @MethodSource("sportsProvider")
     void testAllAlgorithms(Sport sport) {
         int totalPlayers = 100;
-        int mean = 1500;
-        int stddev = 200;
+        double mean = 25.0;
+        double stddev = 4.0;
         int rounds = 10;
         int maxNewPerRound = 15;
 
@@ -163,7 +163,7 @@ class MatchingAlgorithmEvaluationTest {
                 })
                 .average()
                 .orElse(0);
-        double intraScore = 1 / (1 + avgIntraVar / 1000);
+        double intraScore = 1 / (1 + avgIntraVar);
 
         // 대기 라운드 점수
         double avgWait =
