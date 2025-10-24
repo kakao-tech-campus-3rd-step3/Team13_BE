@@ -20,10 +20,6 @@ public class MMRBucketMatching implements MatchingAlgorithm {
         return "MMRBucket";
     }
 
-    private double getBucketKey(double mmr) {
-        return Math.floor(mmr / BUCKET_WIDTH) * BUCKET_WIDTH;
-    }
-
     @Override
     public List<List<RankGameParticipant>> match(List<RankGameParticipant> participants, Sport sport) {
         List<List<RankGameParticipant>> results = new ArrayList<>();
@@ -57,5 +53,9 @@ public class MMRBucketMatching implements MatchingAlgorithm {
         }
 
         return results;
+    }
+
+    private double getBucketKey(double mmr) {
+        return Math.floor(mmr / BUCKET_WIDTH) * BUCKET_WIDTH;
     }
 }
