@@ -142,11 +142,9 @@ public final class BalancedDPClusterMatching implements MatchingAlgorithm {
         SKIP
     }
 
-    private record ParticipantWithMmr(RankGameParticipant participant, double mmr) {
-    }
+    private record ParticipantWithMmr(RankGameParticipant participant, double mmr) {}
 
-    private record Range(int l, int r) {
-    }
+    private record Range(int l, int r) {}
 
     /**
      * 1-based prefix sums for SSE computation:

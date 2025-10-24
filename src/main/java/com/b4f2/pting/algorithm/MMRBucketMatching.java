@@ -5,12 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.springframework.stereotype.Component;
-
 import com.b4f2.pting.domain.RankGameParticipant;
 import com.b4f2.pting.domain.Sport;
 
-@Component
 public class MMRBucketMatching implements MatchingAlgorithm {
 
     private static final double BUCKET_WIDTH = 2d;
