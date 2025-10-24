@@ -10,10 +10,15 @@ tab_width = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
 
+[*.java]
+ij_java_use_single_class_imports = true
+ij_java_class_count_to_use_import_on_demand = 999
+ij_java_names_count_to_use_import_on_demand = 999
+ij_java_imports_layout = $*, |, java.**, |, javax.**, |, jakarta.**, |, org.**, |, com.**, |, *, |, com.b4f2.**
+
 [*.yml]
-indent_style = space
 indent_size = 2
 
 [*.md]
-indent_style = space
+trim_trailing_whitespace = false
 indent_size = 2

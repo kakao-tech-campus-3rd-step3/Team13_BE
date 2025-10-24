@@ -84,11 +84,10 @@ class EmailCertificationIntegrationTest {
     void selectSchoolAndSendEmail_성공() {
         // 학교 선택
         ResponseEntity<SchoolResponse> schoolResponse = restTemplate.exchange(
-            "/api/v1/members/me/school/" + testSchool.getId(),
-            HttpMethod.POST,
-            new HttpEntity<>(createAuthHeader()),
-            SchoolResponse.class
-        );
+                "/api/v1/members/me/school/" + testSchool.getId(),
+                HttpMethod.POST,
+                new HttpEntity<>(createAuthHeader()),
+                SchoolResponse.class);
 
         assertThat(schoolResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(schoolResponse.getBody().id()).isEqualTo(testSchool.getId());
@@ -97,10 +96,7 @@ class EmailCertificationIntegrationTest {
         CertificationRequest request = new CertificationRequest(testMember.getSchoolEmail());
 
         ResponseEntity<String> response = restTemplate.postForEntity(
-            "/api/v1/members/me/certification/email",
-            new HttpEntity<>(request, createAuthHeader()),
-            String.class
-        );
+                "/api/v1/members/me/certification/email", new HttpEntity<>(request, createAuthHeader()), String.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).contains("인증 메일을 발송했습니다");
@@ -125,10 +121,9 @@ class EmailCertificationIntegrationTest {
 
         // when
         ResponseEntity<CertificationResponse> response = restTemplate.postForEntity(
-            "/api/v1/members/me/certification/verify",
-            new HttpEntity<>(request, createAuthHeader()),
-            CertificationResponse.class
-        );
+                "/api/v1/members/me/certification/verify",
+                new HttpEntity<>(request, createAuthHeader()),
+                CertificationResponse.class);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -137,7 +132,6 @@ class EmailCertificationIntegrationTest {
         Member refreshed = memberRepository.findById(testMember.getId()).orElseThrow();
         assertThat(refreshed.getIsVerified()).isTrue();
         assertThat(refreshed.getSchoolEmail()).isEqualTo(localPart + "@" + testSchool.getPostfix());
-
     }
 
     @Test
@@ -149,11 +143,10 @@ class EmailCertificationIntegrationTest {
 
         // when
         ResponseEntity<CertificationResponse> response = restTemplate.exchange(
-            "/api/v1/members/me/certification/status",
-            HttpMethod.GET,
-            new HttpEntity<>(createAuthHeader()),
-            CertificationResponse.class
-        );
+                "/api/v1/members/me/certification/status",
+                HttpMethod.GET,
+                new HttpEntity<>(createAuthHeader()),
+                CertificationResponse.class);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -176,13 +169,9 @@ class EmailCertificationIntegrationTest {
 
         // when
         ResponseEntity<String> response = restTemplate.postForEntity(
-            "/api/v1/members/me/certification/verify",
-            new HttpEntity<>(request, createAuthHeader()),
-            String.class
-        );
+                "/api/v1/members/me/certification/verify", new HttpEntity<>(request, createAuthHeader()), String.class);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
 }
-

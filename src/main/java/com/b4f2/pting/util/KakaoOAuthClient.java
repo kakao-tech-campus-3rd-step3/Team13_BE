@@ -26,19 +26,21 @@ public class KakaoOAuthClient {
         params.add("redirect_uri", kakaoOAuthProperties.redirectUri());
         params.add("code", code);
 
-        return restClient.post()
-            .uri(kakaoOAuthProperties.tokenUri())
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .body(params)
-            .retrieve()
-            .body(KakaoOAuthTokenResponse.class);
+        return restClient
+                .post()
+                .uri(kakaoOAuthProperties.tokenUri())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(params)
+                .retrieve()
+                .body(KakaoOAuthTokenResponse.class);
     }
 
     public KakaoUserInfoResponse getKakaoUserInfo(KakaoOAuthTokenResponse token) {
-        return restClient.post()
-            .uri(kakaoOAuthProperties.infoUri())
-            .header("Authorization", "Bearer " + token.accessToken())
-            .retrieve()
-            .body(KakaoUserInfoResponse.class);
+        return restClient
+                .post()
+                .uri(kakaoOAuthProperties.infoUri())
+                .header("Authorization", "Bearer " + token.accessToken())
+                .retrieve()
+                .body(KakaoUserInfoResponse.class);
     }
 }

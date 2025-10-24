@@ -33,8 +33,7 @@ public class ProfileService {
     }
 
     private Member getMemberOrThrowException(Long memberId) {
-        return memberRepository.findById(memberId)
-            .orElseThrow(() -> new EntityNotFoundException("해당 유저는 존재하지 않습니다."));
+        return memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException("해당 유저는 존재하지 않습니다."));
     }
 
     @Transactional

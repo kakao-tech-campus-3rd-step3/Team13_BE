@@ -1,0 +1,5 @@
+# .git-blame-ignore-revs
+# https://docs.github.com/ko/repositories/working-with-files/using-files/viewing-and-understanding-files#ignore-commits-in-the-blame-view
+
+# chore: 프로젝트에 spotless 포매팅 적용
+3e7200db2f93a5a1b82a72452d508ec9850156aa

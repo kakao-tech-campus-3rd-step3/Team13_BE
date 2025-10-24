@@ -42,8 +42,8 @@ public class RankGameService {
     @Transactional
     public VoteResultResponse voteMatchResult(Long gameId, VoteRequest voteRequest, Member member) {
         // Validation Response
-        RankGame game = rankGameRepository.findById(gameId)
-            .orElseThrow(() -> new IllegalArgumentException("게임을 찾을 수 없습니다."));
+        RankGame game =
+                rankGameRepository.findById(gameId).orElseThrow(() -> new IllegalArgumentException("게임을 찾을 수 없습니다."));
 
         if (!game.isEnded()) {
             throw new IllegalArgumentException("아직 게임이 끝나지 않았습니다.");
@@ -62,10 +62,9 @@ public class RankGameService {
         checkAndHandle(game);
 
         // Result
-        List<RankGameTeam> rankGameTeams = game.getMatchResultVoteList()
-            .stream()
-            .map(MatchResultVote::getVotedTeam)
-            .toList();
+        List<RankGameTeam> rankGameTeams = game.getMatchResultVoteList().stream()
+                .map(MatchResultVote::getVotedTeam)
+                .toList();
         return new VoteResultResponse(rankGameTeams);
     }
 
@@ -83,21 +82,19 @@ public class RankGameService {
             return;
         }
 
-        RankGameParticipants rankGameParticipants = new RankGameParticipants(
-            rankGameParticipantRepository.findAllByGame(game));
+        RankGameParticipants rankGameParticipants =
+                new RankGameParticipants(rankGameParticipantRepository.findAllByGame(game));
 
-        List<Mmr> winMmrList = rankGameParticipants.getGameParticipantList()
-            .stream()
-            .filter(rankGameParticipant -> rankGameParticipant.isTeam(winTeam))
-            .map(this::mapRankGameParticipantToMmr)
-            .toList();
+        List<Mmr> winMmrList = rankGameParticipants.getGameParticipantList().stream()
+                .filter(rankGameParticipant -> rankGameParticipant.isTeam(winTeam))
+                .map(this::mapRankGameParticipantToMmr)
+                .toList();
 
-        List<Mmr> lossTeamMmrList = rankGameParticipants.getGameParticipantList()
-            .stream()
-            .filter(rankGameParticipant ->
-                !(rankGameParticipant.isTeam(winTeam) || rankGameParticipant.isTeam(RankGameTeam.NONE)))
-            .map(this::mapRankGameParticipantToMmr)
-            .toList();
+        List<Mmr> lossTeamMmrList = rankGameParticipants.getGameParticipantList().stream()
+                .filter(rankGameParticipant ->
+                        !(rankGameParticipant.isTeam(winTeam) || rankGameParticipant.isTeam(RankGameTeam.NONE)))
+                .map(this::mapRankGameParticipantToMmr)
+                .toList();
 
         MmrUpdater mmrUpdater = new MmrUpdater(winMmrList, lossTeamMmrList);
         mmrUpdater.update();
@@ -108,9 +105,7 @@ public class RankGameService {
         Sport sport = rankGameParticipant.getGame().getSport();
 
         Optional<Mmr> mmrOptional = mmrRepository.findByMemberAndSport(
-            rankGameParticipant.getMember(),
-            rankGameParticipant.getGame().getSport()
-        );
+                rankGameParticipant.getMember(), rankGameParticipant.getGame().getSport());
 
         return mmrOptional.orElseGet(() -> {
             Mmr mmr1 = new Mmr(sport, member);

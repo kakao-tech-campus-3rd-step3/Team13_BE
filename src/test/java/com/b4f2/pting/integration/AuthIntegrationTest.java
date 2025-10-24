@@ -51,13 +51,8 @@ class AuthIntegrationTest {
         // given
         String code = "testCode";
 
-        KakaoOAuthTokenResponse tokenResponse = new KakaoOAuthTokenResponse(
-            "bearer",
-            "accessToken123",
-            3600,
-            "refreshToken123",
-            7200
-        );
+        KakaoOAuthTokenResponse tokenResponse =
+                new KakaoOAuthTokenResponse("bearer", "accessToken123", 3600, "refreshToken123", 7200);
 
         KakaoUserInfoResponse userInfoResponse = new KakaoUserInfoResponse(12345L);
 
@@ -65,17 +60,17 @@ class AuthIntegrationTest {
         given(kakaoOAuthClient.getKakaoUserInfo(tokenResponse)).willReturn(userInfoResponse);
 
         // when
-        ResponseEntity<AuthResponse> response = restTemplate.getForEntity(
-            "/api/v1/auth/kakao/callback?code=" + code,
-            AuthResponse.class
-        );
+        ResponseEntity<AuthResponse> response =
+                restTemplate.getForEntity("/api/v1/auth/kakao/callback?code=" + code, AuthResponse.class);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().token()).isNotBlank();
 
-        Member member = memberRepository.findByOauthIdAndOauthProvider(12345L, OAuthProvider.KAKAO).orElseThrow();
+        Member member = memberRepository
+                .findByOauthIdAndOauthProvider(12345L, OAuthProvider.KAKAO)
+                .orElseThrow();
         assertThat(member.getOauthId()).isEqualTo(12345L);
     }
 
@@ -86,13 +81,8 @@ class AuthIntegrationTest {
         Member existingMember = memberRepository.save(new Member(12345L, OAuthProvider.KAKAO));
 
         String code = "testCode";
-        KakaoOAuthTokenResponse tokenResponse = new KakaoOAuthTokenResponse(
-            "bearer",
-            "accessToken123",
-            3600,
-            "refreshToken123",
-            7200
-        );
+        KakaoOAuthTokenResponse tokenResponse =
+                new KakaoOAuthTokenResponse("bearer", "accessToken123", 3600, "refreshToken123", 7200);
 
         KakaoUserInfoResponse userInfoResponse = new KakaoUserInfoResponse(12345L);
 
@@ -100,14 +90,11 @@ class AuthIntegrationTest {
         given(kakaoOAuthClient.getKakaoUserInfo(tokenResponse)).willReturn(userInfoResponse);
 
         // when
-        ResponseEntity<AuthResponse> response = restTemplate.getForEntity(
-            "/api/v1/auth/kakao/callback?code=" + code,
-            AuthResponse.class
-        );
+        ResponseEntity<AuthResponse> response =
+                restTemplate.getForEntity("/api/v1/auth/kakao/callback?code=" + code, AuthResponse.class);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(memberRepository.findAll()).hasSize(1);
     }
 }
-
