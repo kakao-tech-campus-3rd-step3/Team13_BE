@@ -55,7 +55,9 @@ CREATE TABLE game_user (
 );
 
 CREATE TABLE rank_game_user (
-    team rank_game_team
+    team rank_game_team,
+    queue_joined_at TIMESTAMP NOT NULL,
+    accepted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE game_report (

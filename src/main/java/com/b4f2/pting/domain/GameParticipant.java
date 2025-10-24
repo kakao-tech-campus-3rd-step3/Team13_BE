@@ -41,4 +41,8 @@ public class GameParticipant {
     public boolean isEqualMember(Member member) {
         return this.member.isEqualMember(member);
     }
+
+    public void assignGame(Game game) {
+        this.game = game;
+    }
 }

@@ -1,5 +1,7 @@
 package com.b4f2.pting.domain;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,7 +19,29 @@ public class RankGameParticipant extends GameParticipant {
     @Enumerated(EnumType.STRING)
     private RankGameTeam team;
 
+    @Column(name = "queue_joined_at")
+    private LocalDateTime queueJoinedAt;
+
+    @Column(name = "accepted")
+    private boolean accepted = false;
+
     public boolean isTeam(RankGameTeam rankGameTeam) {
         return team == rankGameTeam;
+    }
+
+    public void assignTeam(RankGameTeam team) {
+        this.team = team;
+    }
+
+    public void joinQueue() {
+        this.queueJoinedAt = LocalDateTime.now();
+    }
+
+    public void accept() {
+        accepted = true;
+    }
+
+    public boolean isAccepted() {
+        return accepted;
     }
 }
