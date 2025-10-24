@@ -25,10 +25,7 @@ class MatchingAlgorithmEvaluationTest {
 
     @BeforeEach
     void setUp() {
-        algorithms = List.of(
-            new SimpleMMRMatching(),
-            new BalancedKMeansClusterMatching()
-        );
+        algorithms = List.of(new SimpleMMRMatching(), new BalancedKMeansClusterMatching());
     }
 
     static Stream<Sport> sportsProvider() {
@@ -108,7 +105,9 @@ class MatchingAlgorithmEvaluationTest {
 
                 // 라운드 점수 계산
                 double score = evaluateWithWaitTime(sport, matches, waitRoundsMap);
-                algorithmScores.computeIfAbsent(algorithm.getName(), k -> new ArrayList<>()).add(score);
+                algorithmScores
+                        .computeIfAbsent(algorithm.getName(), k -> new ArrayList<>())
+                        .add(score);
             }
         }
 
@@ -148,17 +147,27 @@ class MatchingAlgorithmEvaluationTest {
         return participants;
     }
 
-    private double evaluateWithWaitTime(Sport sport, List<List<RankGameParticipant>> matches,
-        Map<RankGameParticipant, Integer> waitRoundsMap) {
+    private double evaluateWithWaitTime(
+            Sport sport, List<List<RankGameParticipant>> matches, Map<RankGameParticipant, Integer> waitRoundsMap) {
         // 팀 내 MMR 분산 계산
-        double avgIntraVar = matches.stream().mapToDouble(match -> {
-            double avg = match.stream().mapToDouble(p -> p.getMember().getMmr(sport)).average().orElse(0);
-            return match.stream().mapToDouble(p -> Math.pow(p.getMember().getMmr(sport) - avg, 2)).average().orElse(0);
-        }).average().orElse(0);
+        double avgIntraVar = matches.stream()
+                .mapToDouble(match -> {
+                    double avg = match.stream()
+                            .mapToDouble(p -> p.getMember().getMmr(sport))
+                            .average()
+                            .orElse(0);
+                    return match.stream()
+                            .mapToDouble(p -> Math.pow(p.getMember().getMmr(sport) - avg, 2))
+                            .average()
+                            .orElse(0);
+                })
+                .average()
+                .orElse(0);
         double intraScore = 1 / (1 + avgIntraVar / 1000);
 
         // 대기 라운드 점수
-        double avgWait = waitRoundsMap.values().stream().mapToInt(v -> v).average().orElse(0);
+        double avgWait =
+                waitRoundsMap.values().stream().mapToInt(v -> v).average().orElse(0);
         double waitScore = 1 / (1 + avgWait / 10);
 
         // 최종 점수

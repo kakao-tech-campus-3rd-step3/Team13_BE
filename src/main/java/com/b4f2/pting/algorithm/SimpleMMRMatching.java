@@ -26,10 +26,8 @@ public class SimpleMMRMatching implements MatchingAlgorithm {
             return results;
         }
 
-        participants.sort((p1, p2) -> Double.compare(
-            p2.getMember().getMmr(sport),
-            p1.getMember().getMmr(sport)
-        ));
+        participants.sort((p1, p2) ->
+                Double.compare(p2.getMember().getMmr(sport), p1.getMember().getMmr(sport)));
 
         for (int i = 0; i + playersPerGame <= participants.size(); i += playersPerGame) {
             results.add(new ArrayList<>(participants.subList(i, i + playersPerGame)));

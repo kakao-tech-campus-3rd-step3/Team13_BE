@@ -15,7 +15,9 @@ public class MatchingQueue {
 
     public void addPlayer(Long sportId, RankGameParticipant participant) {
         participant.joinQueue();
-        gameQueues.computeIfAbsent(sportId, k -> Collections.synchronizedList(new ArrayList<>())).add(participant);
+        gameQueues
+                .computeIfAbsent(sportId, k -> Collections.synchronizedList(new ArrayList<>()))
+                .add(participant);
     }
 
     public RankGameParticipants getPlayers(Long sportId) {
