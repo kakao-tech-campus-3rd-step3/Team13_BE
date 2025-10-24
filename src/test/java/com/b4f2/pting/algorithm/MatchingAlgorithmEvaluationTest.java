@@ -25,7 +25,11 @@ class MatchingAlgorithmEvaluationTest {
 
     @BeforeEach
     void setUp() {
-        algorithms = List.of(new SimpleMMRMatching(), new BalancedKMeansClusterMatching());
+        algorithms = List.of(
+                new SimpleMMRMatching(),
+                new BalancedKMeansClusterMatching(),
+                new BalancedDPClusterMatching(),
+                new MMRBucketMatching());
     }
 
     static Stream<Sport> sportsProvider() {
