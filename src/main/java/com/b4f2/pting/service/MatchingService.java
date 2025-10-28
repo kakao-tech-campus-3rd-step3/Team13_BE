@@ -17,11 +17,14 @@ import lombok.RequiredArgsConstructor;
 import com.b4f2.pting.algorithm.MatchingAlgorithm;
 import com.b4f2.pting.domain.Game.GameStatus;
 import com.b4f2.pting.domain.MatchingQueue;
+import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.RankGame;
 import com.b4f2.pting.domain.RankGameParticipant;
 import com.b4f2.pting.domain.RankGameParticipants;
 import com.b4f2.pting.domain.RankGameTeam;
 import com.b4f2.pting.domain.Sport;
+import com.b4f2.pting.dto.RankGameConfirmRequest;
+import com.b4f2.pting.dto.RankGameEnqueueRequest;
 import com.b4f2.pting.repository.RankGameParticipantRepository;
 import com.b4f2.pting.repository.RankGameRepository;
 
@@ -36,8 +39,12 @@ public class MatchingService {
     private final MatchingAlgorithm matchingAlgorithm;
 
     @Transactional
-    public void addPlayerToQueue(Sport sport, RankGameParticipant participant) {
-        matchingQueue.addPlayer(sport.getId(), participant);
+    public RankGameParticipant addPlayerToQueue(Member member, RankGameEnqueueRequest request) {
+        RankGameParticipant participant = new RankGameParticipant(member);
+
+        matchingQueue.addPlayer(request.sportId(), participant);
+
+        return rankGameParticipantRepository.save(participant);
     }
 
     @Transactional
@@ -78,7 +85,11 @@ public class MatchingService {
     }
 
     @Transactional
-    public void acceptTeam(RankGameParticipant participant) {
+    public void acceptTeam(Member member, RankGameConfirmRequest request) {
+        RankGameParticipant participant = rankGameParticipantRepository
+                .findByGameIdAndMemberId(request.gameId(), member.getId())
+                .orElseThrow(() -> new IllegalArgumentException("참가자를 찾을 수 없습니다."));
+
         participant.accept();
         rankGameParticipantRepository.save(participant);
 
