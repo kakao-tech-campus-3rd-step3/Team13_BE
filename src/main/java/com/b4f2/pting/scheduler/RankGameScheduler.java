@@ -25,7 +25,11 @@ public class RankGameScheduler {
         List<Sport> allSports = sportRepository.findAll();
 
         for (Sport sport : allSports) {
-            matchingService.proposeGamesFromQueue(sport);
+            try {
+                matchingService.proposeGamesFromQueue(sport);
+            } catch (Exception e) {
+                log.error("[RankGameScheduler] {} 종목 매칭 중 오류 발생: {}", sport.getName(), e.getMessage(), e);
+            }
         }
 
         log.info("[RankGameScheduler] dailyGameCreationJob finished");
