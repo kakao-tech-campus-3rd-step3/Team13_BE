@@ -22,14 +22,14 @@ public class FcmController {
     private final FcmService fcmService;
 
     @PostMapping("/token")
-    public ResponseEntity<String> saveToken(@Login Member member, @RequestBody FcmTokenRequest request) {
-        fcmService.saveToken(member, request.token());
+    public ResponseEntity<String> saveFcmToken(@Login Member member, @RequestBody FcmTokenRequest request) {
+        fcmService.saveFcmToken(member, request.token());
         return ResponseEntity.ok("FCM 토큰이 저장되었습니다.");
     }
 
     @DeleteMapping("/token")
-    public ResponseEntity<String> deleteToken(@Login Member member) {
-        fcmService.deleteToken(member);
+    public ResponseEntity<String> deleteFcmToken(@Login Member member) {
+        fcmService.deleteFcmToken(member);
         return ResponseEntity.ok("FCM 토큰이 삭제되었습니다.");
     }
 }

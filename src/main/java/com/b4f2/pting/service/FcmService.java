@@ -26,7 +26,7 @@ public class FcmService {
     private final FcmTokenRepository fcmTokenRepository;
 
     @Transactional
-    public void saveToken(Member member, String token) {
+    public void saveFcmToken(Member member, String token) {
         Optional<FcmToken> fcmTokenOptional = fcmTokenRepository.findByMember(member);
 
         if (fcmTokenOptional.isPresent()) {
@@ -38,7 +38,7 @@ public class FcmService {
     }
 
     @Transactional
-    public void deleteToken(Member member) {
+    public void deleteFcmToken(Member member) {
         fcmTokenRepository.deleteByMember(member);
     }
 
