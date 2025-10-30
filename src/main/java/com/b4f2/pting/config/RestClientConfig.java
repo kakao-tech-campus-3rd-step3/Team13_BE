@@ -10,11 +10,14 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class RestClientConfig {
 
+    private static final int CONNECTION_TIMEOUT = 3;
+    private static final int READ_TIMEOUT = 3;
+
     @Bean
     RestClient restClient() {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setConnectTimeout(Duration.ofSeconds(3));
-        requestFactory.setReadTimeout(Duration.ofSeconds(3));
+        requestFactory.setConnectTimeout(Duration.ofSeconds(CONNECTION_TIMEOUT));
+        requestFactory.setReadTimeout(Duration.ofSeconds(READ_TIMEOUT));
 
         return RestClient.builder().requestFactory(requestFactory).build();
     }
