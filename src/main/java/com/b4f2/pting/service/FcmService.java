@@ -37,6 +37,11 @@ public class FcmService {
         }
     }
 
+    @Transactional
+    public void deleteToken(Member member) {
+        fcmTokenRepository.deleteByMember(member);
+    }
+
     public void sendSinglePush(String token, String title, String body) throws FirebaseMessagingException {
         Message message = Message.builder()
                 .setNotification(

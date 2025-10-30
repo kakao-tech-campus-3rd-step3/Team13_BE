@@ -1,6 +1,7 @@
 package com.b4f2.pting.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,5 +25,11 @@ public class FcmController {
     public ResponseEntity<String> saveToken(@Login Member member, @RequestBody FcmTokenRequest request) {
         fcmService.saveToken(member, request.token());
         return ResponseEntity.ok("FCM 토큰이 저장되었습니다.");
+    }
+
+    @DeleteMapping("/token")
+    public ResponseEntity<String> deleteToken(@Login Member member) {
+        fcmService.deleteToken(member);
+        return ResponseEntity.ok("FCM 토큰이 삭제되었습니다.");
     }
 }
