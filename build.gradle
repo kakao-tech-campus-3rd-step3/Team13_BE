@@ -15,11 +15,15 @@ java {
     }
 }
 
+/*
+ * ./gradlew spotlessInstallGitPrePushHook
+ * ./gradlew.bat spotlessInstallGitPrePushHook
+ */
 spotless {
     java {
         forbidWildcardImports()
         removeUnusedImports()
-        palantirJavaFormat('2.77.0')
+        palantirJavaFormat('2.81.0')
         formatAnnotations()
         importOrder(
             '\\#',
@@ -75,14 +79,9 @@ dependencies {
 }
 
 tasks.named('test') {
-    dependsOn('spotlessApply')
     useJUnitPlatform {
         if (System.getProperty('ci') != null) {
             excludeTags('integration')
         }
     }
-}
-
-tasks.named('compileJava') {
-    dependsOn('spotlessApply')
 }
