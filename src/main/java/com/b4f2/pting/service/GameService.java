@@ -51,6 +51,7 @@ public class GameService {
         Game game = Game.create(
                 sport,
                 request.name(),
+                request.gameLocation(),
                 request.playerCount(),
                 Game.GameStatus.ON_RECRUITING,
                 request.startTime(),

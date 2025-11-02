@@ -66,6 +66,7 @@ class GameServiceTest {
         game = Game.create(
                 sport,
                 "재미있는 방",
+                "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
@@ -78,7 +79,13 @@ class GameServiceTest {
     void createGame_게임생성_성공() {
         // given
         CreateGameRequest request = new CreateGameRequest(
-                1L, "재미있는 방", 10, LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1), 2, "재미있는 방 설명입니다.");
+                1L,
+                "재미있는 방",
+                "넉넉한 터",
+                10,
+                LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
+                2,
+                "재미있는 방 설명입니다.");
 
         when(sportRepository.findById(request.sportId())).thenReturn(Optional.of(sport));
         when(gameRepository.save(any(Game.class))).thenReturn(game);
