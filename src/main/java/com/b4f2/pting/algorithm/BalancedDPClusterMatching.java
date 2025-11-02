@@ -25,30 +25,52 @@ public final class BalancedDPClusterMatching implements MatchingAlgorithm {
 
     @Override
     public List<List<RankGameParticipant>> match(final List<RankGameParticipant> participants, final Sport sport) {
-        if (participants == null || participants.isEmpty()) return List.of();
+        if (participants == null || participants.isEmpty()) {
+            return List.of();
+        }
 
         final int matchSize = sport.getRecommendedPlayerCount();
-        if (matchSize <= 0) return List.of();
+        if (matchSize <= 0) {
+            return List.of();
+        }
 
-        // 1) (participant, mmr) 페어로 만들고 MMR 오름차순 정렬
-        final var sorted = participants.stream()
-                .map(p -> new ParticipantWithMmr(p, p.getMember().getMmr(sport)))
-                .sorted(Comparator.comparingDouble(ParticipantWithMmr::mmr))
-                .toList();
+        final var sorted = sortParticipantsByMmr(participants, sport);
 
         final int n = sorted.size();
         final int matchCount = n / matchSize;
-        if (matchCount == 0) return List.of();
+        if (matchCount == 0) {
+            return List.of();
+        }
 
         final int maxSkips = n - matchCount * matchSize;
 
-        // 2) Prefix sums (1-based): A[i], P[i]=∑A, Q[i]=∑A^2
         final PrefixSums prefix = PrefixSums.of(sorted);
-
-        // SSE 계산기: [l..r] (1-based, inclusive)
         final BiFunction<Integer, Integer, Double> sse = prefix::sse;
 
-        // 3) DP 상태/부모 포인터 준비
+        final DPResult dpResult = runDP(n, matchCount, maxSkips, matchSize, sse);
+
+        final int bestK = findBestK(dpResult, n, matchCount, maxSkips);
+        if (bestK == -1) {
+            return List.of();
+        }
+
+        return reconstructMatches(dpResult, sorted, n, matchCount, bestK, matchSize);
+    }
+
+    private List<ParticipantWithMmr> sortParticipantsByMmr(
+            final List<RankGameParticipant> participants, final Sport sport) {
+        return participants.stream()
+                .map(p -> new ParticipantWithMmr(p, p.getMember().getMmr(sport)))
+                .sorted(Comparator.comparingDouble(ParticipantWithMmr::mmr))
+                .toList();
+    }
+
+    private DPResult runDP(
+            final int n,
+            final int matchCount,
+            final int maxSkips,
+            final int matchSize,
+            final BiFunction<Integer, Integer, Double> sse) {
         final double INF = Double.POSITIVE_INFINITY;
 
         final double[][][] dp = new double[n + 1][matchCount + 1][maxSkips + 1];
@@ -63,13 +85,11 @@ public final class BalancedDPClusterMatching implements MatchingAlgorithm {
         }
         dp[0][0][0] = 0.0;
 
-        // 4) 전이
         for (int i = 1; i <= n; i++) {
             final int maxMatchesByI = Math.min(matchCount, i / matchSize);
             final int maxSkipsByI = Math.min(maxSkips, i);
             for (int t = 0; t <= maxMatchesByI; t++) {
                 for (int k = 0; k <= maxSkipsByI; k++) {
-
                     // (A) i번째 참가자 제외
                     if (k > 0 && dp[i - 1][t][k - 1] < dp[i][t][k]) {
                         dp[i][t][k] = dp[i - 1][t][k - 1];
@@ -95,29 +115,38 @@ public final class BalancedDPClusterMatching implements MatchingAlgorithm {
                 }
             }
         }
+        return new DPResult(dp, prevI, prevK, act);
+    }
 
-        // 5) 최종 상태 선택: i=n, t=matchCount, k∈[0..maxSkips] 중 최소
+    private int findBestK(final DPResult dpResult, final int n, final int matchCount, final int maxSkips) {
         int bestK = 0;
-        double best = dp[n][matchCount][0];
+        double best = dpResult.dp[n][matchCount][0];
         for (int k = 1; k <= maxSkips; k++) {
-            if (dp[n][matchCount][k] < best) {
-                best = dp[n][matchCount][k];
+            if (dpResult.dp[n][matchCount][k] < best) {
+                best = dpResult.dp[n][matchCount][k];
                 bestK = k;
             }
         }
-        if (!Double.isFinite(best)) return List.of(); // 안전망
+        return Double.isFinite(best) ? bestK : -1;
+    }
 
-        // 6) 경로 복원: 구간 수집 후 실제 참가자 리스트로 변환
+    private List<List<RankGameParticipant>> reconstructMatches(
+            final DPResult dpResult,
+            final List<ParticipantWithMmr> sorted,
+            final int n,
+            final int matchCount,
+            final int bestK,
+            final int matchSize) {
         final var segments = new ArrayList<Range>();
         for (int i = n, t = matchCount, k = bestK; t > 0; ) {
-            if (act[i][t][k] == Action.MATCH) {
-                final int pi = prevI[i][t][k];
+            if (dpResult.act[i][t][k] == Action.MATCH) {
+                final int pi = dpResult.prevI[i][t][k];
                 segments.add(new Range(pi + 1, i));
                 i = pi;
                 t--;
-            } else if (act[i][t][k] == Action.SKIP) {
-                final int pi = prevI[i][t][k];
-                final int pk = prevK[i][t][k];
+            } else if (dpResult.act[i][t][k] == Action.SKIP) {
+                final int pi = dpResult.prevI[i][t][k];
+                final int pk = dpResult.prevK[i][t][k];
                 i = pi;
                 k = pk;
             } else {
@@ -136,6 +165,8 @@ public final class BalancedDPClusterMatching implements MatchingAlgorithm {
         }
         return List.copyOf(matchesOut);
     }
+
+    private record DPResult(double[][][] dp, int[][][] prevI, int[][][] prevK, Action[][][] act) {}
 
     private enum Action {
         MATCH,
