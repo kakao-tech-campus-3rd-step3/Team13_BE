@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,7 @@ import com.b4f2.pting.dto.RankGameEnqueueRequest;
 import com.b4f2.pting.repository.FcmTokenRepository;
 import com.b4f2.pting.repository.RankGameParticipantRepository;
 import com.b4f2.pting.repository.RankGameRepository;
+import com.b4f2.pting.repository.SportRepository;
 
 @Slf4j
 @Service
@@ -48,9 +51,14 @@ public class MatchingService {
     private final MatchingAlgorithm matchingAlgorithm;
     private final FcmService fcmService;
     private final FcmTokenRepository fcmTokenRepository;
+    private final SportRepository sportRepository;
 
     @Transactional
     public RankGameParticipant addPlayerToQueue(Member member, RankGameEnqueueRequest request) {
+        Sport sport = sportRepository
+                .findById(request.sportId())
+                .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
+
         RankGameParticipant participant = new RankGameParticipant(member);
 
         matchingQueue.addPlayer(request.sportId(), participant);
