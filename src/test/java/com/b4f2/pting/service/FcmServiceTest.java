@@ -49,7 +49,7 @@ class FcmServiceTest {
         given(fcmTokenRepository.findByMember(member)).willReturn(Optional.empty());
 
         // when
-        fcmService.saveToken(member, token);
+        fcmService.saveFcmToken(member, token);
 
         // then
         verify(fcmTokenRepository).save(any(FcmToken.class));
@@ -66,7 +66,7 @@ class FcmServiceTest {
         given(fcmTokenRepository.findByMember(member)).willReturn(Optional.of(fcmToken));
 
         // when
-        fcmService.saveToken(member, newToken);
+        fcmService.saveFcmToken(member, newToken);
 
         // then
         assertThat(fcmToken.getToken()).isEqualTo(newToken);

@@ -26,7 +26,7 @@ public class FcmService {
     private final FcmTokenRepository fcmTokenRepository;
 
     @Transactional
-    public void saveToken(Member member, String token) {
+    public void saveFcmToken(Member member, String token) {
         Optional<FcmToken> fcmTokenOptional = fcmTokenRepository.findByMember(member);
 
         if (fcmTokenOptional.isPresent()) {
@@ -35,6 +35,11 @@ public class FcmService {
         } else {
             fcmTokenRepository.save(new FcmToken(member, token));
         }
+    }
+
+    @Transactional
+    public void deleteFcmToken(Member member) {
+        fcmTokenRepository.deleteByMember(member);
     }
 
     public void sendSinglePush(String token, String title, String body) throws FirebaseMessagingException {
