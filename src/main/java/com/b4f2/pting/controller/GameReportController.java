@@ -28,9 +28,7 @@ public class GameReportController {
 
     @PostMapping
     public ResponseEntity<GameReportResponse> createReport(
-        @Login Member reporter,
-        @RequestBody GameReportRequest request
-    ) {
+            @Login Member reporter, @RequestBody GameReportRequest request) {
         return ResponseEntity.ok(reportService.createReport(reporter, request));
     }
 
@@ -51,9 +49,7 @@ public class GameReportController {
 
     @PatchMapping("/{reportId}/status")
     public ResponseEntity<GameReportResponse> updateReportStatus(
-        @PathVariable Long reportId,
-        @RequestBody GameReportStatusUpdateRequest request
-    ) {
+            @PathVariable Long reportId, @RequestBody GameReportStatusUpdateRequest request) {
         return ResponseEntity.ok(reportService.updateReportStatus(reportId, request));
     }
 }

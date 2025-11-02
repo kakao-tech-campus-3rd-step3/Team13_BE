@@ -90,8 +90,8 @@ class SchoolServiceTest {
 
         // when & then
         assertThatThrownBy(() -> schoolService.getSchoolById(1L))
-            .isInstanceOf(EntityNotFoundException.class)
-            .hasMessage("학교 정보가 존재하지 않습니다.");
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("학교 정보가 존재하지 않습니다.");
         verify(schoolRepository, times(1)).findById(1L);
     }
 
@@ -123,8 +123,8 @@ class SchoolServiceTest {
 
         // when & then
         assertThatThrownBy(() -> schoolService.selectSchool(member, 1L))
-            .isInstanceOf(EntityNotFoundException.class)
-            .hasMessage("학교 정보가 존재하지 않습니다.");
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("학교 정보가 존재하지 않습니다.");
         verify(schoolRepository, times(1)).findById(1L);
     }
 }

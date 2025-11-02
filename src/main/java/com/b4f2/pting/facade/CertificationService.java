@@ -84,8 +84,7 @@ public class CertificationService {
     }
 
     private School getSchoolOrThrowException(Member member) {
-        return member.getSchool()
-            .orElseThrow(() -> new IllegalStateException("학교를 먼저 선택해야 합니다."));
+        return member.getSchool().orElseThrow(() -> new IllegalStateException("학교를 먼저 선택해야 합니다."));
     }
 
     public CertificationResponse checkCertification(Member member) {

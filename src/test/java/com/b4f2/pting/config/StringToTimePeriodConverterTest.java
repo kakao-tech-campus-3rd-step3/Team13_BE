@@ -32,9 +32,6 @@ class StringToTimePeriodConverterTest {
 
     @Test
     void convert_올바르지않은값변환_실패() {
-        assertThrows(
-            IllegalArgumentException.class,
-            () -> converter.convert("asdf")
-        );
+        assertThrows(IllegalArgumentException.class, () -> converter.convert("asdf"));
     }
 }

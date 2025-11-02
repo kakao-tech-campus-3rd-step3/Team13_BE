@@ -27,14 +27,12 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public OAuthUrlResponse getKakaoOAuthUrl() {
-        return new OAuthUrlResponse(
-            kakaoOAuthProperties.authUri()
+        return new OAuthUrlResponse(kakaoOAuthProperties.authUri()
                 + "?client_id="
                 + kakaoOAuthProperties.clientId()
                 + "&redirect_uri="
                 + kakaoOAuthProperties.redirectUri()
-                + "&response_type=code"
-        );
+                + "&response_type=code");
     }
 
     @Transactional
@@ -42,8 +40,9 @@ public class AuthService {
         KakaoOAuthTokenResponse token = kakaoOAuthClient.getKakaoOAuthToken(code);
         KakaoUserInfoResponse userInfo = kakaoOAuthClient.getKakaoUserInfo(token);
 
-        Member member = memberRepository.findByOauthIdAndOauthProvider(userInfo.id(), OAuthProvider.KAKAO)
-            .orElseGet(() -> memberRepository.save(new Member(userInfo.id(), OAuthProvider.KAKAO)));
+        Member member = memberRepository
+                .findByOauthIdAndOauthProvider(userInfo.id(), OAuthProvider.KAKAO)
+                .orElseGet(() -> memberRepository.save(new Member(userInfo.id(), OAuthProvider.KAKAO)));
 
         String jwt = jwtUtil.createToken(member);
 

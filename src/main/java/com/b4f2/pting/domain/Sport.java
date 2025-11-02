@@ -29,5 +29,4 @@ public class Sport {
         this.name = name;
         this.recommendedPlayerCount = recommendedPlayerCount;
     }
-
 }
