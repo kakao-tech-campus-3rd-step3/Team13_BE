@@ -9,17 +9,19 @@ public record GameDetailResponse(
         Long sportId,
         String name,
         Integer playerCount,
+        Integer currentPlayerCount,
         Game.GameStatus gameStatus,
         LocalDateTime startTime,
         Integer duration,
         String description) {
 
-    public GameDetailResponse(Game game) {
+    public GameDetailResponse(Game game, int currentPlayerCount) {
         this(
                 game.getId(),
                 game.getSport().getId(),
                 game.getName(),
                 game.getPlayerCount(),
+                currentPlayerCount,
                 game.getGameStatus(),
                 game.getStartTime(),
                 game.getDuration(),

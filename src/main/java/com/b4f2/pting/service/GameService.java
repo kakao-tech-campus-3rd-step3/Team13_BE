@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.domain.FcmToken;
 import com.b4f2.pting.domain.Game;
+import com.b4f2.pting.domain.Game.GameStatus;
 import com.b4f2.pting.domain.GameParticipant;
 import com.b4f2.pting.domain.GameParticipants;
 import com.b4f2.pting.domain.Member;
@@ -60,7 +61,7 @@ public class GameService {
 
         addParticipant(game, member);
 
-        return new GameDetailResponse(game);
+        return new GameDetailResponse(game, 1);
     }
 
     @Transactional
@@ -90,8 +91,8 @@ public class GameService {
     public GamesResponse findGamesBySportIdAndTimePeriod(Long sportId, TimePeriod timePeriod) {
         if (timePeriod == null) {
             List<GameResponse> gameResponseList =
-                    gameRepository.findAllByGameStatusAndSportId(Game.GameStatus.ON_RECRUITING, sportId).stream()
-                            .map(GameResponse::new)
+                    gameRepository.findAllByGameStatusAndSportId(GameStatus.ON_RECRUITING, sportId).stream()
+                            .map(this::mapGameToGameResponse)
                             .toList();
 
             return new GamesResponse(gameResponseList);
@@ -101,7 +102,7 @@ public class GameService {
                 .findAllByGameStatusAndSportIdAndTimePeriod(
                         Game.GameStatus.ON_RECRUITING, sportId, timePeriod.getStartTime(), timePeriod.getEndTime())
                 .stream()
-                .map(GameResponse::new)
+                .map(this::mapGameToGameResponse)
                 .toList();
 
         return new GamesResponse(gameResponseList);
@@ -110,7 +111,17 @@ public class GameService {
     public GameDetailResponse findGameById(Long gameId) {
         Game game = gameRepository.findById(gameId).orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
 
-        return new GameDetailResponse(game);
+        return mapGameToGameDetailResponse(game);
+    }
+
+    private GameResponse mapGameToGameResponse(Game game) {
+        int currentPlayerCount = gameParticipantRepository.findByGame(game).size();
+        return new GameResponse(game, currentPlayerCount);
+    }
+
+    private GameDetailResponse mapGameToGameDetailResponse(Game game) {
+        int currentPlayerCount = gameParticipantRepository.findByGame(game).size();
+        return new GameDetailResponse(game, currentPlayerCount);
     }
 
     private void validateMemberIsVerified(Member member) {
