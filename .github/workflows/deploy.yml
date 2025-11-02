@@ -21,9 +21,11 @@ jobs:
           distribution: 'temurin'
 
       - name: Setup Firebase Credentials
-        run: |
-          mkdir -p ./src/main/resources/firebase
-          echo "${{ secrets.FIREBASE_CREDENTIALS }}" > ./pting-sdk-credentials.json
+        uses: jsdaniell/create-json@v1.2.3
+        with:
+          name: pting-sdk-credentials.json
+          json: ${{ secrets.FIREBASE_CREDENTIALS }}
+          dir: 'src/main/resources/firebase/'
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -39,7 +41,7 @@ jobs:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USERNAME }}
           key: ${{ secrets.AWS_EC2_SSH_PRIVATE_KEY }}
-          source: "build/libs/*.jar,pting-sdk-credentials.json"
+          source: "build/libs/*.jar"
           target: "/home/ubuntu/app"
 
       - name: Execute deployment script on EC2
