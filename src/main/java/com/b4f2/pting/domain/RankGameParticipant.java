@@ -27,6 +27,10 @@ public class RankGameParticipant extends GameParticipant {
     @Column(name = "accepted")
     private boolean accepted = false;
 
+    public RankGameParticipant(Member member) {
+        super(member, null);
+    }
+
     public boolean isTeam(RankGameTeam rankGameTeam) {
         return team == rankGameTeam;
     }
