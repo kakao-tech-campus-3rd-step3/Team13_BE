@@ -49,13 +49,14 @@ public class GameService {
             .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
 
         Game game = Game.create(
-            sport,
-            request.name(),
-            request.playerCount(),
-            Game.GameStatus.ON_RECRUITING,
-            request.startTime(),
-            request.duration(),
-            request.description());
+                sport,
+                request.name(),
+                request.gameLocation(),
+                request.playerCount(),
+                Game.GameStatus.ON_RECRUITING,
+                request.startTime(),
+                request.duration(),
+                request.description());
 
         gameRepository.save(game);
 

@@ -37,6 +37,10 @@ public class Game {
     @JoinColumn(name = "sport_id")
     private Sport sport;
 
+    @Column(name = "game_location")
+    private String gameLocation;
+
+    @Column(name = "game_name")
     private String name;
 
     @Column(name = "player_count")
@@ -62,20 +66,21 @@ public class Game {
     }
 
     public static Game create(
-        Sport sport,
-        String name,
-        Integer playerCount,
-        GameStatus gameStatus,
-        LocalDateTime startTime,
-        Integer duration,
-        String description) {
+            Sport sport,
+            String name,
+            String gameLocation,
+            Integer playerCount,
+            GameStatus gameStatus,
+            LocalDateTime startTime,
+            Integer duration,
+            String description) {
         LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         if (startTime.isBefore(nowInSeoul)) {
             throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
         }
 
-        return new Game(null, sport, name, playerCount, gameStatus, startTime, duration, description);
+        return new Game(null, sport, name, gameLocation, playerCount, gameStatus, startTime, duration, description);
     }
 
     public boolean isStatus(GameStatus status) {

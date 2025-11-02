@@ -36,8 +36,8 @@ public class BalancedKMeansClusterMatching implements MatchingAlgorithm {
         }
 
         List<Double> mmrs = participants.stream()
-            .map(participant -> participant.getMember().getMmr(sport))
-            .toList();
+                .map(participant -> participant.getMember().getMmr(sport))
+                .toList();
 
         List<Double> centroids = initialCentroids(mmrs, numTeams);
 
@@ -67,12 +67,12 @@ public class BalancedKMeansClusterMatching implements MatchingAlgorithm {
     }
 
     private void allocateMembersToTeams(
-        List<RankGameParticipant> players,
-        Sport sport,
-        int numTeams,
-        List<Double> centroids,
-        List<List<RankGameParticipant>> teams,
-        int teamSize) {
+            List<RankGameParticipant> players,
+            Sport sport,
+            int numTeams,
+            List<Double> centroids,
+            List<List<RankGameParticipant>> teams,
+            int teamSize) {
         teams.forEach(List::clear);
 
         for (RankGameParticipant p : players) {
@@ -95,16 +95,16 @@ public class BalancedKMeansClusterMatching implements MatchingAlgorithm {
     }
 
     private static List<Double> renewalCentroids(
-        Sport sport, List<List<RankGameParticipant>> teams, List<Double> centroids) {
+            Sport sport, List<List<RankGameParticipant>> teams, List<Double> centroids) {
         List<Double> newCentroids = new ArrayList<>();
         for (List<RankGameParticipant> team : teams) {
             if (team.isEmpty()) {
                 newCentroids.add(centroids.get(newCentroids.size()));
             } else {
                 double avg = team.stream()
-                    .mapToDouble(participant -> participant.getMember().getMmr(sport))
-                    .average()
-                    .orElse(0);
+                        .mapToDouble(participant -> participant.getMember().getMmr(sport))
+                        .average()
+                        .orElse(0);
                 newCentroids.add(avg);
             }
         }

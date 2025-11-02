@@ -90,6 +90,7 @@ class GameIntegrationTest {
         CreateGameRequest request = new CreateGameRequest(
                 testSport.getId(),
                 "축구 매치",
+                "넉넉한 터",
                 10,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
                 2,
@@ -109,6 +110,7 @@ class GameIntegrationTest {
         Game game = Game.create(
                 testSport,
                 "축구 매치",
+                "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
@@ -136,6 +138,7 @@ class GameIntegrationTest {
         Game game1 = Game.create(
                 testSport,
                 "축구 매치 1",
+                "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
@@ -146,6 +149,7 @@ class GameIntegrationTest {
         Game game2 = Game.create(
                 testSport,
                 "축구 매치 2",
+                "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
@@ -169,6 +173,7 @@ class GameIntegrationTest {
         Game game = Game.create(
                 testSport,
                 "축구 매치",
+                "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
