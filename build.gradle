@@ -54,29 +54,36 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    runtimeOnly 'com.h2database:h2'
+    // Database
+    implementation 'org.postgresql:postgresql:42.7.8'
 
-    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+    // TestContainers
+    testImplementation 'org.testcontainers:postgresql:1.21.3'
+    testImplementation 'org.testcontainers:junit-jupiter:1.21.3'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+
+    // JWT
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
+    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
 
+    // Spring Mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-    implementation 'com.google.firebase:firebase-admin:9.6.0'
-
-    implementation 'org.postgresql:postgresql:42.7.2'
-    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
-    testImplementation 'org.testcontainers:junit-jupiter:1.21.3'
-    testImplementation 'org.testcontainers:postgresql:1.21.3'
+    // Firebase Admin
+    implementation 'com.google.firebase:firebase-admin:9.7.0'
 
     // Open Skill for MMR
     implementation 'com.pocketcombats:openskill:1.0'
 
+    // S3 Bucket
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
