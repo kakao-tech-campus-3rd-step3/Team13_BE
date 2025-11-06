@@ -2,6 +2,7 @@ package com.b4f2.pting.exception;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -37,6 +38,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ProblemDetail handleRuntimeException(RuntimeException e) {
         log.error("[RuntimeException] {}", e.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, convertErrorToString(e));
+    }
+
+    @ExceptionHandler(UncheckedIOException.class)
+    public ProblemDetail handleUncheckedIOException(UncheckedIOException e) {
+        log.error("[UncheckedIOException] {}", e.getMessage());
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, convertErrorToString(e));
     }
 
