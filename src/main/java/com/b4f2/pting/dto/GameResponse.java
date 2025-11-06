@@ -13,7 +13,8 @@ public record GameResponse(
         Integer currentPlayerCount,
         Game.GameStatus gameStatus,
         LocalDateTime startTime,
-        Integer duration) {
+        Integer duration,
+        String imageUrl) {
 
     public GameResponse(Game game, int currentPlayerCount) {
         this(
@@ -25,6 +26,7 @@ public record GameResponse(
                 currentPlayerCount,
                 game.getGameStatus(),
                 game.getStartTime(),
-                game.getDuration());
+                game.getDuration(),
+                game.getImageUrl());
     }
 }
