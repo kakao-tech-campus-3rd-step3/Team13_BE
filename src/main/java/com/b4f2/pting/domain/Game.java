@@ -68,7 +68,7 @@ public class Game {
         CLOSED, // 모집 종료
         END, // 게임 종료
         CANCELED // 게임 취소
-        ;
+    ;
 
         public boolean isOnRecruiting() {
             return this == GameStatus.ON_RECRUITING || this == GameStatus.FULL;
@@ -76,15 +76,15 @@ public class Game {
     }
 
     public static Game create(
-        Sport sport,
-        String name,
-        String gameLocation,
-        Integer playerCount,
-        GameStatus gameStatus,
-        LocalDateTime startTime,
-        Integer duration,
-        String description,
-        String imageUrl) {
+            Sport sport,
+            String name,
+            String gameLocation,
+            Integer playerCount,
+            GameStatus gameStatus,
+            LocalDateTime startTime,
+            Integer duration,
+            String description,
+            String imageUrl) {
         LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         if (startTime.isBefore(nowInSeoul)) {
@@ -92,7 +92,7 @@ public class Game {
         }
 
         return new Game(
-            null, sport, gameLocation, name, playerCount, gameStatus, startTime, duration, description, imageUrl);
+                null, sport, gameLocation, name, playerCount, gameStatus, startTime, duration, description, imageUrl);
     }
 
     public boolean isStatus(GameStatus status) {
