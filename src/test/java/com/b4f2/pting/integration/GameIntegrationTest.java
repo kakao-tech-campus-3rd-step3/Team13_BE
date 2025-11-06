@@ -43,6 +43,7 @@ import com.b4f2.pting.util.JwtUtil;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @Import(TestContainersConfig.class)
+@SuppressWarnings("NonAsciiCharacters")
 @Tag("integration")
 class GameIntegrationTest {
 
@@ -101,7 +102,6 @@ class GameIntegrationTest {
     void createGame_성공() {
         CreateGameRequest request = new CreateGameRequest(
                 testSport.getId(),
-                "축구 매치",
                 "넉넉한 터",
                 10,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
@@ -127,7 +127,6 @@ class GameIntegrationTest {
                     restTemplate.postForEntity("/api/v1/games", httpEntity, GameDetailResponse.class);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-            assertThat(response.getBody().name()).isEqualTo("축구 매치");
             assertThat(gameRepository.findAll()).hasSize(1);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -139,7 +138,6 @@ class GameIntegrationTest {
     void joinGame_성공() {
         Game game = Game.create(
                 testSport,
-                "축구 매치",
                 "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
@@ -168,7 +166,6 @@ class GameIntegrationTest {
     void getGamesBySport_성공() {
         Game game1 = Game.create(
                 testSport,
-                "축구 매치 1",
                 "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
@@ -180,7 +177,6 @@ class GameIntegrationTest {
 
         Game game2 = Game.create(
                 testSport,
-                "축구 매치 2",
                 "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
@@ -205,7 +201,6 @@ class GameIntegrationTest {
     void getGameById_success() {
         Game game = Game.create(
                 testSport,
-                "축구 매치",
                 "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
@@ -222,6 +217,5 @@ class GameIntegrationTest {
                 GameDetailResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().name()).isEqualTo("축구 매치");
     }
 }

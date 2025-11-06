@@ -79,7 +79,6 @@ class MmrIntegrationTest {
 
         RankGame game = new RankGame();
         org.springframework.test.util.ReflectionTestUtils.setField(game, "sport", sport);
-        org.springframework.test.util.ReflectionTestUtils.setField(game, "name", "테스트 게임");
         org.springframework.test.util.ReflectionTestUtils.setField(game, "playerCount", 2);
         org.springframework.test.util.ReflectionTestUtils.setField(game, "gameStatus", GameStatus.END);
         org.springframework.test.util.ReflectionTestUtils.setField(

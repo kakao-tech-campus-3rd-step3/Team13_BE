@@ -36,6 +36,7 @@ import com.b4f2.pting.util.JwtUtil;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @Import(TestContainersConfig.class)
+@SuppressWarnings("NonAsciiCharacters")
 @Tag("integration")
 class EmailCertificationIntegrationTest {
 

@@ -28,6 +28,7 @@ import com.b4f2.pting.util.KakaoOAuthClient;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @Import(TestContainersConfig.class)
+@SuppressWarnings("NonAsciiCharacters")
 @Tag("integration")
 class AuthIntegrationTest {
 
