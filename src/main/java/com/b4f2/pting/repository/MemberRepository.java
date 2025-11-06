@@ -11,5 +11,5 @@ import com.b4f2.pting.domain.Member.OAuthProvider;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    Optional<Member> findByOauthIdAndOauthProvider(Long oauthId, OAuthProvider provider);
+    Optional<Member> findByOauthIdAndOauthProvider(String oauthId, OAuthProvider provider);
 }

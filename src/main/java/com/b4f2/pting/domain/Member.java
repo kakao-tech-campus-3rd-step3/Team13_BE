@@ -36,7 +36,7 @@ public class Member {
     private Long id;
 
     @NotNull @Column(name = "oauth_id")
-    private Long oauthId;
+    private String oauthId;
 
     @NotNull @Enumerated(EnumType.STRING)
     @Column(name = "oauth_provider")
@@ -69,7 +69,7 @@ public class Member {
         GOOGLE
     }
 
-    public Member(Long oauthId, OAuthProvider oauthProvider) {
+    public Member(String oauthId, OAuthProvider oauthProvider) {
         this.oauthId = oauthId;
         this.oauthProvider = oauthProvider;
     }
