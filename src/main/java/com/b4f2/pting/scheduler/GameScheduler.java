@@ -48,7 +48,10 @@ public class GameScheduler {
             gameService.sendMatchedAlarms(close);
         }
 
-        log.info("[GameScheduler] closeMatchingGamesJob finished - canceled rows: {}, closed rows: {}", cancel.size(), close.size());
+        log.info(
+                "[GameScheduler] closeMatchingGamesJob finished - canceled rows: {}, closed rows: {}",
+                cancel.size(),
+                close.size());
     }
 
     @Scheduled(cron = "0 */5 * * * *")
