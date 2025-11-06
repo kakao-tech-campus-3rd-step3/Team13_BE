@@ -65,7 +65,8 @@ public class Member {
     private final List<Mmr> mmrList = new ArrayList<>();
 
     public enum OAuthProvider {
-        KAKAO
+        KAKAO,
+        GOOGLE
     }
 
     public Member(Long oauthId, OAuthProvider oauthProvider) {
