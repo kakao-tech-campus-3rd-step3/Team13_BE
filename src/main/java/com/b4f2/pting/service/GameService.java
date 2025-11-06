@@ -150,11 +150,11 @@ public class GameService {
         List<GameParticipant> participants = gameParticipantRepository.findByGameIdIn(ids);
 
         List<Member> members =
-            participants.stream().map(GameParticipant::getMember).toList();
+                participants.stream().map(GameParticipant::getMember).toList();
 
         List<String> tokens = fcmTokenRepository.findAllByMemberIn(members).stream()
-            .map(FcmToken::getToken)
-            .toList();
+                .map(FcmToken::getToken)
+                .toList();
 
         fcmService.sendMulticastPush(tokens, "매칭 취소", "인원이 모이지 않아 매칭이 취소되었습니다.");
     }
@@ -212,8 +212,8 @@ public class GameService {
     public GamesResponse findGamesByMember(Member member) {
         List<GameResponse> gameResponseList = gameParticipantRepository.findAllByMember(member).stream()
                 .map(GameParticipant::getGame)
-            .map(this::mapGameToGameResponse)
-            .toList();
+                .map(this::mapGameToGameResponse)
+                .toList();
         return new GamesResponse(gameResponseList);
     }
 

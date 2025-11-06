@@ -5,10 +5,10 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.firebase.messaging.FirebaseMessagingException;
-
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import com.google.firebase.messaging.FirebaseMessagingException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,11 +31,10 @@ public class GameScheduler {
         List<Long> cancel = new ArrayList<>();
         List<Long> close = new ArrayList<>();
 
-        for (ClosedGameSummary summary: updated) {
+        for (ClosedGameSummary summary : updated) {
             if (summary.currentPlayerCount() < summary.playerCount()) {
                 cancel.add(summary.id());
-            }
-            else {
+            } else {
                 close.add(summary.id());
             }
         }
@@ -48,7 +47,6 @@ public class GameScheduler {
         if (!close.isEmpty()) {
             gameService.sendMatchedAlarms(close);
         }
-
 
         log.info("[GameScheduler] endMatchingGamesJob finished - updated rows: {}", updated.size());
     }
