@@ -53,6 +53,10 @@ public class FcmService {
     }
 
     public void sendMulticastPush(List<String> tokens, String title, String body) throws FirebaseMessagingException {
+        if (tokens == null || tokens.isEmpty()) {
+            return;
+        }
+
         MulticastMessage message = MulticastMessage.builder()
                 .setNotification(
                         Notification.builder().setTitle(title).setBody(body).build())
