@@ -24,9 +24,12 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Value("${app.default-image-url}")
+    private String defaultImageUrl;
+
     public String saveImage(@Nullable MultipartFile image) {
         if (image == null || image.isEmpty()) {
-            return amazonS3.getUrl(bucket, "default.jpeg").toString();
+            return defaultImageUrl;
         }
 
         String originalFilename = image.getOriginalFilename();

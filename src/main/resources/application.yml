@@ -56,3 +56,4 @@ cloud:
 
 app:
   domain: ${SERVER_ADDRESS}
+  default-image-url: ${DEFAULT_IMAGE_URL}
