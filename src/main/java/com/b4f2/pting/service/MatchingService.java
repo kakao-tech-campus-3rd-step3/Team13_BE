@@ -62,14 +62,14 @@ public class MatchingService {
 
             RankGame game = RankGame.create(
                     sport,
-                "랭크 게임",
-                "장소",
-                team.size(),
-                GameStatus.ON_RECRUITING,
-                startTime,
-                60,
-                "자동 생성된 랭크 게임 (확정 전)",
-                defaultImageUrl);
+                    "랭크 게임",
+                    "장소",
+                    team.size(),
+                    GameStatus.ON_RECRUITING,
+                    startTime,
+                    60,
+                    "자동 생성된 랭크 게임 (확정 전)",
+                    defaultImageUrl);
 
             team.sort((p1, p2) ->
                     Double.compare(p2.getMember().getMmr(sport), p1.getMember().getMmr(sport)));

@@ -54,7 +54,8 @@ public class RankGame extends Game {
             throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
         }
 
-        return new RankGame(null, sport, name, gameLocation, playerCount, gameStatus, startTime, duration, description, imageUrl);
+        return new RankGame(
+                null, sport, name, gameLocation, playerCount, gameStatus, startTime, duration, description, imageUrl);
     }
 
     public boolean hasMemberVote(Member member) {

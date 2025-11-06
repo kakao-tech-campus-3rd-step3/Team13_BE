@@ -84,7 +84,8 @@ public class Game {
             throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
         }
 
-        return new Game(null, sport, gameLocation, name, playerCount, gameStatus, startTime, duration, description, imageUrl);
+        return new Game(
+                null, sport, gameLocation, name, playerCount, gameStatus, startTime, duration, description, imageUrl);
     }
 
     public boolean isStatus(GameStatus status) {
