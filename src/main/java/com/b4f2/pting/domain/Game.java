@@ -59,6 +59,9 @@ public class Game {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     public enum GameStatus {
         ON_RECRUITING, // 모집 중
         FULL, // 모집 완료
@@ -73,14 +76,15 @@ public class Game {
             GameStatus gameStatus,
             LocalDateTime startTime,
             Integer duration,
-            String description) {
+            String description,
+            String imageUrl) {
         LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         if (startTime.isBefore(nowInSeoul)) {
             throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
         }
 
-        return new Game(null, sport, gameLocation, name, playerCount, gameStatus, startTime, duration, description);
+        return new Game(null, sport, gameLocation, name, playerCount, gameStatus, startTime, duration, description, imageUrl);
     }
 
     public boolean isStatus(GameStatus status) {

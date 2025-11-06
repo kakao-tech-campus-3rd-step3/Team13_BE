@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,9 @@ public class MatchingService {
     private final RankGameParticipantRepository rankGameParticipantRepository;
     private final MatchingAlgorithm matchingAlgorithm;
 
+    @Value("${app.default-image-url}")
+    private String defaultImageUrl;
+
     @Transactional
     public void addPlayerToQueue(Sport sport, RankGameParticipant participant) {
         matchingQueue.addPlayer(sport.getId(), participant);
@@ -57,7 +61,15 @@ public class MatchingService {
             LocalDateTime startTime = getNextSaturdayGameTime();
 
             RankGame game = RankGame.create(
-                    sport, "랭크 게임", "장소", team.size(), GameStatus.ON_RECRUITING, startTime, 60, "자동 생성된 랭크 게임 (확정 전)");
+                    sport,
+                "랭크 게임",
+                "장소",
+                team.size(),
+                GameStatus.ON_RECRUITING,
+                startTime,
+                60,
+                "자동 생성된 랭크 게임 (확정 전)",
+                defaultImageUrl);
 
             team.sort((p1, p2) ->
                     Double.compare(p2.getMember().getMmr(sport), p1.getMember().getMmr(sport)));

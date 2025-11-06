@@ -29,6 +29,8 @@ import com.b4f2.pting.repository.GameParticipantRepository;
 import com.b4f2.pting.repository.GameRepository;
 import com.b4f2.pting.repository.SportRepository;
 
+import org.springframework.web.multipart.MultipartFile;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -39,14 +41,17 @@ public class GameService {
     private final SportRepository sportRepository;
     private final FcmService fcmService;
     private final FcmTokenRepository fcmTokenRepository;
+    private final S3UploadService s3UploadService;
 
     @Transactional
-    public GameDetailResponse createGame(Member member, CreateGameRequest request) {
+    public GameDetailResponse createGame(Member member, CreateGameRequest request, MultipartFile image) {
         validateMemberIsVerified(member);
 
         Sport sport = sportRepository
                 .findById(request.sportId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
+
+        String imageUrl = s3UploadService.saveImage(image);
 
         Game game = Game.create(
                 sport,
@@ -56,7 +61,8 @@ public class GameService {
                 Game.GameStatus.ON_RECRUITING,
                 request.startTime(),
                 request.duration(),
-                request.description());
+                request.description(),
+                imageUrl);
 
         gameRepository.save(game);
 

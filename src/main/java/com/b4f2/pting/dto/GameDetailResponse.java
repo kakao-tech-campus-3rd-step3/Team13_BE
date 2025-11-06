@@ -14,7 +14,8 @@ public record GameDetailResponse(
         Game.GameStatus gameStatus,
         LocalDateTime startTime,
         Integer duration,
-        String description) {
+        String description,
+        String imageUrl) {
 
     public GameDetailResponse(Game game, int currentPlayerCount) {
         this(
@@ -27,6 +28,7 @@ public record GameDetailResponse(
                 game.getGameStatus(),
                 game.getStartTime(),
                 game.getDuration(),
-                game.getDescription());
+                game.getDescription(),
+                game.getImageUrl());
     }
 }

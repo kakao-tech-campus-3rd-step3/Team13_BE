@@ -34,8 +34,9 @@ public class RankGame extends Game {
             GameStatus gameStatus,
             LocalDateTime startTime,
             Integer duration,
-            String description) {
-        super(id, sport, name, gameLocation, playerCount, gameStatus, startTime, duration, description);
+            String description,
+            String imageUrl) {
+        super(id, sport, name, gameLocation, playerCount, gameStatus, startTime, duration, description, imageUrl);
     }
 
     public static RankGame create(
@@ -46,13 +47,14 @@ public class RankGame extends Game {
             GameStatus gameStatus,
             LocalDateTime startTime,
             Integer duration,
-            String description) {
+            String description,
+            String imageUrl) {
         LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         if (startTime.isBefore(nowInSeoul)) {
             throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
         }
 
-        return new RankGame(null, sport, name, gameLocation, playerCount, gameStatus, startTime, duration, description);
+        return new RankGame(null, sport, name, gameLocation, playerCount, gameStatus, startTime, duration, description, imageUrl);
     }
 
     public boolean hasMemberVote(Member member) {
