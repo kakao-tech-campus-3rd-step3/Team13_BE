@@ -31,6 +31,7 @@ import com.b4f2.pting.repository.FcmTokenRepository;
 import com.b4f2.pting.repository.GameParticipantRepository;
 import com.b4f2.pting.repository.GameRepository;
 import com.b4f2.pting.repository.SportRepository;
+import com.b4f2.pting.repository.projection.ClosedGameSummary;
 
 @Service
 @RequiredArgsConstructor
@@ -92,7 +93,7 @@ public class GameService {
     }
 
     @Transactional
-    public List<Game> endMatchingGames(LocalDateTime deadLine) {
+    public List<ClosedGameSummary> endMatchingGames(LocalDateTime deadLine) {
         return gameRepository.endMatchingGames(deadLine);
     }
 
@@ -120,6 +121,30 @@ public class GameService {
         Game game = gameRepository.findById(gameId).orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
 
         return mapGameToGameDetailResponse(game);
+    }
+
+    @Transactional
+    public void cancelGamesByIds(List<Long> ids) {
+        gameRepository.updateStatusToCanceled(ids);
+    }
+
+    public void sendCanceledAlarms(List<Long> ids) throws FirebaseMessagingException {
+        List<GameParticipant> participants = gameParticipantRepository.findByGameIdIn(ids);
+
+        List<Member> members =
+            participants.stream().map(GameParticipant::getMember).toList();
+
+        List<String> tokens = fcmTokenRepository.findAllByMemberIn(members).stream()
+            .map(FcmToken::getToken)
+            .toList();
+
+        fcmService.sendMulticastPush(tokens, "매칭 취소", "인원이 모이지 않아 매칭이 취소되었습니다.");
+    }
+
+    public void sendMatchedAlarms(List<Long> ids) throws FirebaseMessagingException {
+        List<GameParticipant> participants = gameParticipantRepository.findByGameIdIn(ids);
+
+        notifyMatchingCompleted(participants);
     }
 
     private GameResponse mapGameToGameResponse(Game game) {
@@ -165,8 +190,8 @@ public class GameService {
     public GamesResponse findGamesByMember(Member member) {
         List<GameResponse> gameResponseList = gameParticipantRepository.findAllByMember(member).stream()
                 .map(GameParticipant::getGame)
-                .map(this::mapGameToGameResponse)
-                .toList();
+            .map(this::mapGameToGameResponse)
+            .toList();
         return new GamesResponse(gameResponseList);
     }
 
