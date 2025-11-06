@@ -7,7 +7,7 @@ auth:
       client-id: ${KAKAO_CLIENT_ID}
       client-secret: ${KAKAO_CLIENT_SECRET}
       auth-uri: https://kauth.kakao.com/oauth/authorize
-      redirect-uri: ${SERVER_ADDRESS}/api/v1/auth/kakao/callback
+      redirect-uri: ${CLIENT_ADDRESS}/auth/kakao/callback
       token-uri: https://kauth.kakao.com/oauth/token
       info-uri: https://kapi.kakao.com/v2/user/me
     google:
