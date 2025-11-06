@@ -7,7 +7,6 @@ import com.b4f2.pting.domain.Game;
 public record GameResponse(
         Long gameId,
         Long sportId,
-        String name,
         String gameLocation,
         Integer playerCount,
         Integer currentPlayerCount,
@@ -20,7 +19,6 @@ public record GameResponse(
         this(
                 game.getId(),
                 game.getSport().getId(),
-                game.getName(),
                 game.getGameLocation(),
                 game.getPlayerCount(),
                 currentPlayerCount,

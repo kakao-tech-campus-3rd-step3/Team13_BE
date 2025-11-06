@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 public record CreateGameRequest(
         Long sportId,
-        String name,
         String gameLocation,
         Integer playerCount,
         LocalDateTime startTime,
