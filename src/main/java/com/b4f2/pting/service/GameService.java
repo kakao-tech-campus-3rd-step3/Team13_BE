@@ -49,21 +49,21 @@ public class GameService {
         validateMemberIsVerified(member);
 
         Sport sport = sportRepository
-                .findById(request.sportId())
-                .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
+            .findById(request.sportId())
+            .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
 
         String imageUrl = s3UploadService.saveImage(image);
 
         Game game = Game.create(
-                sport,
-                request.name(),
-                request.gameLocation(),
-                request.playerCount(),
-                Game.GameStatus.ON_RECRUITING,
-                request.startTime(),
-                request.duration(),
-                request.description(),
-                imageUrl);
+            sport,
+            request.name(),
+            request.gameLocation(),
+            request.playerCount(),
+            Game.GameStatus.ON_RECRUITING,
+            request.startTime(),
+            request.duration(),
+            request.description(),
+            imageUrl);
 
         gameRepository.save(game);
 
@@ -76,7 +76,7 @@ public class GameService {
     public void joinGame(Member member, Long gameId) throws FirebaseMessagingException {
         validateMemberIsVerified(member);
 
-        Game game = gameRepository.findById(gameId).orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
+        Game game = getGame(gameId);
 
         if (game.getGameStatus() != Game.GameStatus.ON_RECRUITING) {
             throw new IllegalStateException("게임이 모집 중이 아닙니다.");
@@ -92,6 +92,22 @@ public class GameService {
     }
 
     @Transactional
+    public void quitGame(Member member, Long gameId) {
+        validateMemberIsVerified(member);
+
+        Game game = getGame(gameId);
+
+        if (game.getGameStatus().isOnRecruiting()) {
+            removeParticipant(game, member);
+            game.changeStatus(GameStatus.ON_RECRUITING);
+        }
+    }
+
+    private Game getGame(Long gameId) {
+        return gameRepository.findById(gameId).orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
+    }
+
+    @Transactional
     public List<Game> endMatchingGames(LocalDateTime deadLine) {
         return gameRepository.endMatchingGames(deadLine);
     }
@@ -99,19 +115,19 @@ public class GameService {
     public GamesResponse findGamesBySportIdAndTimePeriod(Long sportId, TimePeriod timePeriod) {
         if (timePeriod == null) {
             List<GameResponse> gameResponseList =
-                    gameRepository.findAllByGameStatusAndSportId(GameStatus.ON_RECRUITING, sportId).stream()
-                            .map(this::mapGameToGameResponse)
-                            .toList();
+                gameRepository.findAllByGameStatusAndSportId(GameStatus.ON_RECRUITING, sportId).stream()
+                    .map(this::mapGameToGameResponse)
+                    .toList();
 
             return new GamesResponse(gameResponseList);
         }
 
         List<GameResponse> gameResponseList = gameRepository
-                .findAllByGameStatusAndSportIdAndTimePeriod(
-                        Game.GameStatus.ON_RECRUITING, sportId, timePeriod.getStartTime(), timePeriod.getEndTime())
-                .stream()
-                .map(this::mapGameToGameResponse)
-                .toList();
+            .findAllByGameStatusAndSportIdAndTimePeriod(
+                Game.GameStatus.ON_RECRUITING, sportId, timePeriod.getStartTime(), timePeriod.getEndTime())
+            .stream()
+            .map(this::mapGameToGameResponse)
+            .toList();
 
         return new GamesResponse(gameResponseList);
     }
@@ -151,31 +167,35 @@ public class GameService {
         }
     }
 
+    private void removeParticipant(Game game, Member member) {
+        gameParticipantRepository.deleteByGameAndMember(game, member);
+    }
+
     private void notifyMatchingCompleted(List<GameParticipant> participants) throws FirebaseMessagingException {
         List<Member> members =
-                participants.stream().map(GameParticipant::getMember).toList();
+            participants.stream().map(GameParticipant::getMember).toList();
 
         List<String> tokens = fcmTokenRepository.findAllByMemberIn(members).stream()
-                .map(FcmToken::getToken)
-                .toList();
+            .map(FcmToken::getToken)
+            .toList();
 
         fcmService.sendMulticastPush(tokens, "매칭 완료", "매칭이 완료되었습니다.");
     }
 
     public GamesResponse findGamesByMember(Member member) {
         List<GameResponse> gameResponseList = gameParticipantRepository.findAllByMember(member).stream()
-                .map(GameParticipant::getGame)
-                .map(this::mapGameToGameResponse)
-                .toList();
+            .map(GameParticipant::getGame)
+            .map(this::mapGameToGameResponse)
+            .toList();
         return new GamesResponse(gameResponseList);
     }
 
     public GamesResponse findGamesByMemberAndGameStatus(Member member, GameStatus gameStatus) {
         List<GameResponse> gameResponseList = gameParticipantRepository.findAllByMember(member).stream()
-                .map(GameParticipant::getGame)
-                .filter(game -> game.isStatus(gameStatus))
-                .map(this::mapGameToGameResponse)
-                .toList();
+            .map(GameParticipant::getGame)
+            .filter(game -> game.isStatus(gameStatus))
+            .map(this::mapGameToGameResponse)
+            .toList();
         return new GamesResponse(gameResponseList);
     }
 

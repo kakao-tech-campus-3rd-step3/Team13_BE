@@ -2,6 +2,7 @@ package com.b4f2.pting.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,22 +38,28 @@ public class GameController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<GameDetailResponse> createGame(
-            @Login Member member,
-            @RequestPart("game") CreateGameRequest request,
-            @RequestPart(value = "image", required = false) MultipartFile image) {
+        @Login Member member,
+        @RequestPart("game") CreateGameRequest request,
+        @RequestPart(value = "image", required = false) MultipartFile image) {
         return ResponseEntity.ok(gameService.createGame(member, request, image));
     }
 
     @PostMapping("/{gameId}")
     public ResponseEntity<Void> joinGame(@Login Member member, @PathVariable Long gameId)
-            throws FirebaseMessagingException {
+        throws FirebaseMessagingException {
         gameService.joinGame(member, gameId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{gameId}")
+    public ResponseEntity<Void> quitGame(@Login Member member, @PathVariable Long gameId) {
+        gameService.quitGame(member, gameId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
     public ResponseEntity<GamesResponse> getGamesBySportIdAndTimePeriod(
-            @RequestParam Long sportId, @RequestParam(required = false) TimePeriod timePeriod) {
+        @RequestParam Long sportId, @RequestParam(required = false) TimePeriod timePeriod) {
         return ResponseEntity.ok(gameService.findGamesBySportIdAndTimePeriod(sportId, timePeriod));
     }
 
@@ -63,7 +70,7 @@ public class GameController {
 
     @PostMapping("/{gameId}/votes")
     public ResponseEntity<VoteResultResponse> voteMatchResult(
-            @Login Member member, @RequestBody VoteRequest voteRequest, @PathVariable Long gameId) {
+        @Login Member member, @RequestBody VoteRequest voteRequest, @PathVariable Long gameId) {
         return ResponseEntity.ok(rankGameService.voteMatchResult(gameId, voteRequest, member));
     }
 }
