@@ -11,6 +11,8 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -45,6 +47,12 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleUncheckedIOException(UncheckedIOException e) {
         log.error("[UncheckedIOException] {}", e.getMessage());
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, convertErrorToString(e));
+    }
+
+    @ExceptionHandler(FirebaseMessagingException.class)
+    public ProblemDetail handleFirebaseMessagingException(FirebaseMessagingException e) {
+        log.error("[FirebaseMessagingException] {}", e.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, convertErrorToString(e));
     }
 
     private String convertErrorToString(Exception e) {
