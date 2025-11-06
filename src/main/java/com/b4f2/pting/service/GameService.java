@@ -97,10 +97,12 @@ public class GameService {
 
         Game game = getGame(gameId);
 
-        if (game.getGameStatus().isOnRecruiting()) {
-            removeParticipant(game, member);
-            game.changeStatus(GameStatus.ON_RECRUITING);
+        if (!game.getGameStatus().isOnRecruiting()) {
+            throw new IllegalStateException("'모집 중' 일 때만 퀵매칭에서 나갈 수 있습니다.");
         }
+
+        removeParticipant(game, member);
+        game.changeStatus(GameStatus.ON_RECRUITING);
     }
 
     private Game getGame(Long gameId) {
