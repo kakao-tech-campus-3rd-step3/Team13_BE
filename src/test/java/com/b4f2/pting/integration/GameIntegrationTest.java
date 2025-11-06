@@ -5,9 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -26,6 +23,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.b4f2.pting.config.TestContainersConfig;
 import com.b4f2.pting.domain.Game;
@@ -121,11 +121,10 @@ class GameIntegrationTest {
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
             body.add("game", jsonPart);
 
-            HttpEntity<MultiValueMap<String, Object>> httpEntity =
-                new HttpEntity<>(body, headers);
+            HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
 
-            ResponseEntity<GameDetailResponse> response = restTemplate
-                .postForEntity("/api/v1/games", httpEntity, GameDetailResponse.class);
+            ResponseEntity<GameDetailResponse> response =
+                    restTemplate.postForEntity("/api/v1/games", httpEntity, GameDetailResponse.class);
 
             assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(response.getBody().name()).isEqualTo("축구 매치");
