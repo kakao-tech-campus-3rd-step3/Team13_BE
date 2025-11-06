@@ -1,8 +1,8 @@
 plugins {
-    id 'java'
-    id 'com.diffplug.spotless' version '8.0.0'
-    id 'org.springframework.boot' version '3.5.5'
-    id 'io.spring.dependency-management' version '1.1.7'
+    alias libs.plugins.java
+    alias libs.plugins.spotless
+    alias libs.plugins.spring.boot
+    alias libs.plugins.spring.dependency.management
 }
 
 group = 'com.b4f2'
@@ -51,40 +51,43 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // Spring Boot
+    implementation libs.spring.boot.starter.web
+    implementation libs.spring.boot.starter.data.jpa
+    implementation libs.spring.boot.starter.validation
+
+    // Test
+    testImplementation libs.spring.boot.starter.test
+    testRuntimeOnly libs.junit.platform.launcher
 
     // Lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor libs.lombok
+    compileOnly libs.lombok
 
     // Database
-    implementation 'org.postgresql:postgresql:42.7.8'
+    implementation libs.postgresql
 
     // TestContainers
-    testImplementation 'org.testcontainers:postgresql:1.21.3'
-    testImplementation 'org.testcontainers:junit-jupiter:1.21.3'
-    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation libs.spring.boot.testcontainers
+    testImplementation libs.testcontainers.junit.jupiter
+    testImplementation libs.testcontainers.postgresql
 
     // JWT
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
-    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+    runtimeOnly libs.jjwt.impl
+    runtimeOnly libs.jjwt.jackson
+    implementation libs.jjwt.api
+
+    // Firebase Admin for FCM
+    implementation libs.firebase.admin
 
     // Spring Mail
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-
-    // Firebase Admin
-    implementation 'com.google.firebase:firebase-admin:9.7.0'
+    implementation libs.spring.boot.starter.mail
 
     // Open Skill for MMR
-    implementation 'com.pocketcombats:openskill:1.0'
+    implementation libs.openSkill
 
-    // S3 Bucket
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    // Spring Cloud AWS for S3
+    implementation libs.spring.cloud.starter.aws
 }
 
 tasks.named('test') {
