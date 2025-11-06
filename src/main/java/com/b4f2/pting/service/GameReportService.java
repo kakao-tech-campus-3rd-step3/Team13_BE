@@ -39,6 +39,10 @@ public class GameReportService {
                 .findById(request.gameId())
                 .orElseThrow(() -> new EntityNotFoundException("해당 게임이 존재하지 않습니다."));
 
+        if (game.getGameStatus() != Game.GameStatus.END) {
+            throw new IllegalStateException("게임이 종료된 이후에만 신고할 수 있습니다.");
+        }
+
         Member reported = memberRepository
                 .findById(request.reportedId())
                 .orElseThrow(() -> new IllegalArgumentException("피신고자를 찾을 수 없습니다."));
