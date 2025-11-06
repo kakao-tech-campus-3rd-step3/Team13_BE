@@ -77,7 +77,7 @@ class RankGameServiceTest {
                 matchResultVoteRepository,
                 mmrRepository));
 
-        member = new Member(1L, Member.OAuthProvider.KAKAO);
+        member = new Member("1", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(member, "id", memberId);
 
         endedGame = new RankGame();

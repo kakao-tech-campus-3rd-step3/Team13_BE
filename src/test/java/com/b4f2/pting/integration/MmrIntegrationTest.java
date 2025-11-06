@@ -71,8 +71,8 @@ class MmrIntegrationTest {
     void setUp() {
         sport = sportRepository.save(new Sport("축구", 11));
 
-        winner = memberRepository.save(new Member(1L, Member.OAuthProvider.KAKAO));
-        loser = memberRepository.save(new Member(2L, Member.OAuthProvider.KAKAO));
+        winner = memberRepository.save(new Member("1", Member.OAuthProvider.KAKAO));
+        loser = memberRepository.save(new Member("2", Member.OAuthProvider.KAKAO));
 
         mmrRepository.save(new Mmr(sport, winner));
         mmrRepository.save(new Mmr(sport, loser));

@@ -54,7 +54,7 @@ class AuthIntegrationTest {
         KakaoOAuthTokenResponse tokenResponse =
                 new KakaoOAuthTokenResponse("bearer", "accessToken123", 3600, "refreshToken123", 7200);
 
-        KakaoUserInfoResponse userInfoResponse = new KakaoUserInfoResponse(12345L);
+        KakaoUserInfoResponse userInfoResponse = new KakaoUserInfoResponse("12345");
 
         given(kakaoOAuthClient.getKakaoOAuthToken(code)).willReturn(tokenResponse);
         given(kakaoOAuthClient.getKakaoUserInfo(tokenResponse)).willReturn(userInfoResponse);
@@ -69,22 +69,22 @@ class AuthIntegrationTest {
         assertThat(response.getBody().token()).isNotBlank();
 
         Member member = memberRepository
-                .findByOauthIdAndOauthProvider(12345L, OAuthProvider.KAKAO)
+                .findByOauthIdAndOauthProvider("12345", OAuthProvider.KAKAO)
                 .orElseThrow();
-        assertThat(member.getOauthId()).isEqualTo(12345L);
+        assertThat(member.getOauthId()).isEqualTo("12345");
     }
 
     @Test
     @DisplayName("카카오 기존 회원 로그인")
     void KakaoLogin_기존회원_성공() {
         // given
-        Member existingMember = memberRepository.save(new Member(12345L, OAuthProvider.KAKAO));
+        Member existingMember = memberRepository.save(new Member("12345", OAuthProvider.KAKAO));
 
         String code = "testCode";
         KakaoOAuthTokenResponse tokenResponse =
                 new KakaoOAuthTokenResponse("bearer", "accessToken123", 3600, "refreshToken123", 7200);
 
-        KakaoUserInfoResponse userInfoResponse = new KakaoUserInfoResponse(12345L);
+        KakaoUserInfoResponse userInfoResponse = new KakaoUserInfoResponse("12345");
 
         given(kakaoOAuthClient.getKakaoOAuthToken(code)).willReturn(tokenResponse);
         given(kakaoOAuthClient.getKakaoUserInfo(tokenResponse)).willReturn(userInfoResponse);

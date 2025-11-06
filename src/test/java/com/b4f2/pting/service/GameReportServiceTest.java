@@ -64,10 +64,10 @@ class GameReportServiceTest {
 
     @BeforeEach
     void setUp() {
-        reporter = new Member(1L, Member.OAuthProvider.KAKAO);
+        reporter = new Member("1", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(reporter, "id", 1L);
 
-        reported = new Member(2L, Member.OAuthProvider.KAKAO);
+        reported = new Member("2", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(reported, "id", 2L);
 
         game = new Game();

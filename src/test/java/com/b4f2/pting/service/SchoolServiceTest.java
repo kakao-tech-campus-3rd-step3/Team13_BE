@@ -47,7 +47,7 @@ class SchoolServiceTest {
         school = new School("부산대학교", "pusan.ac.kr");
         ReflectionTestUtils.setField(school, "id", 1L);
 
-        member = new Member(1L, Member.OAuthProvider.KAKAO);
+        member = new Member("1", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(member, "id", 1L);
     }
 
