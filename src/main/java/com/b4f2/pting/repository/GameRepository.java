@@ -42,7 +42,7 @@ public interface GameRepository extends JpaRepository<Game, Long> {
             left join game_user gu on u.id = gu.game_id
             group by u.id, u.player_count
             """, nativeQuery = true)
-    List<ClosedGameSummary> endMatchingGames(@Param("deadline") LocalDateTime deadLine);
+    List<ClosedGameSummary> closeMatchingGames(@Param("deadline") LocalDateTime deadLine);
 
     @Modifying
     @Query(value = """

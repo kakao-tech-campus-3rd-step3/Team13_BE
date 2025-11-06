@@ -24,9 +24,9 @@ public class GameScheduler {
     private final GameService gameService;
 
     @Scheduled(cron = "0 */5 * * * *")
-    public void endMatchingGamesJob() throws FirebaseMessagingException {
+    public void closeMatchingGamesJob() throws FirebaseMessagingException {
         LocalDateTime deadLine = LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(3);
-        List<ClosedGameSummary> updated = gameService.endMatchingGames(deadLine);
+        List<ClosedGameSummary> updated = gameService.closeMatchingGames(deadLine);
 
         List<Long> cancel = new ArrayList<>();
         List<Long> close = new ArrayList<>();

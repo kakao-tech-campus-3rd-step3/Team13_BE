@@ -111,8 +111,8 @@ public class GameService {
     }
 
     @Transactional
-    public List<ClosedGameSummary> endMatchingGames(LocalDateTime deadLine) {
-        return gameRepository.endMatchingGames(deadLine);
+    public List<ClosedGameSummary> closeMatchingGames(LocalDateTime deadLine) {
+        return gameRepository.closeMatchingGames(deadLine);
     }
 
     public GamesResponse findGamesBySportIdAndTimePeriod(Long sportId, TimePeriod timePeriod) {
