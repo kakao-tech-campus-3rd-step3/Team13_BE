@@ -15,6 +15,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 
 import lombok.RequiredArgsConstructor;
 
+import com.b4f2.pting.aspect.CheckMemberStatus;
 import com.b4f2.pting.domain.FcmToken;
 import com.b4f2.pting.domain.Game;
 import com.b4f2.pting.domain.Game.GameStatus;
@@ -45,6 +46,7 @@ public class GameService {
     private final FcmTokenRepository fcmTokenRepository;
     private final S3UploadService s3UploadService;
 
+    @CheckMemberStatus
     @Transactional
     public GameDetailResponse createGame(Member member, CreateGameRequest request, @Nullable MultipartFile image) {
         validateMemberIsVerified(member);
@@ -72,6 +74,7 @@ public class GameService {
         return new GameDetailResponse(game, 1);
     }
 
+    @CheckMemberStatus
     @Transactional
     public void joinGame(Member member, Long gameId) throws FirebaseMessagingException {
         validateMemberIsVerified(member);
