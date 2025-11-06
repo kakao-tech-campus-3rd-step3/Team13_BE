@@ -1,7 +1,6 @@
 package com.b4f2.pting.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +12,6 @@ import com.b4f2.pting.config.Login;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.dto.RankGameConfirmRequest;
 import com.b4f2.pting.dto.RankGameEnqueueRequest;
-import com.b4f2.pting.dto.VoteRequest;
-import com.b4f2.pting.dto.VoteResultResponse;
 import com.b4f2.pting.service.MatchingService;
 import com.b4f2.pting.service.RankGameService;
 
@@ -38,13 +35,5 @@ public class RankGameController {
     public ResponseEntity<Void> confirm(@Login Member member, @RequestBody RankGameConfirmRequest request) {
         matchingService.acceptTeam(member, request);
         return ResponseEntity.ok().build();
-    }
-
-    // 투표하기
-    @PostMapping("/{gameId}/vote")
-    public ResponseEntity<VoteResultResponse> voteMatchResult(
-            @Login Member member, @PathVariable Long gameId, @RequestBody VoteRequest voteRequest) {
-        VoteResultResponse response = rankGameService.voteMatchResult(gameId, voteRequest, member);
-        return ResponseEntity.ok(response);
     }
 }
