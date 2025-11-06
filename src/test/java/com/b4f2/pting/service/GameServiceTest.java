@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -31,6 +32,8 @@ import com.b4f2.pting.dto.GameDetailResponse;
 import com.b4f2.pting.repository.GameParticipantRepository;
 import com.b4f2.pting.repository.GameRepository;
 import com.b4f2.pting.repository.SportRepository;
+
+import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -46,8 +49,14 @@ class GameServiceTest {
     @Mock
     private GameParticipantRepository gameParticipantRepository;
 
+    @Mock
+    private S3UploadService s3UploadService;
+
     @InjectMocks
     private GameService gameService;
+
+    @Value("${app.default-image-url}")
+    private String defaultImageUrl;
 
     private Member member;
     private Sport sport;
@@ -71,7 +80,8 @@ class GameServiceTest {
                 Game.GameStatus.ON_RECRUITING,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
                 2,
-                "재미있는 방 설명입니다.");
+                "재미있는 방 설명입니다.",
+                defaultImageUrl);
         ReflectionTestUtils.setField(game, "id", 1L);
     }
 
@@ -89,9 +99,10 @@ class GameServiceTest {
 
         when(sportRepository.findById(request.sportId())).thenReturn(Optional.of(sport));
         when(gameRepository.save(any(Game.class))).thenReturn(game);
+        when(s3UploadService.saveImage(null)).thenReturn(defaultImageUrl);
 
         // when
-        GameDetailResponse response = gameService.createGame(member, request);
+        GameDetailResponse response = gameService.createGame(member, request, null);
 
         // then
         assertThat(response).isNotNull();
