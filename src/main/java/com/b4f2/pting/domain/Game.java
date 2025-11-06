@@ -64,8 +64,10 @@ public class Game {
 
     public enum GameStatus {
         ON_RECRUITING, // 모집 중
-        FULL, // 모집 완료
-        END // 게임 종료
+        FULL, // 모집 완료 (인원 다 참)
+        CLOSED, // 모집 종료
+        END, // 게임 종료
+        CANCELED // 게임 취소
     }
 
     public static Game create(
