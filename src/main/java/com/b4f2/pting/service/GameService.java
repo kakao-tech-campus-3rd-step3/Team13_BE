@@ -31,6 +31,8 @@ import com.b4f2.pting.repository.SportRepository;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Nullable;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -44,7 +46,7 @@ public class GameService {
     private final S3UploadService s3UploadService;
 
     @Transactional
-    public GameDetailResponse createGame(Member member, CreateGameRequest request, MultipartFile image) {
+    public GameDetailResponse createGame(Member member, CreateGameRequest request, @Nullable MultipartFile image) {
         validateMemberIsVerified(member);
 
         Sport sport = sportRepository

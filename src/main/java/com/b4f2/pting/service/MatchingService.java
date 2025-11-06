@@ -31,13 +31,13 @@ import com.b4f2.pting.repository.RankGameRepository;
 @Transactional(readOnly = true)
 public class MatchingService {
 
+    @Value("${app.default-image-url}")
+    private String defaultImageUrl;
+
     private final MatchingQueue matchingQueue;
     private final RankGameRepository rankGameRepository;
     private final RankGameParticipantRepository rankGameParticipantRepository;
     private final MatchingAlgorithm matchingAlgorithm;
-
-    @Value("${app.default-image-url}")
-    private String defaultImageUrl;
 
     @Transactional
     public void addPlayerToQueue(Sport sport, RankGameParticipant participant) {
