@@ -66,7 +66,7 @@ class EmailCertificationIntegrationTest {
         memberRepository.deleteAll();
         schoolRepository.deleteAll();
 
-        testMember = memberRepository.save(new Member(12345L, Member.OAuthProvider.KAKAO));
+        testMember = memberRepository.save(new Member("12345", Member.OAuthProvider.KAKAO));
         token = jwtUtil.createToken(testMember);
 
         testSchool = schoolRepository.save(new School("부산대학교", "pusan.ac.kr"));

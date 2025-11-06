@@ -81,7 +81,7 @@ class GameIntegrationTest {
         memberRepository.deleteAll();
         sportRepository.deleteAll();
 
-        testMember = memberRepository.save(new Member(12345L, Member.OAuthProvider.KAKAO));
+        testMember = memberRepository.save(new Member("12345", Member.OAuthProvider.KAKAO));
         testMember.markAsVerified();
         memberRepository.save(testMember);
         token = jwtUtil.createToken(testMember);
@@ -149,7 +149,7 @@ class GameIntegrationTest {
                 defaultImageUrl);
         gameRepository.save(game);
 
-        Member newParticipant = memberRepository.save(new Member(67890L, Member.OAuthProvider.KAKAO));
+        Member newParticipant = memberRepository.save(new Member("67890", Member.OAuthProvider.KAKAO));
         newParticipant.markAsVerified();
         memberRepository.save(newParticipant);
 

@@ -93,6 +93,24 @@ public class GameService {
     }
 
     @Transactional
+    public void quitGame(Member member, Long gameId) {
+        validateMemberIsVerified(member);
+
+        Game game = getGame(gameId);
+
+        if (!game.getGameStatus().isOnRecruiting()) {
+            throw new IllegalStateException("'모집 중' 일 때만 퀵매칭에서 나갈 수 있습니다.");
+        }
+
+        removeParticipant(game, member);
+        game.changeStatus(GameStatus.ON_RECRUITING);
+    }
+
+    private Game getGame(Long gameId) {
+        return gameRepository.findById(gameId).orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
+    }
+
+    @Transactional
     public List<ClosedGameSummary> endMatchingGames(LocalDateTime deadLine) {
         return gameRepository.endMatchingGames(deadLine);
     }
@@ -174,6 +192,10 @@ public class GameService {
         if (gameParticipants.size() + 1 == game.getPlayerCount()) {
             // TODO - call alarm method
         }
+    }
+
+    private void removeParticipant(Game game, Member member) {
+        gameParticipantRepository.deleteByGameAndMember(game, member);
     }
 
     private void notifyMatchingCompleted(List<GameParticipant> participants) throws FirebaseMessagingException {

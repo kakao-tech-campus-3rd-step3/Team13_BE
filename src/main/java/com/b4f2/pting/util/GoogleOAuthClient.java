@@ -8,40 +8,40 @@ import org.springframework.web.client.RestClient;
 
 import lombok.RequiredArgsConstructor;
 
-import com.b4f2.pting.config.properties.KakaoOAuthProperties;
-import com.b4f2.pting.dto.KakaoOAuthTokenResponse;
-import com.b4f2.pting.dto.KakaoUserInfoResponse;
+import com.b4f2.pting.config.properties.GoogleOAuthProperties;
+import com.b4f2.pting.dto.GoogleOAuthTokenResponse;
+import com.b4f2.pting.dto.GoogleUserInfoResponse;
 
 @Component
 @RequiredArgsConstructor
-public class KakaoOAuthClient {
+public class GoogleOAuthClient {
 
     private final RestClient restClient;
-    private final KakaoOAuthProperties kakaoOAuthProperties;
+    private final GoogleOAuthProperties googleOAuthPrpoerties;
 
-    public KakaoOAuthTokenResponse getKakaoOAuthToken(String code) {
+    public GoogleOAuthTokenResponse getGoogleOAuthToken(String code) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", kakaoOAuthProperties.clientId());
-        params.add("client_secret", kakaoOAuthProperties.clientSecret());
-        params.add("redirect_uri", kakaoOAuthProperties.redirectUri());
+        params.add("client_id", googleOAuthPrpoerties.clientId());
+        params.add("client_secret", googleOAuthPrpoerties.clientSecret());
+        params.add("redirect_uri", googleOAuthPrpoerties.redirectUri());
         params.add("code", code);
 
         return restClient
                 .post()
-                .uri(kakaoOAuthProperties.tokenUri())
+                .uri(googleOAuthPrpoerties.tokenUri())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(params)
                 .retrieve()
-                .body(KakaoOAuthTokenResponse.class);
+                .body(GoogleOAuthTokenResponse.class);
     }
 
-    public KakaoUserInfoResponse getKakaoUserInfo(KakaoOAuthTokenResponse token) {
+    public GoogleUserInfoResponse getGoogleUserInfo(GoogleOAuthTokenResponse token) {
         return restClient
                 .post()
-                .uri(kakaoOAuthProperties.infoUri())
+                .uri(googleOAuthPrpoerties.infoUri())
                 .header("Authorization", "Bearer " + token.accessToken())
                 .retrieve()
-                .body(KakaoUserInfoResponse.class);
+                .body(GoogleUserInfoResponse.class);
     }
 }

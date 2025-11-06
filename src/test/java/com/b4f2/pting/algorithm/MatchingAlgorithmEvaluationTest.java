@@ -134,7 +134,7 @@ class MatchingAlgorithmEvaluationTest {
             double gaussian = random.nextGaussian();
             double mmrValue = mean + gaussian * stddev;
 
-            Member member = new Member(1000L + i, Member.OAuthProvider.KAKAO);
+            Member member = new Member(String.valueOf(1000L + i), Member.OAuthProvider.KAKAO);
             ReflectionTestUtils.setField(member, "id", (long) i);
             ReflectionTestUtils.setField(member, "name", "Player" + i);
 

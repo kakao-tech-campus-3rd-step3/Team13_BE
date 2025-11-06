@@ -24,9 +24,20 @@ public class AuthController {
         return authService.getKakaoOAuthUrl();
     }
 
+    @GetMapping("/google")
+    public OAuthUrlResponse getGoogleOAuthUrl() {
+        return authService.getGoogleOAuthUrl();
+    }
+
     @GetMapping("/kakao/callback")
     public ResponseEntity<AuthResponse> kakaoOAuthCallback(@RequestParam String code) {
         AuthResponse authResponse = authService.kakaoOAuthLogin(code);
+        return ResponseEntity.ok(authResponse);
+    }
+
+    @GetMapping("/google/callback")
+    public ResponseEntity<AuthResponse> googleOAuthCallback(@RequestParam String code) {
+        AuthResponse authResponse = authService.googleOAuthLogin(code);
         return ResponseEntity.ok(authResponse);
     }
 }

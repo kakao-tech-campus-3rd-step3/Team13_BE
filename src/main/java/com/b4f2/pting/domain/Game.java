@@ -68,6 +68,11 @@ public class Game {
         CLOSED, // 모집 종료
         END, // 게임 종료
         CANCELED // 게임 취소
+    ;
+
+        public boolean isOnRecruiting() {
+            return this == GameStatus.ON_RECRUITING || this == GameStatus.FULL;
+        }
     }
 
     public static Game create(

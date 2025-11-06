@@ -3,7 +3,10 @@ package com.b4f2.pting.service;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -61,10 +64,10 @@ class GameReportServiceTest {
 
     @BeforeEach
     void setUp() {
-        reporter = new Member(1L, Member.OAuthProvider.KAKAO);
+        reporter = new Member("1", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(reporter, "id", 1L);
 
-        reported = new Member(2L, Member.OAuthProvider.KAKAO);
+        reported = new Member("2", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(reported, "id", 2L);
 
         game = new Game();
@@ -109,6 +112,22 @@ class GameReportServiceTest {
         assertThatThrownBy(() -> reportService.createReport(reporter, request))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("자기 자신을 신고할 수 없습니다.");
+    }
+
+    @Test
+    void createReport_게임진행중일때_예외발생() {
+        // given
+        ReflectionTestUtils.setField(game, "gameStatus", GameStatus.ON_RECRUITING);
+        GameReportRequest request = new GameReportRequest(game.getId(), reported.getId(), "진행 중 신고 시도");
+
+        when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
+
+        // when & then
+        IllegalStateException exception =
+                assertThrows(IllegalStateException.class, () -> reportService.createReport(reporter, request));
+
+        assertEquals("게임이 종료된 이후에만 신고할 수 있습니다.", exception.getMessage());
+        verify(reportRepository, never()).save(any());
     }
 
     @Test

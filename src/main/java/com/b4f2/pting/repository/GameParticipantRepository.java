@@ -17,5 +17,7 @@ public interface GameParticipantRepository extends JpaRepository<GameParticipant
 
     List<GameParticipant> findAllByMember(Member member);
 
+    void deleteByGameAndMember(Game game, Member member);
+
     List<GameParticipant> findByGameIdIn(List<Long> ids);
 }
