@@ -55,9 +55,11 @@ public class MatchingService {
 
     @Transactional
     public RankGameParticipant addPlayerToQueue(Member member, RankGameEnqueueRequest request) {
-        Sport sport = sportRepository
-                .findById(request.sportId())
-                .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
+
+        boolean exists = sportRepository.existsById(request.sportId());
+        if (!exists) {
+            throw new EntityNotFoundException("해당 스포츠가 존재하지 않습니다.");
+        }
 
         RankGameParticipant participant = new RankGameParticipant(member);
 
@@ -83,10 +85,10 @@ public class MatchingService {
             LocalDateTime startTime = getNextSaturdayGameTime();
 
             RankGame game = RankGame.create(
-                    sport, "랭크 게임", team.size(), GameStatus.ON_RECRUITING, startTime, 60, "자동 생성된 랭크 게임 (확정 전)");
+                sport, "랭크 게임", team.size(), GameStatus.ON_RECRUITING, startTime, 60, "자동 생성된 랭크 게임 (확정 전)");
 
             team.sort((p1, p2) ->
-                    Double.compare(p2.getMember().getMmr(sport), p1.getMember().getMmr(sport)));
+                Double.compare(p2.getMember().getMmr(sport), p1.getMember().getMmr(sport)));
 
             for (int i = 0; i < team.size(); i++) {
                 RankGameParticipant participant = team.get(i);
@@ -109,21 +111,21 @@ public class MatchingService {
     }
 
     private void notifyTeamSchedule(List<RankGameParticipant> participants, RankGame game)
-            throws FirebaseMessagingException {
+        throws FirebaseMessagingException {
         List<Member> members =
-                participants.stream().map(RankGameParticipant::getMember).toList();
+            participants.stream().map(RankGameParticipant::getMember).toList();
 
         List<String> tokens = fcmTokenRepository.findAllByMemberIn(members).stream()
-                .map(FcmToken::getToken)
-                .filter(Objects::nonNull)
-                .toList();
+            .map(FcmToken::getToken)
+            .filter(Objects::nonNull)
+            .toList();
 
         if (tokens.isEmpty()) return;
 
         String title = "[랭크 게임] 일정 안내";
         String body = game.getName() + "이 매칭되었습니다!\n" + "시작 시간: "
-                + game.getStartTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) + "\n"
-                + "⚠️ 참여자 여러분, 일정을 확인하고 참가를 확정해주세요!";
+            + game.getStartTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) + "\n"
+            + "⚠️ 참여자 여러분, 일정을 확인하고 참가를 확정해주세요!";
 
         fcmService.sendMulticastPush(tokens, title, body);
     }
@@ -131,12 +133,12 @@ public class MatchingService {
     @Transactional
     public void acceptTeam(Member member, RankGameConfirmRequest request) {
         RankGameParticipant participant = rankGameParticipantRepository
-                .findByGameIdAndMemberId(request.rankGameId(), member.getId())
-                .orElseThrow(() -> new IllegalArgumentException("참가자를 찾을 수 없습니다."));
+            .findByGameIdAndMemberId(request.rankGameId(), member.getId())
+            .orElseThrow(() -> new IllegalArgumentException("참가자를 찾을 수 없습니다."));
 
         RankGame game = rankGameRepository
-                .findById(request.rankGameId())
-                .orElseThrow(() -> new IllegalArgumentException("게임을 찾을 수 없습니다."));
+            .findById(request.rankGameId())
+            .orElseThrow(() -> new IllegalArgumentException("게임을 찾을 수 없습니다."));
 
         participant.accept();
         rankGameParticipantRepository.save(participant);
@@ -160,22 +162,22 @@ public class MatchingService {
     }
 
     private void notifyMatchingCompleted(List<RankGameParticipant> participants, RankGame game)
-            throws FirebaseMessagingException {
+        throws FirebaseMessagingException {
         List<Member> members =
-                participants.stream().map(RankGameParticipant::getMember).toList();
+            participants.stream().map(RankGameParticipant::getMember).toList();
 
         List<String> tokens = fcmTokenRepository.findAllByMemberIn(members).stream()
-                .map(FcmToken::getToken)
-                .toList();
+            .map(FcmToken::getToken)
+            .toList();
 
         if (tokens.isEmpty()) return;
 
         String title = "[랭크 게임] 매칭 완료";
         String body = game.getName() + "이 매칭되었습니다!\n" + "시작 시간: "
-                + game.getStartTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) + "\n" + "팀: "
-                + participants.stream()
-                        .map(p -> p.getMember().getName() + "(" + p.getTeam().name() + ")")
-                        .collect(Collectors.joining(", "));
+            + game.getStartTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) + "\n" + "팀: "
+            + participants.stream()
+            .map(p -> p.getMember().getName() + "(" + p.getTeam().name() + ")")
+            .collect(Collectors.joining(", "));
 
         fcmService.sendMulticastPush(tokens, title, body);
     }
