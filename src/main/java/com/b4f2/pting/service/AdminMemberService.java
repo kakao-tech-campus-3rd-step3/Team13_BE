@@ -22,7 +22,7 @@ public class AdminMemberService {
     @Transactional
     public void unSuspendMember(Long memberId) {
         Member member =
-            memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
+                memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
         member.changeStatus(MemberStatus.ACTIVE);
     }
 
@@ -30,7 +30,7 @@ public class AdminMemberService {
     @Transactional
     public void banMember(Long memberId) {
         Member member =
-            memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
+                memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException("회원을 찾을 수 없습니다."));
         member.changeStatus(MemberStatus.BANNED);
     }
 }
