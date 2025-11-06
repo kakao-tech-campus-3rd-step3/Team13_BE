@@ -51,4 +51,13 @@ public interface GameRepository extends JpaRepository<Game, Long> {
             where id in :ids
             """, nativeQuery = true)
     void updateStatusToCanceled(@Param("ids") List<Long> ids);
+
+    @Modifying
+    @Query(value = """
+            update game
+                set game_status = 'END'
+            where game_status = 'CLOSED'
+                and start_time + (duration || ' minutes')::interval <= :now
+            """, nativeQuery = true)
+    int endMatchingGames(@Param("now") LocalDateTime now);
 }

@@ -26,12 +26,12 @@ public class GameScheduler {
     @Scheduled(cron = "0 */5 * * * *")
     public void closeMatchingGamesJob() throws FirebaseMessagingException {
         LocalDateTime deadLine = LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(3);
-        List<ClosedGameSummary> updated = gameService.closeMatchingGames(deadLine);
+        List<ClosedGameSummary> summaries = gameService.closeMatchingGames(deadLine);
 
         List<Long> cancel = new ArrayList<>();
         List<Long> close = new ArrayList<>();
 
-        for (ClosedGameSummary summary : updated) {
+        for (ClosedGameSummary summary : summaries) {
             if (summary.currentPlayerCount() < summary.playerCount()) {
                 cancel.add(summary.id());
             } else {
@@ -48,6 +48,14 @@ public class GameScheduler {
             gameService.sendMatchedAlarms(close);
         }
 
-        log.info("[GameScheduler] endMatchingGamesJob finished - updated rows: {}", updated.size());
+        log.info("[GameScheduler] closeMatchingGamesJob finished - canceled rows: {}, closed rows: {}", cancel.size(), close.size());
+    }
+
+    @Scheduled(cron = "0 */5 * * * *")
+    public void endMatchingGamesJob() {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        int updated = gameService.endMatchingGames(now);
+
+        log.info("[GameScheduler] endMatchingGamesJob finished - updated rows: {}", updated);
     }
 }

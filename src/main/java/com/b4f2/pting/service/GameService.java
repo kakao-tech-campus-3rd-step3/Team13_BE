@@ -115,6 +115,11 @@ public class GameService {
         return gameRepository.closeMatchingGames(deadLine);
     }
 
+    @Transactional
+    public int endMatchingGames(LocalDateTime now) {
+        return gameRepository.endMatchingGames(now);
+    }
+
     public GamesResponse findGamesBySportIdAndTimePeriod(Long sportId, TimePeriod timePeriod) {
         if (timePeriod == null) {
             List<GameResponse> gameResponseList =
