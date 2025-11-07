@@ -18,14 +18,14 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .info(apiInfo())
+                .info(info())
                 .servers(List.of(server()))
                 .components(components())
                 .addSecurityItem(securityRequirement());
     }
 
-    private Info apiInfo() {
-        return new Info().title("P-Ting").description("P-Ting API 명세").version("1.0.0");
+    private Info info() {
+        return new Info().title("P-Ting").description("API 명세").version("1.0.0");
     }
 
     private Server server() {
