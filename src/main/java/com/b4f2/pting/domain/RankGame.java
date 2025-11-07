@@ -28,7 +28,6 @@ public class RankGame extends Game {
     public RankGame(
             Long id,
             Sport sport,
-            String name,
             String gameLocation,
             Integer playerCount,
             GameStatus gameStatus,
@@ -36,12 +35,11 @@ public class RankGame extends Game {
             Integer duration,
             String description,
             String imageUrl) {
-        super(id, sport, name, gameLocation, playerCount, gameStatus, startTime, duration, description, imageUrl);
+        super(id, sport, gameLocation, playerCount, gameStatus, startTime, duration, description, imageUrl);
     }
 
     public static RankGame create(
             Sport sport,
-            String name,
             String gameLocation,
             Integer playerCount,
             GameStatus gameStatus,
@@ -55,7 +53,7 @@ public class RankGame extends Game {
         }
 
         return new RankGame(
-                null, sport, name, gameLocation, playerCount, gameStatus, startTime, duration, description, imageUrl);
+                null, sport, gameLocation, playerCount, gameStatus, startTime, duration, description, imageUrl);
     }
 
     public boolean hasMemberVote(Member member) {

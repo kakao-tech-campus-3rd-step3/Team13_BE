@@ -9,6 +9,7 @@ import com.b4f2.pting.config.properties.GoogleOAuthProperties;
 import com.b4f2.pting.config.properties.KakaoOAuthProperties;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Member.OAuthProvider;
+import com.b4f2.pting.domain.MemberStatus;
 import com.b4f2.pting.dto.AuthResponse;
 import com.b4f2.pting.dto.GoogleOAuthTokenResponse;
 import com.b4f2.pting.dto.GoogleUserInfoResponse;
@@ -59,6 +60,8 @@ public class AuthService {
                 .findByOauthIdAndOauthProvider(userInfo.id(), OAuthProvider.KAKAO)
                 .orElseGet(() -> memberRepository.save(new Member(userInfo.id(), OAuthProvider.KAKAO)));
 
+        checkLoginAllowed(member);
+
         String jwt = jwtUtil.createToken(member);
 
         return new AuthResponse(jwt);
@@ -73,8 +76,16 @@ public class AuthService {
                 .findByOauthIdAndOauthProvider(userInfo.id(), OAuthProvider.GOOGLE)
                 .orElseGet(() -> memberRepository.save(new Member(userInfo.id(), OAuthProvider.GOOGLE)));
 
+        checkLoginAllowed(member);
+
         String jwt = jwtUtil.createToken(member);
 
         return new AuthResponse(jwt);
+    }
+
+    private void checkLoginAllowed(Member member) {
+        if (member.getStatus() == MemberStatus.BANNED) {
+            throw new IllegalStateException("영구 정지된 계정은 로그인할 수 없습니다.");
+        }
     }
 }

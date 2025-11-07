@@ -13,6 +13,7 @@ import com.b4f2.pting.domain.Game;
 import com.b4f2.pting.domain.GameParticipants;
 import com.b4f2.pting.domain.GameReport;
 import com.b4f2.pting.domain.Member;
+import com.b4f2.pting.domain.MemberStatus;
 import com.b4f2.pting.dto.GameReportRequest;
 import com.b4f2.pting.dto.GameReportResponse;
 import com.b4f2.pting.dto.GameReportStatusUpdateRequest;
@@ -52,6 +53,13 @@ public class GameReportService {
         GameReport report = GameReport.create(game, reporter, reported, request.reasonText(), participants);
 
         reportRepository.save(report);
+
+        long distinctReporterCount = reportRepository.countDistinctReporterByReportedId(reported.getId());
+
+        if (distinctReporterCount >= 3 && reported.getStatus() == MemberStatus.ACTIVE) {
+            reported.changeStatus(MemberStatus.SUSPENDED);
+            memberRepository.save(reported);
+        }
 
         return GameReportResponse.from(report);
     }

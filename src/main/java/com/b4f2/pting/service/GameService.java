@@ -1,5 +1,8 @@
 package com.b4f2.pting.service;
 
+import static com.b4f2.pting.domain.Game.GameStatus.FULL;
+import static com.b4f2.pting.domain.Game.GameStatus.ON_RECRUITING;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,6 +18,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 
 import lombok.RequiredArgsConstructor;
 
+import com.b4f2.pting.aspect.CheckMemberStatus;
 import com.b4f2.pting.domain.FcmToken;
 import com.b4f2.pting.domain.Game;
 import com.b4f2.pting.domain.Game.GameStatus;
@@ -45,6 +49,7 @@ public class GameService {
     private final FcmTokenRepository fcmTokenRepository;
     private final S3UploadService s3UploadService;
 
+    @CheckMemberStatus
     @Transactional
     public GameDetailResponse createGame(Member member, CreateGameRequest request, @Nullable MultipartFile image) {
         validateMemberIsVerified(member);
@@ -57,10 +62,9 @@ public class GameService {
 
         Game game = Game.create(
                 sport,
-                request.name(),
                 request.gameLocation(),
                 request.playerCount(),
-                Game.GameStatus.ON_RECRUITING,
+                ON_RECRUITING,
                 request.startTime(),
                 request.duration(),
                 request.description(),
@@ -73,13 +77,14 @@ public class GameService {
         return new GameDetailResponse(game, 1);
     }
 
+    @CheckMemberStatus
     @Transactional
     public void joinGame(Member member, Long gameId) throws FirebaseMessagingException {
         validateMemberIsVerified(member);
 
         Game game = gameRepository.findById(gameId).orElseThrow(() -> new EntityNotFoundException("해당 게임이 없습니다."));
 
-        if (game.getGameStatus() != Game.GameStatus.ON_RECRUITING) {
+        if (game.getGameStatus() != ON_RECRUITING) {
             throw new IllegalStateException("게임이 모집 중이 아닙니다.");
         }
 
@@ -87,7 +92,7 @@ public class GameService {
 
         List<GameParticipant> participants = gameParticipantRepository.findByGame(game);
         if (participants.size() == game.getPlayerCount()) {
-            game.changeStatus(Game.GameStatus.FULL);
+            game.changeStatus(FULL);
             notifyMatchingCompleted(participants);
         }
     }
@@ -103,7 +108,7 @@ public class GameService {
         }
 
         removeParticipant(game, member);
-        game.changeStatus(GameStatus.ON_RECRUITING);
+        game.changeStatus(ON_RECRUITING);
     }
 
     private Game getGame(Long gameId) {
@@ -123,7 +128,7 @@ public class GameService {
     public GamesResponse findGamesBySportIdAndTimePeriod(Long sportId, TimePeriod timePeriod) {
         if (timePeriod == null) {
             List<GameResponse> gameResponseList =
-                    gameRepository.findAllByGameStatusAndSportId(GameStatus.ON_RECRUITING, sportId).stream()
+                    gameRepository.findAllByGameStatusAndSportId(ON_RECRUITING, sportId).stream()
                             .map(this::mapGameToGameResponse)
                             .toList();
 
@@ -132,7 +137,7 @@ public class GameService {
 
         List<GameResponse> gameResponseList = gameRepository
                 .findAllByGameStatusAndSportIdAndTimePeriod(
-                        Game.GameStatus.ON_RECRUITING, sportId, timePeriod.getStartTime(), timePeriod.getEndTime())
+                        ON_RECRUITING, sportId, timePeriod.getStartTime(), timePeriod.getEndTime())
                 .stream()
                 .map(this::mapGameToGameResponse)
                 .toList();
@@ -193,10 +198,6 @@ public class GameService {
         gameParticipants.validateCapacity(game);
 
         gameParticipantRepository.save(new GameParticipant(member, game));
-
-        if (gameParticipants.size() + 1 == game.getPlayerCount()) {
-            // TODO - call alarm method
-        }
     }
 
     private void removeParticipant(Game game, Member member) {
@@ -230,6 +231,4 @@ public class GameService {
                 .toList();
         return new GamesResponse(gameResponseList);
     }
-
-    // TODO: 인원 모집이 완료됐던 매칭이 취소될 경우 알림 기능 구현 (참가자가 나갈 경우)
 }

@@ -40,9 +40,6 @@ public class Game {
     @Column(name = "game_location")
     private String gameLocation;
 
-    @Column(name = "game_name")
-    private String name;
-
     @Column(name = "player_count")
     private Integer playerCount;
 
@@ -77,7 +74,6 @@ public class Game {
 
     public static Game create(
             Sport sport,
-            String name,
             String gameLocation,
             Integer playerCount,
             GameStatus gameStatus,
@@ -91,8 +87,7 @@ public class Game {
             throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
         }
 
-        return new Game(
-                null, sport, gameLocation, name, playerCount, gameStatus, startTime, duration, description, imageUrl);
+        return new Game(null, sport, gameLocation, playerCount, gameStatus, startTime, duration, description, imageUrl);
     }
 
     public boolean isStatus(GameStatus status) {

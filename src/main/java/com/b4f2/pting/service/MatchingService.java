@@ -62,7 +62,6 @@ public class MatchingService {
 
             RankGame game = RankGame.create(
                     sport,
-                    "랭크 게임",
                     "장소",
                     team.size(),
                     GameStatus.ON_RECRUITING,

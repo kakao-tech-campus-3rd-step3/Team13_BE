@@ -11,6 +11,9 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.amazonaws.AmazonServiceException;
+import com.google.firebase.messaging.FirebaseMessagingException;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -35,15 +38,27 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, convertErrorToString(e));
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ProblemDetail handleRuntimeException(RuntimeException e) {
-        log.error("[RuntimeException] {}", e.getMessage());
+    @ExceptionHandler(AmazonServiceException.class)
+    public ProblemDetail handleAmazonServiceException(AmazonServiceException e) {
+        log.error("[AmazonServiceException] {}", e.getMessage());
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, convertErrorToString(e));
     }
 
     @ExceptionHandler(UncheckedIOException.class)
     public ProblemDetail handleUncheckedIOException(UncheckedIOException e) {
         log.error("[UncheckedIOException] {}", e.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, convertErrorToString(e));
+    }
+
+    @ExceptionHandler(FirebaseMessagingException.class)
+    public ProblemDetail handleFirebaseMessagingException(FirebaseMessagingException e) {
+        log.error("[FirebaseMessagingException] {}", e.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, convertErrorToString(e));
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ProblemDetail handleRuntimeException(RuntimeException e) {
+        log.error("[RuntimeException] {}", e.getMessage());
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, convertErrorToString(e));
     }
 

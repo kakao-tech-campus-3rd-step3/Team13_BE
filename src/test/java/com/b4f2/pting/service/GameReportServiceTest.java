@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -28,6 +29,7 @@ import com.b4f2.pting.domain.GameParticipant;
 import com.b4f2.pting.domain.GameParticipants;
 import com.b4f2.pting.domain.GameReport;
 import com.b4f2.pting.domain.Member;
+import com.b4f2.pting.domain.MemberStatus;
 import com.b4f2.pting.domain.ReportStatus;
 import com.b4f2.pting.dto.GameReportRequest;
 import com.b4f2.pting.dto.GameReportResponse;
@@ -97,6 +99,45 @@ class GameReportServiceTest {
         assertEquals(reported.getId(), response.reportedId());
         assertEquals("테스트 신고 사유", response.reasonText());
         assertEquals(ReportStatus.PENDING, response.status());
+    }
+
+    @Test
+    void createReport_누적3회신고_성공() {
+        // given
+        Member reporter1 = new Member("r1", Member.OAuthProvider.KAKAO);
+        ReflectionTestUtils.setField(reporter1, "id", 10L);
+        Member reporter2 = new Member("r2", Member.OAuthProvider.KAKAO);
+        ReflectionTestUtils.setField(reporter2, "id", 11L);
+        Member reporter3 = new Member("r3", Member.OAuthProvider.KAKAO);
+        ReflectionTestUtils.setField(reporter3, "id", 12L);
+
+        // participants에 신고자 모두 포함
+        participants = List.of(
+                new GameParticipant(reporter1, game),
+                new GameParticipant(reporter2, game),
+                new GameParticipant(reporter3, game),
+                new GameParticipant(reported, game));
+
+        when(gameRepository.findById(game.getId())).thenReturn(Optional.of(game));
+        when(memberRepository.findById(reported.getId())).thenReturn(Optional.of(reported));
+        when(participantRepository.findByGame(game)).thenReturn(participants);
+        when(reportRepository.save(any(GameReport.class))).thenAnswer(i -> i.getArgument(0));
+
+        AtomicLong callCount = new AtomicLong(0);
+        when(reportRepository.countDistinctReporterByReportedId(reported.getId()))
+                .thenAnswer(invocation -> callCount.incrementAndGet());
+
+        GameReportRequest request1 = new GameReportRequest(game.getId(), reported.getId(), "사유1");
+        GameReportRequest request2 = new GameReportRequest(game.getId(), reported.getId(), "사유2");
+        GameReportRequest request3 = new GameReportRequest(game.getId(), reported.getId(), "사유3");
+
+        // when
+        reportService.createReport(reporter1, request1);
+        reportService.createReport(reporter2, request2);
+        reportService.createReport(reporter3, request3);
+
+        // then
+        assertEquals(MemberStatus.SUSPENDED, reported.getStatus());
     }
 
     @Test

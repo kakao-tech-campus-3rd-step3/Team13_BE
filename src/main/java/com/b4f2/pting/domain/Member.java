@@ -69,6 +69,10 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private final List<Mmr> mmrList = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private MemberStatus status = MemberStatus.ACTIVE;
+
     public enum OAuthProvider {
         KAKAO,
         GOOGLE
@@ -129,5 +133,9 @@ public class Member {
 
     public boolean isVerifiedEmail(String email) {
         return isVerified && isMySchoolEmail(email);
+    }
+
+    public void changeStatus(MemberStatus newStatus) {
+        this.status = newStatus;
     }
 }

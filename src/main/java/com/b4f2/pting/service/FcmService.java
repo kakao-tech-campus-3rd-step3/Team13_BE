@@ -65,4 +65,18 @@ public class FcmService {
 
         FirebaseMessaging.getInstance().sendEachForMulticast(message);
     }
+
+    public void sendPushToTopic(String topic, String title, String body) throws FirebaseMessagingException {
+        if (topic == null || topic.trim().isEmpty()) {
+            return;
+        }
+
+        Message message = Message.builder()
+                .setNotification(
+                        Notification.builder().setTitle(title).setBody(body).build())
+                .setTopic(topic)
+                .build();
+
+        FirebaseMessaging.getInstance().send(message);
+    }
 }
