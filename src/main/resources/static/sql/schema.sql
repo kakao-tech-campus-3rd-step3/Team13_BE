@@ -104,3 +104,19 @@ CREATE TABLE match_result_vote
 ALTER TYPE oauth_provider ADD VALUE 'GOOGLE';
 ALTER TYPE game_status ADD VALUE 'CLOSED';
 ALTER TYPE game_status ADD VALUE 'CANCELED';
+
+CREATE TYPE time_period AS ENUM ('MORNING', 'NOON', 'EVENING');
+
+CREATE TABLE user_interest_time
+(
+    id          BIGSERIAL PRIMARY KEY,
+    member_Id   BIGINT      NOT NULL REFERENCES member (id),
+    time_period time_period NOT NULL
+);
+
+CREATE TABLE user_interest_sport
+(
+    id        BIGSERIAL PRIMARY KEY,
+    member_Id BIGINT NOT NULL REFERENCES member (id),
+    sport_id  BIGINT NOT NULL REFERENCES sport (id)
+);
