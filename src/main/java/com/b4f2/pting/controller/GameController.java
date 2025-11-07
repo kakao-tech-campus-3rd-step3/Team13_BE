@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -40,21 +41,21 @@ public class GameController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<GameDetailResponse> createGame(
-            @Login Member member,
+            @Parameter(hidden = true) @Login Member member,
             @RequestPart("game") CreateGameRequest request,
             @RequestPart(value = "image", required = false) MultipartFile image) {
         return ResponseEntity.ok(gameService.createGame(member, request, image));
     }
 
     @PostMapping("/{gameId}")
-    public ResponseEntity<Void> joinGame(@Login Member member, @PathVariable Long gameId)
+    public ResponseEntity<Void> joinGame(@Parameter(hidden = true) @Login Member member, @PathVariable Long gameId)
             throws FirebaseMessagingException {
         gameService.joinGame(member, gameId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{gameId}")
-    public ResponseEntity<Void> quitGame(@Login Member member, @PathVariable Long gameId) {
+    public ResponseEntity<Void> quitGame(@Parameter(hidden = true) @Login Member member, @PathVariable Long gameId) {
         gameService.quitGame(member, gameId);
         return ResponseEntity.ok().build();
     }
@@ -72,7 +73,9 @@ public class GameController {
 
     @PostMapping("/{gameId}/votes")
     public ResponseEntity<VoteResultResponse> voteMatchResult(
-            @Login Member member, @RequestBody VoteRequest voteRequest, @PathVariable Long gameId) {
+            @Parameter(hidden = true) @Login Member member,
+            @RequestBody VoteRequest voteRequest,
+            @PathVariable Long gameId) {
         return ResponseEntity.ok(rankGameService.voteMatchResult(gameId, voteRequest, member));
     }
 }

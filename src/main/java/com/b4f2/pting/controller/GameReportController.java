@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +31,7 @@ public class GameReportController {
 
     @PostMapping
     public ResponseEntity<GameReportResponse> createReport(
-            @Login Member reporter, @RequestBody GameReportRequest request) {
+            @Parameter(hidden = true) @Login Member reporter, @RequestBody GameReportRequest request) {
         return ResponseEntity.ok(reportService.createReport(reporter, request));
     }
 

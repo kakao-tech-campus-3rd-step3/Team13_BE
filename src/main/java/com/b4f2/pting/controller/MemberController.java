@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -46,7 +47,8 @@ public class MemberController {
     private final ProfileService profileService;
 
     @PostMapping("/me/school/{schoolId}")
-    public ResponseEntity<SchoolResponse> selectSchool(@Login Member member, @PathVariable Long schoolId) {
+    public ResponseEntity<SchoolResponse> selectSchool(
+            @Parameter(hidden = true) @Login Member member, @PathVariable Long schoolId) {
         School school = schoolService.selectSchool(member, schoolId);
         SchoolResponse response = new SchoolResponse(school.getId(), school.getName(), school.getPostfix());
         return ResponseEntity.ok(response);
@@ -54,27 +56,27 @@ public class MemberController {
 
     @PostMapping("/me/certification/email")
     public ResponseEntity<String> sendCertificationEmail(
-            @Login Member member, @RequestBody CertificationRequest request) {
+            @Parameter(hidden = true) @Login Member member, @RequestBody CertificationRequest request) {
         certificationService.sendCertificationEmail(member, request);
         return ResponseEntity.ok("인증 메일을 발송했습니다. 메일을 확인하세요.");
     }
 
     @PostMapping("/me/certification/verify")
     public ResponseEntity<CertificationResponse> verifyCertification(
-            @Login Member member, @RequestBody @Valid CertificationVerifyRequest request) {
+            @Parameter(hidden = true) @Login Member member, @RequestBody @Valid CertificationVerifyRequest request) {
         CertificationResponse response = certificationService.verifyCertification(member, request);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/me/certification/status")
-    public ResponseEntity<CertificationResponse> checkCertification(@Login Member member) {
+    public ResponseEntity<CertificationResponse> checkCertification(@Parameter(hidden = true) @Login Member member) {
         CertificationResponse response = certificationService.checkCertification(member);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/me/games")
     public ResponseEntity<GamesResponse> getGames(
-            @Login Member member, @RequestParam(required = false) GameStatus query) {
+            @Parameter(hidden = true) @Login Member member, @RequestParam(required = false) GameStatus query) {
         if (query == null) {
             return ResponseEntity.ok(gameService.findGamesByMember(member));
         }
@@ -82,7 +84,7 @@ public class MemberController {
     }
 
     @GetMapping("/me/profile")
-    public ResponseEntity<ProfileResponse> getMyProfile(@Login Member member) {
+    public ResponseEntity<ProfileResponse> getMyProfile(@Parameter(hidden = true) @Login Member member) {
         ProfileResponse profileResponse = profileService.getProfile(member.getId());
         return ResponseEntity.ok(profileResponse);
     }
@@ -95,7 +97,7 @@ public class MemberController {
 
     @PatchMapping("/me/profile/name")
     public ResponseEntity<ProfileResponse> updateName(
-            @Login Member member, @Validated @RequestBody ChangeProfileNameRequest request) {
+            @Parameter(hidden = true) @Login Member member, @Validated @RequestBody ChangeProfileNameRequest request) {
         ProfileResponse profileResponse = profileService.updateName(member.getId(), request.name());
 
         return ResponseEntity.ok(profileResponse);
@@ -103,7 +105,8 @@ public class MemberController {
 
     @PatchMapping("/me/profile/description")
     public ResponseEntity<ProfileResponse> updateDescription(
-            @Login Member member, @Validated @RequestBody ChangeProfileDescriptionRequest request) {
+            @Parameter(hidden = true) @Login Member member,
+            @Validated @RequestBody ChangeProfileDescriptionRequest request) {
         ProfileResponse profileResponse = profileService.updateDescription(member.getId(), request.description());
 
         return ResponseEntity.ok(profileResponse);
@@ -111,7 +114,8 @@ public class MemberController {
 
     @PatchMapping("/me/profile/image-url")
     public ResponseEntity<ProfileResponse> updateImageUrl(
-            @Login Member member, @Validated @RequestBody ChangeProfileImageUrlRequest request) {
+            @Parameter(hidden = true) @Login Member member,
+            @Validated @RequestBody ChangeProfileImageUrlRequest request) {
         ProfileResponse profileResponse = profileService.updateImageUrl(member.getId(), request.imageUrl());
 
         return ResponseEntity.ok(profileResponse);

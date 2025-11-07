@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -28,52 +29,55 @@ public class SubscribeController {
     private final SubscribeService subscribeService;
 
     @PostMapping("/interests/times/{timePeriod}")
-    public ResponseEntity<Void> addTimePeriod(@Login Member member, @PathVariable TimePeriod timePeriod) {
+    public ResponseEntity<Void> addTimePeriod(
+            @Parameter(hidden = true) @Login Member member, @PathVariable TimePeriod timePeriod) {
         subscribeService.addInterestTime(member, timePeriod);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/interests/times/{timePeriod}")
-    public ResponseEntity<Void> deleteTimePeriod(@Login Member member, @PathVariable TimePeriod timePeriod) {
+    public ResponseEntity<Void> deleteTimePeriod(
+            @Parameter(hidden = true) @Login Member member, @PathVariable TimePeriod timePeriod) {
         subscribeService.deleteInterestTime(member, timePeriod);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/interests/sports/{sportId}")
-    public ResponseEntity<Void> addSport(@Login Member member, @PathVariable Long sportId) {
+    public ResponseEntity<Void> addSport(@Parameter(hidden = true) @Login Member member, @PathVariable Long sportId) {
         subscribeService.addInterestSport(member, sportId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/interests/times/{sportId}")
-    public ResponseEntity<Void> deleteSport(@Login Member member, @PathVariable Long sportId) {
+    public ResponseEntity<Void> deleteSport(
+            @Parameter(hidden = true) @Login Member member, @PathVariable Long sportId) {
         subscribeService.deleteInterestSport(member, sportId);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/interests/sports")
-    public ResponseEntity<SportsResponse> getSports(@Login Member member) {
+    public ResponseEntity<SportsResponse> getSports(@Parameter(hidden = true) @Login Member member) {
         return ResponseEntity.ok(subscribeService.getSportsByMember(member));
     }
 
     @GetMapping("/interests/times")
-    public ResponseEntity<TimePeriodsResponse> getTimes(@Login Member member) {
+    public ResponseEntity<TimePeriodsResponse> getTimes(@Parameter(hidden = true) @Login Member member) {
         return ResponseEntity.ok(subscribeService.getTimesByMember(member));
     }
 
     @GetMapping("/subscribes")
-    public ResponseEntity<SubscribeResponse> getSubscribes(@Login Member member) {
+    public ResponseEntity<SubscribeResponse> getSubscribes(@Parameter(hidden = true) @Login Member member) {
         return ResponseEntity.ok(subscribeService.getSubscribesByMember(member));
     }
 
     @PostMapping("/subscribes")
-    public ResponseEntity<Void> subscribe(@Login Member member) {
+    public ResponseEntity<Void> subscribe(@Parameter(hidden = true) @Login Member member) {
         subscribeService.setSubscribed(member, true);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/subscribes")
-    public ResponseEntity<SubscribeResponse> unsubscribe(@Login Member member) {
+    public ResponseEntity<SubscribeResponse> unsubscribe(@Parameter(hidden = true) @Login Member member) {
         subscribeService.setSubscribed(member, false);
         return ResponseEntity.ok().build();
     }
