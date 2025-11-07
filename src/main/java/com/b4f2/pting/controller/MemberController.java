@@ -17,7 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.config.Login;
-import com.b4f2.pting.domain.Game;
+import com.b4f2.pting.domain.Game.GameStatus;
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.School;
 import com.b4f2.pting.dto.CertificationRequest;
@@ -74,7 +74,7 @@ public class MemberController {
 
     @GetMapping("/me/games")
     public ResponseEntity<GamesResponse> getGames(
-            @Login Member member, @RequestParam(required = false) Game.GameStatus query) {
+            @Login Member member, @RequestParam(required = false) GameStatus query) {
         if (query == null) {
             return ResponseEntity.ok(gameService.findGamesByMember(member));
         }

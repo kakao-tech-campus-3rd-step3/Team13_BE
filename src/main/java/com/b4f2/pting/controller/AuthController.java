@@ -16,7 +16,7 @@ import com.b4f2.pting.service.AuthService;
 @RestController
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
-@Tag(name = "OAuth 회원가입 API")
+@Tag(name = "회원가입 및 로그인 API")
 public class AuthController {
 
     private final AuthService authService;
