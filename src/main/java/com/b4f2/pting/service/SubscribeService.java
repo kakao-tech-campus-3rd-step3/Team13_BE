@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.domain.Member;
 import com.b4f2.pting.domain.Sport;
+import com.b4f2.pting.domain.SubscribeResponse;
 import com.b4f2.pting.domain.TimePeriod;
 import com.b4f2.pting.domain.interest.UserInterestSport;
 import com.b4f2.pting.domain.interest.UserInterestTime;
@@ -65,8 +66,7 @@ public class SubscribeService {
     }
 
     public TimePeriodsResponse getTimesByMember(Member member) {
-        List<TimePeriod> timePeriodList = userInterestTimeRepository.findByMember(member)
-            .stream()
+        List<TimePeriod> timePeriodList = userInterestTimeRepository.findByMember(member).stream()
             .map(UserInterestTime::getTimePeriod)
             .toList();
 
@@ -74,12 +74,19 @@ public class SubscribeService {
     }
 
     public SportsResponse getSportsByMember(Member member) {
-        List<SportResponse> sportResponseList = userInterestSportRepository.findByMember(member)
-            .stream()
+        List<SportResponse> sportResponseList = userInterestSportRepository.findByMember(member).stream()
             .map(UserInterestSport::getSport)
             .map(SportResponse::new)
             .toList();
 
         return new SportsResponse(sportResponseList);
+    }
+
+    public SubscribeResponse getSubscribesByMember(Member member) {
+        return new SubscribeResponse(member.getIsSubscribed());
+    }
+
+    public void setSubscribed(Member member, boolean subscribed) {
+        member.changeSubscribed(subscribed);
     }
 }

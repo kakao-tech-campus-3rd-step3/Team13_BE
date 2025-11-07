@@ -120,3 +120,6 @@ CREATE TABLE user_interest_sport
     member_Id BIGINT NOT NULL REFERENCES member (id),
     sport_id  BIGINT NOT NULL REFERENCES sport (id)
 );
+
+ALTER TABLE member
+    ADD COLUMN is_subscribed BOOLEAN DEFAULT false;
