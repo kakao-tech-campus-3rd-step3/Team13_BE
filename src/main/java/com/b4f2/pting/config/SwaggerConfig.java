@@ -36,14 +36,13 @@ public class SwaggerConfig {
 
     private List<Tag> tags() {
         return List.of(
-            new Tag().name("OAuth 회원가입 API"),
-            new Tag().name("각종 회원관련 기능 API"),
-            new Tag().name("스포츠 목록 조회 API"),
-            new Tag().name("게임 API"),
-            new Tag().name("사용자 신고 API"),
-            new Tag().name("FCM 푸쉬알림 토큰 API"),
-            new Tag().name("알림 구독 관리 API")
-        );
+                new Tag().name("OAuth 회원가입 API"),
+                new Tag().name("각종 회원관련 기능 API"),
+                new Tag().name("스포츠 목록 조회 API"),
+                new Tag().name("게임 API"),
+                new Tag().name("사용자 신고 API"),
+                new Tag().name("FCM 푸쉬알림 토큰 API"),
+                new Tag().name("알림 구독 관리 API"));
     }
 
     private Components components() {
