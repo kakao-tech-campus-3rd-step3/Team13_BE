@@ -59,9 +59,7 @@ public class SubscribeController {
 
     @GetMapping("/subscribes")
     public ResponseEntity<SubscribeResponse> getSubscribes(@Login Member member) {
-        return ResponseEntity.ok(
-            subscribeService.getSubscribesByMember(member)
-        );
+        return ResponseEntity.ok(subscribeService.getSubscribesByMember(member));
     }
 
     @PostMapping("/subscribes")

@@ -67,17 +67,17 @@ public class SubscribeService {
 
     public TimePeriodsResponse getTimesByMember(Member member) {
         List<TimePeriod> timePeriodList = userInterestTimeRepository.findByMember(member).stream()
-            .map(UserInterestTime::getTimePeriod)
-            .toList();
+                .map(UserInterestTime::getTimePeriod)
+                .toList();
 
         return new TimePeriodsResponse(timePeriodList);
     }
 
     public SportsResponse getSportsByMember(Member member) {
         List<SportResponse> sportResponseList = userInterestSportRepository.findByMember(member).stream()
-            .map(UserInterestSport::getSport)
-            .map(SportResponse::new)
-            .toList();
+                .map(UserInterestSport::getSport)
+                .map(SportResponse::new)
+                .toList();
 
         return new SportsResponse(sportResponseList);
     }

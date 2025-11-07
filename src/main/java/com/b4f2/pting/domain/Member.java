@@ -25,8 +25,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(
-    name = "member",
-    uniqueConstraints = {@UniqueConstraint(columnNames = {"oauthId", "oauthProvider"})})
+        name = "member",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"oauthId", "oauthProvider"})})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
@@ -35,12 +35,10 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(name = "oauth_id")
+    @NotNull @Column(name = "oauth_id")
     private String oauthId;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
+    @NotNull @Enumerated(EnumType.STRING)
     @Column(name = "oauth_provider")
     private OAuthProvider oauthProvider;
 
@@ -89,10 +87,10 @@ public class Member {
 
     public double getMmr(Sport sport) {
         return mmrList.stream()
-            .filter(m -> m.getSport().equals(sport))
-            .findFirst()
-            .map(Mmr::getMu)
-            .orElse(25.0);
+                .filter(m -> m.getSport().equals(sport))
+                .findFirst()
+                .map(Mmr::getMu)
+                .orElse(25.0);
     }
 
     public void changeSubscribed(boolean isSubscribed) {
