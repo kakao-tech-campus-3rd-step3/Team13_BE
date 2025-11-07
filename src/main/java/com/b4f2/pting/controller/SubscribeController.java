@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.config.Login;
@@ -21,6 +22,7 @@ import com.b4f2.pting.service.SubscribeService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/members/me")
+@Tag(name = "알림 구독 관리 API")
 public class SubscribeController {
 
     private final SubscribeService subscribeService;

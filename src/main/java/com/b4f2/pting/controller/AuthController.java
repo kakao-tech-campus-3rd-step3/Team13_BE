@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.dto.AuthResponse;
@@ -15,6 +16,7 @@ import com.b4f2.pting.service.AuthService;
 @RestController
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
+@Tag(name = "OAuth 회원가입 API")
 public class AuthController {
 
     private final AuthService authService;

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.domain.School;
@@ -21,6 +22,7 @@ import com.b4f2.pting.service.SchoolService;
 @RestController
 @RequestMapping("/api/v1/schools")
 @RequiredArgsConstructor
+@Hidden
 public class SchoolController {
 
     private final SchoolService schoolService;

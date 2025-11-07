@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.config.Login;
@@ -36,6 +37,7 @@ import com.b4f2.pting.service.SchoolService;
 @RestController
 @RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
+@Tag(name = "각종 회원관련 기능 API")
 public class MemberController {
 
     private final CertificationService certificationService;

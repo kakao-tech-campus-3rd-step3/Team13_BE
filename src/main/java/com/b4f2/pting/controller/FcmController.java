@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.config.Login;
@@ -17,6 +18,7 @@ import com.b4f2.pting.service.FcmService;
 @RestController
 @RequestMapping("/api/v1/fcm")
 @RequiredArgsConstructor
+@Tag(name = "FCM 푸쉬알림 토큰 API")
 public class FcmController {
 
     private final FcmService fcmService;

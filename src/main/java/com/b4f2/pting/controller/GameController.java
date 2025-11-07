@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.config.Login;
@@ -31,6 +32,7 @@ import com.b4f2.pting.service.RankGameService;
 @RestController
 @RequestMapping("/api/v1/games")
 @RequiredArgsConstructor
+@Tag(name = "게임 API")
 public class GameController {
 
     private final GameService gameService;
