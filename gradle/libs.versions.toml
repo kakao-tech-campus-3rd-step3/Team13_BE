@@ -9,6 +9,7 @@ jjwt = "0.13.0"
 firebaseAdmin = "9.7.0"
 openSkill = "1.0"
 springCloudAws = "2.2.6.RELEASE"
+swagger = "2.8.14"
 
 [plugins]
 java = { id = "java" }
@@ -53,3 +54,6 @@ openSkill = { module = "com.pocketcombats:openskill", version.ref = "openSkill" 
 
 # Spring Cloud AWS for S3
 spring-cloud-starter-aws = { module = "org.springframework.cloud:spring-cloud-starter-aws", version.ref = "springCloudAws" }
+
+# Swagger for OpenAPI Documentation
+springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "swagger" }

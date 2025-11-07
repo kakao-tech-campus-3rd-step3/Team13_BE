@@ -88,6 +88,9 @@ dependencies {
 
     // Spring Cloud AWS for S3
     implementation libs.spring.cloud.starter.aws
+
+    // Swagger for OpenAPI documentation
+    implementation libs.springdoc.openapi.starter.webmvc.ui
 }
 
 tasks.named('test') {
