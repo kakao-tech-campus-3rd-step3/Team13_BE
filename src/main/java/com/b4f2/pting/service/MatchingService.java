@@ -134,7 +134,7 @@ public class MatchingService {
         if (tokens.isEmpty()) return;
 
         String title = "[랭크 게임] 일정 안내";
-        String body = game.getName() + "이 매칭되었습니다!\n" + "시작 시간: "
+        String body = "랭크 게임이 매칭되었습니다!\n" + "시작 시간: "
                 + game.getStartTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) + "\n"
                 + "⚠️ 참여자 여러분, 일정을 확인하고 참가를 확정해주세요!";
 
@@ -184,7 +184,7 @@ public class MatchingService {
         if (tokens.isEmpty()) return;
 
         String title = "[랭크 게임] 매칭 완료";
-        String body = game.getName() + "이 매칭되었습니다!\n" + "시작 시간: "
+        String body = "랭크 게임이 매칭되었습니다!\n" + "시작 시간: "
                 + game.getStartTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) + "\n" + "팀: "
                 + participants.stream()
                         .map(p -> p.getMember().getName() + "(" + p.getTeam().name() + ")")
