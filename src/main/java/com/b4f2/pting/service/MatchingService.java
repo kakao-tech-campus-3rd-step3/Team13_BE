@@ -55,9 +55,11 @@ public class MatchingService {
 
     @Transactional
     public RankGameParticipant addPlayerToQueue(Member member, RankGameEnqueueRequest request) {
-        Sport sport = sportRepository
-                .findById(request.sportId())
-                .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
+
+        boolean exists = sportRepository.existsById(request.sportId());
+        if (!exists) {
+            throw new EntityNotFoundException("해당 스포츠가 존재하지 않습니다.");
+        }
 
         RankGameParticipant participant = new RankGameParticipant(member);
 

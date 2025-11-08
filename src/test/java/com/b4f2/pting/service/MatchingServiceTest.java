@@ -99,7 +99,7 @@ class MatchingServiceTest {
     void addPlayerToQueue_랭크게임참가_성공() {
         // given
         RankGameEnqueueRequest request = new RankGameEnqueueRequest(1L);
-        when(sportRepository.findById(1L)).thenReturn(Optional.of(sport));
+        when(sportRepository.existsById(1L)).thenReturn(true);
         when(rankGameParticipantRepository.save(any(RankGameParticipant.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -115,7 +115,7 @@ class MatchingServiceTest {
     @Test
     void addPlayerToQueue_존재하지않는스포츠_예외발생() {
         // given
-        when(sportRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(sportRepository.existsById(anyLong())).thenReturn(false);
         RankGameEnqueueRequest request = new RankGameEnqueueRequest(99L);
 
         // when & then
