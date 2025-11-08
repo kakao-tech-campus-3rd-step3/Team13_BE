@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,9 @@ import com.b4f2.pting.repository.SportRepository;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MatchingService {
+
+    @Value("${app.default-image-url}")
+    private String defaultImageUrl;
 
     private final MatchingQueue matchingQueue;
     private final RankGameRepository rankGameRepository;
@@ -85,7 +89,14 @@ public class MatchingService {
             LocalDateTime startTime = getNextSaturdayGameTime();
 
             RankGame game = RankGame.create(
-                    sport, "랭크 게임", team.size(), GameStatus.ON_RECRUITING, startTime, 60, "자동 생성된 랭크 게임 (확정 전)");
+                    sport,
+                    "장소",
+                    team.size(),
+                    GameStatus.ON_RECRUITING,
+                    startTime,
+                    60,
+                    "자동 생성된 랭크 게임 (확정 전)",
+                    defaultImageUrl);
 
             team.sort((p1, p2) ->
                     Double.compare(p2.getMember().getMmr(sport), p1.getMember().getMmr(sport)));

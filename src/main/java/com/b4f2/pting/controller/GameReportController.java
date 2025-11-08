@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.config.Login;
@@ -22,13 +24,14 @@ import com.b4f2.pting.service.GameReportService;
 @RestController
 @RequestMapping("/api/v1/reports")
 @RequiredArgsConstructor
+@Tag(name = "사용자 신고 API")
 public class GameReportController {
 
     private final GameReportService reportService;
 
     @PostMapping
     public ResponseEntity<GameReportResponse> createReport(
-            @Login Member reporter, @RequestBody GameReportRequest request) {
+            @Parameter(hidden = true) @Login Member reporter, @RequestBody GameReportRequest request) {
         return ResponseEntity.ok(reportService.createReport(reporter, request));
     }
 

@@ -3,12 +3,9 @@ package com.b4f2.pting.algorithm;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-
 import com.b4f2.pting.domain.RankGameParticipant;
 import com.b4f2.pting.domain.Sport;
 
-@Component
 public class SimpleMMRMatching implements MatchingAlgorithm {
 
     @Override
