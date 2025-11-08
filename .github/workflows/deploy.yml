@@ -3,7 +3,6 @@ name: Deploy Spring Boot to EC2
 on:
   push:
     branches:
-      - feature/merge
       - develop
 
 jobs:
