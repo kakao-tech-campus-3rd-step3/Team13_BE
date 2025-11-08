@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import com.b4f2.pting.config.Login;
@@ -18,6 +20,7 @@ import com.b4f2.pting.service.RankGameService;
 @RestController
 @RequestMapping("/api/v1/rank-games")
 @RequiredArgsConstructor
+@Tag(name = "랭크게임 API")
 public class RankGameController {
 
     private final MatchingService matchingService;
@@ -25,14 +28,16 @@ public class RankGameController {
 
     // 랭크 매칭 대기열 등록 (사용자가 '참가하기' 버튼 클릭 시)
     @PostMapping("/enqueue")
-    public ResponseEntity<Void> enqueue(@Login Member member, @RequestBody RankGameEnqueueRequest request) {
+    public ResponseEntity<Void> enqueue(
+            @Parameter(hidden = true) @Login Member member, @RequestBody RankGameEnqueueRequest request) {
         matchingService.addPlayerToQueue(member, request);
         return ResponseEntity.ok().build();
     }
 
     // 매칭 참가 의사 등록 (사용자가 '참가' or '거절' 버튼 클릭 시)
     @PostMapping("/confirm")
-    public ResponseEntity<Void> confirm(@Login Member member, @RequestBody RankGameConfirmRequest request) {
+    public ResponseEntity<Void> confirm(
+            @Parameter(hidden = true) @Login Member member, @RequestBody RankGameConfirmRequest request) {
         matchingService.acceptTeam(member, request);
         return ResponseEntity.ok().build();
     }

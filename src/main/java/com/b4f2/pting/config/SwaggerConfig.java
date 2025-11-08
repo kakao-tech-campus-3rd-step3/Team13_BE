@@ -40,6 +40,7 @@ public class SwaggerConfig {
                 new Tag().name("각종 회원관련 기능 API").description("학교 선택, 이메일 인증, 프로필 조회, 프로필 정보 수정, 내 게임 조회"),
                 new Tag().name("스포츠 목록 조회 API"),
                 new Tag().name("게임 API").description("전체 게임 조회, 게임 생성, 게임 상세정보 조회, 게임 참가, 게임 나가기, 승리 팀 투표 (게임 종료 후)"),
+                new Tag().name("랭크게임 API").description("랭크매칭 대기열 등록, 매칭된 게임 참가"),
                 new Tag().name("사용자 신고 API").description("사용자 신고 (게임 종료 후)"),
                 new Tag().name("FCM 푸쉬알림 토큰 API").description("유저의 FCM 토큰 등록 및 삭제"),
                 new Tag().name("알림 구독 관리 API").description("시간대별, 스포츠 종류별 구독 등록 및 삭제"));
