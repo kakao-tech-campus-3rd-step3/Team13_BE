@@ -84,7 +84,7 @@ class MatchingServiceTest {
 
     @BeforeEach
     void setUp() {
-        member = new Member(1L, Member.OAuthProvider.KAKAO);
+        member = new Member("Id", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(member, "id", 1L);
 
         sport = new Sport();
@@ -154,8 +154,8 @@ class MatchingServiceTest {
         RankGameParticipant participant1 = mock(RankGameParticipant.class);
         RankGameParticipant participant2 = mock(RankGameParticipant.class);
 
-        Member member1 = new Member(1L, Member.OAuthProvider.KAKAO);
-        Member member2 = new Member(2L, Member.OAuthProvider.KAKAO);
+        Member member1 = new Member("1L", Member.OAuthProvider.KAKAO);
+        Member member2 = new Member("2L", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(member1, "id", 1L);
         ReflectionTestUtils.setField(member2, "id", 2L);
 
@@ -227,8 +227,8 @@ class MatchingServiceTest {
         ReflectionTestUtils.setField(game, "startTime", LocalDateTime.of(2025, 11, 2, 15, 0));
 
         // Members 생성 및 ID 세팅
-        Member member1 = new Member(2L, Member.OAuthProvider.KAKAO);
-        Member member2 = new Member(3L, Member.OAuthProvider.KAKAO);
+        Member member1 = new Member("2L", Member.OAuthProvider.KAKAO);
+        Member member2 = new Member("3L", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(member1, "id", 2L);
         ReflectionTestUtils.setField(member2, "id", 3L);
 
