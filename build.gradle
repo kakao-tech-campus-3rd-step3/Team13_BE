@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.b4f2'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 description = '종합 스포츠 매칭 플랫폼 pting'
 
 java {
