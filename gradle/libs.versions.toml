@@ -1,0 +1,59 @@
+[versions]
+spotless = "8.0.0"
+springBoot = "3.5.5"
+springDependencyManagement = "1.1.7"
+
+postgresql = "42.7.8"
+testcontainers = "1.21.3"
+jjwt = "0.13.0"
+firebaseAdmin = "9.7.0"
+openSkill = "1.0"
+springCloudAws = "2.2.6.RELEASE"
+swagger = "2.8.14"
+
+[plugins]
+java = { id = "java" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
+
+[libraries]
+# Spring Boot
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+
+# Test
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+
+# Lombok
+lombok = { module = "org.projectlombok:lombok" }
+
+# Database
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+
+# TestContainers
+spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
+
+# JWT
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
+
+# Firebase Admin for FCM
+firebase-admin = { module = "com.google.firebase:firebase-admin", version.ref = "firebaseAdmin" }
+
+# Spring Mail
+spring-boot-starter-mail = { module = "org.springframework.boot:spring-boot-starter-mail" }
+
+# Open Skill for MMR
+openSkill = { module = "com.pocketcombats:openskill", version.ref = "openSkill" }
+
+# Spring Cloud AWS for S3
+spring-cloud-starter-aws = { module = "org.springframework.cloud:spring-cloud-starter-aws", version.ref = "springCloudAws" }
+
+# Swagger for OpenAPI Documentation
+springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "swagger" }

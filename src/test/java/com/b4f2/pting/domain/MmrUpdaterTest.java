@@ -17,10 +17,10 @@ class MmrUpdaterTest {
 
     @BeforeEach
     void setUp() {
-        winner = new Member(1L, Member.OAuthProvider.KAKAO);
+        winner = new Member("1", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(winner, "id", 1L);
 
-        loser = new Member(2L, Member.OAuthProvider.KAKAO);
+        loser = new Member("2", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(loser, "id", 2L);
 
         sport = new Sport("테스트 운동", 2);

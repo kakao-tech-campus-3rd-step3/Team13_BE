@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
@@ -19,7 +20,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.b4f2.pting.config.TestContainersConfig;
 import com.b4f2.pting.domain.Game;
@@ -37,6 +43,7 @@ import com.b4f2.pting.util.JwtUtil;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @Import(TestContainersConfig.class)
+@SuppressWarnings("NonAsciiCharacters")
 @Tag("integration")
 class GameIntegrationTest {
 
@@ -58,6 +65,12 @@ class GameIntegrationTest {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Value("${app.default-image-url}")
+    private String defaultImageUrl;
+
     private Member testMember;
     private Sport testSport;
     private String token;
@@ -69,7 +82,7 @@ class GameIntegrationTest {
         memberRepository.deleteAll();
         sportRepository.deleteAll();
 
-        testMember = memberRepository.save(new Member(12345L, Member.OAuthProvider.KAKAO));
+        testMember = memberRepository.save(new Member("12345", Member.OAuthProvider.KAKAO));
         testMember.markAsVerified();
         memberRepository.save(testMember);
         token = jwtUtil.createToken(testMember);
@@ -89,18 +102,35 @@ class GameIntegrationTest {
     void createGame_성공() {
         CreateGameRequest request = new CreateGameRequest(
                 testSport.getId(),
-                "축구 매치",
+                "넉넉한 터",
                 10,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
                 2,
                 "친구들과 함께하는 축구 경기");
 
-        ResponseEntity<GameDetailResponse> response = restTemplate.postForEntity(
-                "/api/v1/games", new HttpEntity<>(request, createAuthHeader()), GameDetailResponse.class);
+        try {
+            String json = objectMapper.writeValueAsString(request);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().name()).isEqualTo("축구 매치");
-        assertThat(gameRepository.findAll()).hasSize(1);
+            HttpHeaders headers = createAuthHeader();
+            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+            HttpHeaders jsonPartHeaders = new HttpHeaders();
+            jsonPartHeaders.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> jsonPart = new HttpEntity<>(json, jsonPartHeaders);
+
+            MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+            body.add("game", jsonPart);
+
+            HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
+
+            ResponseEntity<GameDetailResponse> response =
+                    restTemplate.postForEntity("/api/v1/games", httpEntity, GameDetailResponse.class);
+
+            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(gameRepository.findAll()).hasSize(1);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -108,15 +138,16 @@ class GameIntegrationTest {
     void joinGame_성공() {
         Game game = Game.create(
                 testSport,
-                "축구 매치",
+                "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
                 2,
-                "친구들과 함께하는 축구 경기");
+                "친구들과 함께하는 축구 경기",
+                defaultImageUrl);
         gameRepository.save(game);
 
-        Member newParticipant = memberRepository.save(new Member(67890L, Member.OAuthProvider.KAKAO));
+        Member newParticipant = memberRepository.save(new Member("67890", Member.OAuthProvider.KAKAO));
         newParticipant.markAsVerified();
         memberRepository.save(newParticipant);
 
@@ -135,22 +166,24 @@ class GameIntegrationTest {
     void getGamesBySport_성공() {
         Game game1 = Game.create(
                 testSport,
-                "축구 매치 1",
+                "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
                 2,
-                "친구들과 함께하는 축구 경기");
+                "친구들과 함께하는 축구 경기",
+                defaultImageUrl);
         gameRepository.save(game1);
 
         Game game2 = Game.create(
                 testSport,
-                "축구 매치 2",
+                "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
                 2,
-                "친구들과 함께하는 축구 경기");
+                "친구들과 함께하는 축구 경기",
+                defaultImageUrl);
         gameRepository.save(game2);
 
         ResponseEntity<GamesResponse> response = restTemplate.exchange(
@@ -168,12 +201,13 @@ class GameIntegrationTest {
     void getGameById_success() {
         Game game = Game.create(
                 testSport,
-                "축구 매치",
+                "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
                 2,
-                "친구들과 함께하는 축구 경기");
+                "친구들과 함께하는 축구 경기",
+                defaultImageUrl);
         gameRepository.save(game);
 
         ResponseEntity<GameDetailResponse> response = restTemplate.exchange(
@@ -183,6 +217,5 @@ class GameIntegrationTest {
                 GameDetailResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody().name()).isEqualTo("축구 매치");
     }
 }

@@ -36,7 +36,7 @@ public class Member {
     private Long id;
 
     @NotNull @Column(name = "oauth_id")
-    private Long oauthId;
+    private String oauthId;
 
     @NotNull @Enumerated(EnumType.STRING)
     @Column(name = "oauth_provider")
@@ -57,6 +57,9 @@ public class Member {
     @Column(name = "is_verified")
     private Boolean isVerified = false;
 
+    @Column(name = "is_subscribed")
+    private Boolean isSubscribed = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id")
     private School school;
@@ -64,11 +67,16 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private final List<Mmr> mmrList = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private MemberStatus status = MemberStatus.ACTIVE;
+
     public enum OAuthProvider {
-        KAKAO
+        KAKAO,
+        GOOGLE
     }
 
-    public Member(Long oauthId, OAuthProvider oauthProvider) {
+    public Member(String oauthId, OAuthProvider oauthProvider) {
         this.oauthId = oauthId;
         this.oauthProvider = oauthProvider;
     }
@@ -83,6 +91,10 @@ public class Member {
                 .findFirst()
                 .map(Mmr::getMu)
                 .orElse(25.0);
+    }
+
+    public void changeSubscribed(boolean isSubscribed) {
+        this.isSubscribed = isSubscribed;
     }
 
     public void changeName(String name) {
@@ -119,5 +131,9 @@ public class Member {
 
     public boolean isVerifiedEmail(String email) {
         return isVerified && isMySchoolEmail(email);
+    }
+
+    public void changeStatus(MemberStatus newStatus) {
+        this.status = newStatus;
     }
 }

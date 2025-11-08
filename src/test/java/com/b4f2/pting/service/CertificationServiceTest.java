@@ -54,7 +54,7 @@ class CertificationServiceTest {
 
     @BeforeEach
     void setUp() {
-        member = new Member(1L, Member.OAuthProvider.KAKAO);
+        member = new Member("1", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(member, "id", 1L);
 
         school = new School("부산대학교", "pusan.ac.kr");

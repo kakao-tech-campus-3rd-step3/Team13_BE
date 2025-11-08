@@ -7,20 +7,24 @@ import com.b4f2.pting.domain.Game;
 public record GameResponse(
         Long gameId,
         Long sportId,
-        String name,
+        String gameLocation,
         Integer playerCount,
+        Integer currentPlayerCount,
         Game.GameStatus gameStatus,
         LocalDateTime startTime,
-        Integer duration) {
+        Integer duration,
+        String imageUrl) {
 
-    public GameResponse(Game game) {
+    public GameResponse(Game game, int currentPlayerCount) {
         this(
                 game.getId(),
                 game.getSport().getId(),
-                game.getName(),
+                game.getGameLocation(),
                 game.getPlayerCount(),
+                currentPlayerCount,
                 game.getGameStatus(),
                 game.getStartTime(),
-                game.getDuration());
+                game.getDuration(),
+                game.getImageUrl());
     }
 }

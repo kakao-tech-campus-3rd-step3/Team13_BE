@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,9 @@ import com.b4f2.pting.repository.SportRepository;
 @Transactional(readOnly = true)
 public class MatchingService {
 
+    @Value("${app.default-image-url}")
+    private String defaultImageUrl;
+
     private final MatchingQueue matchingQueue;
     private final RankGameRepository rankGameRepository;
     private final RankGameParticipantRepository rankGameParticipantRepository;
@@ -55,9 +59,11 @@ public class MatchingService {
 
     @Transactional
     public RankGameParticipant addPlayerToQueue(Member member, RankGameEnqueueRequest request) {
-        Sport sport = sportRepository
-                .findById(request.sportId())
-                .orElseThrow(() -> new EntityNotFoundException("해당 스포츠가 존재하지 않습니다."));
+
+        boolean exists = sportRepository.existsById(request.sportId());
+        if (!exists) {
+            throw new EntityNotFoundException("해당 스포츠가 존재하지 않습니다.");
+        }
 
         RankGameParticipant participant = new RankGameParticipant(member);
 
@@ -83,7 +89,14 @@ public class MatchingService {
             LocalDateTime startTime = getNextSaturdayGameTime();
 
             RankGame game = RankGame.create(
-                    sport, "랭크 게임", team.size(), GameStatus.ON_RECRUITING, startTime, 60, "자동 생성된 랭크 게임 (확정 전)");
+                    sport,
+                    "장소",
+                    team.size(),
+                    GameStatus.ON_RECRUITING,
+                    startTime,
+                    60,
+                    "자동 생성된 랭크 게임 (확정 전)",
+                    defaultImageUrl);
 
             team.sort((p1, p2) ->
                     Double.compare(p2.getMember().getMmr(sport), p1.getMember().getMmr(sport)));
@@ -121,7 +134,7 @@ public class MatchingService {
         if (tokens.isEmpty()) return;
 
         String title = "[랭크 게임] 일정 안내";
-        String body = game.getName() + "이 매칭되었습니다!\n" + "시작 시간: "
+        String body = "랭크 게임이 매칭되었습니다!\n" + "시작 시간: "
                 + game.getStartTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) + "\n"
                 + "⚠️ 참여자 여러분, 일정을 확인하고 참가를 확정해주세요!";
 
@@ -171,7 +184,7 @@ public class MatchingService {
         if (tokens.isEmpty()) return;
 
         String title = "[랭크 게임] 매칭 완료";
-        String body = game.getName() + "이 매칭되었습니다!\n" + "시작 시간: "
+        String body = "랭크 게임이 매칭되었습니다!\n" + "시작 시간: "
                 + game.getStartTime().format(DateTimeFormatter.ofPattern("MM/dd HH:mm")) + "\n" + "팀: "
                 + participants.stream()
                         .map(p -> p.getMember().getName() + "(" + p.getTeam().name() + ")")

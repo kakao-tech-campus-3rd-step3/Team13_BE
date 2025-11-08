@@ -1,12 +1,12 @@
 plugins {
-    id 'java'
-    id 'com.diffplug.spotless' version '8.0.0'
-    id 'org.springframework.boot' version '3.5.5'
-    id 'io.spring.dependency-management' version '1.1.7'
+    alias libs.plugins.java
+    alias libs.plugins.spotless
+    alias libs.plugins.spring.boot
+    alias libs.plugins.spring.dependency.management
 }
 
 group = 'com.b4f2'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 description = '종합 스포츠 매칭 플랫폼 pting'
 
 java {
@@ -15,11 +15,15 @@ java {
     }
 }
 
+/*
+ * ./gradlew spotlessInstallGitPrePushHook
+ * ./gradlew.bat spotlessInstallGitPrePushHook
+ */
 spotless {
     java {
         forbidWildcardImports()
         removeUnusedImports()
-        palantirJavaFormat('2.77.0')
+        palantirJavaFormat('2.81.0')
         formatAnnotations()
         importOrder(
             '\\#',
@@ -47,42 +51,52 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Spring Boot
+    implementation libs.spring.boot.starter.web
+    implementation libs.spring.boot.starter.data.jpa
+    implementation libs.spring.boot.starter.validation
 
-    runtimeOnly 'com.h2database:h2'
+    // Test
+    testImplementation libs.spring.boot.starter.test
+    testRuntimeOnly libs.junit.platform.launcher
 
-    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
+    // Lombok
+    annotationProcessor libs.lombok
+    compileOnly libs.lombok
 
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    // Database
+    implementation libs.postgresql
 
-    implementation 'com.google.firebase:firebase-admin:9.6.0'
+    // TestContainers
+    testImplementation libs.spring.boot.testcontainers
+    testImplementation libs.testcontainers.junit.jupiter
+    testImplementation libs.testcontainers.postgresql
 
-    implementation 'org.postgresql:postgresql:42.7.2'
-    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
-    testImplementation 'org.testcontainers:junit-jupiter:1.21.3'
-    testImplementation 'org.testcontainers:postgresql:1.21.3'
+    // JWT
+    runtimeOnly libs.jjwt.impl
+    runtimeOnly libs.jjwt.jackson
+    implementation libs.jjwt.api
+
+    // Firebase Admin for FCM
+    implementation libs.firebase.admin
+
+    // Spring Mail
+    implementation libs.spring.boot.starter.mail
 
     // Open Skill for MMR
-    implementation 'com.pocketcombats:openskill:1.0'
+    implementation libs.openSkill
+
+    // Spring Cloud AWS for S3
+    implementation libs.spring.cloud.starter.aws
+
+    // Swagger for OpenAPI documentation
+    implementation libs.springdoc.openapi.starter.webmvc.ui
 }
 
 tasks.named('test') {
-    dependsOn('spotlessApply')
     useJUnitPlatform {
         if (System.getProperty('ci') != null) {
             excludeTags('integration')
         }
     }
-}
-
-tasks.named('compileJava') {
-    dependsOn('spotlessApply')
 }

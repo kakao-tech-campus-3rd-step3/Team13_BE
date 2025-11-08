@@ -37,7 +37,8 @@ public class Game {
     @JoinColumn(name = "sport_id")
     private Sport sport;
 
-    private String name;
+    @Column(name = "game_location")
+    private String gameLocation;
 
     @Column(name = "player_count")
     private Integer playerCount;
@@ -55,27 +56,42 @@ public class Game {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     public enum GameStatus {
         ON_RECRUITING, // 모집 중
-        FULL, // 모집 완료
-        END // 게임 종료
+        FULL, // 모집 완료 (인원 다 참)
+        CLOSED, // 모집 종료
+        END, // 게임 종료
+        CANCELED // 게임 취소
+    ;
+
+        public boolean isOnRecruiting() {
+            return this == GameStatus.ON_RECRUITING || this == GameStatus.FULL;
+        }
     }
 
     public static Game create(
             Sport sport,
-            String name,
+            String gameLocation,
             Integer playerCount,
             GameStatus gameStatus,
             LocalDateTime startTime,
             Integer duration,
-            String description) {
+            String description,
+            String imageUrl) {
         LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         if (startTime.isBefore(nowInSeoul)) {
             throw new IllegalArgumentException("매치 시작 시간은 현재 시간보다 이후여야 합니다.");
         }
 
-        return new Game(null, sport, name, playerCount, gameStatus, startTime, duration, description);
+        return new Game(null, sport, gameLocation, playerCount, gameStatus, startTime, duration, description, imageUrl);
+    }
+
+    public boolean isStatus(GameStatus status) {
+        return this.gameStatus == status;
     }
 
     public boolean isEnded() {

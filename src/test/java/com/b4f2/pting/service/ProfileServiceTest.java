@@ -40,7 +40,7 @@ class ProfileServiceTest {
 
     @BeforeEach
     void setUp() {
-        member = new Member(1L, OAuthProvider.KAKAO);
+        member = new Member("1", OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(member, "schoolEmail", "test@example.com");
         ReflectionTestUtils.setField(member, "id", 1L);
     }

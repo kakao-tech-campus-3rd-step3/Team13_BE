@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -46,8 +47,14 @@ class GameServiceTest {
     @Mock
     private GameParticipantRepository gameParticipantRepository;
 
+    @Mock
+    private S3UploadService s3UploadService;
+
     @InjectMocks
     private GameService gameService;
+
+    @Value("${app.default-image-url}")
+    private String defaultImageUrl;
 
     private Member member;
     private Sport sport;
@@ -55,7 +62,7 @@ class GameServiceTest {
 
     @BeforeEach
     void setUp() {
-        member = new Member(1L, Member.OAuthProvider.KAKAO);
+        member = new Member("1", Member.OAuthProvider.KAKAO);
         ReflectionTestUtils.setField(member, "id", 1L);
         ReflectionTestUtils.setField(member, "isVerified", true);
 
@@ -65,12 +72,13 @@ class GameServiceTest {
 
         game = Game.create(
                 sport,
-                "재미있는 방",
+                "넉넉한 터",
                 10,
                 Game.GameStatus.ON_RECRUITING,
                 LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1),
                 2,
-                "재미있는 방 설명입니다.");
+                "재미있는 방 설명입니다.",
+                defaultImageUrl);
         ReflectionTestUtils.setField(game, "id", 1L);
     }
 
@@ -78,13 +86,14 @@ class GameServiceTest {
     void createGame_게임생성_성공() {
         // given
         CreateGameRequest request = new CreateGameRequest(
-                1L, "재미있는 방", 10, LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1), 2, "재미있는 방 설명입니다.");
+                1L, "넉넉한 터", 10, LocalDateTime.now(ZoneId.of("Asia/Seoul")).plusHours(1), 2, "재미있는 방 설명입니다.");
 
         when(sportRepository.findById(request.sportId())).thenReturn(Optional.of(sport));
         when(gameRepository.save(any(Game.class))).thenReturn(game);
+        when(s3UploadService.saveImage(null)).thenReturn(defaultImageUrl);
 
         // when
-        GameDetailResponse response = gameService.createGame(member, request);
+        GameDetailResponse response = gameService.createGame(member, request, null);
 
         // then
         assertThat(response).isNotNull();

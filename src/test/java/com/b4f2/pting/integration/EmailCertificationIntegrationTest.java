@@ -36,6 +36,7 @@ import com.b4f2.pting.util.JwtUtil;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @Import(TestContainersConfig.class)
+@SuppressWarnings("NonAsciiCharacters")
 @Tag("integration")
 class EmailCertificationIntegrationTest {
 
@@ -66,7 +67,7 @@ class EmailCertificationIntegrationTest {
         memberRepository.deleteAll();
         schoolRepository.deleteAll();
 
-        testMember = memberRepository.save(new Member(12345L, Member.OAuthProvider.KAKAO));
+        testMember = memberRepository.save(new Member("12345", Member.OAuthProvider.KAKAO));
         token = jwtUtil.createToken(testMember);
 
         testSchool = schoolRepository.save(new School("부산대학교", "pusan.ac.kr"));

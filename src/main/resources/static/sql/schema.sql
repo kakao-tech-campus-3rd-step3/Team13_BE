@@ -4,87 +4,122 @@ CREATE TYPE report_status AS ENUM ('PENDING', 'RESOLVED', 'REJECTED');
 CREATE TYPE rank_game_team AS ENUM ('RED_TEAM', 'BLUE_TEAM', 'NONE');
 
 
-CREATE TABLE school (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+CREATE TABLE school
+(
+    id      BIGSERIAL PRIMARY KEY,
+    name    VARCHAR(255) NOT NULL,
     postfix VARCHAR(255) NOT NULL UNIQUE
 );
 
-CREATE TABLE member (
-    id BIGSERIAL PRIMARY KEY,
-    oauth_id BIGINT NOT NULL,
+CREATE TABLE member
+(
+    id             BIGSERIAL PRIMARY KEY,
+    oauth_id       BIGINT         NOT NULL,
     oauth_provider oauth_provider NOT NULL,
-    name VARCHAR(31),
-    image_url VARCHAR(255),
-    description VARCHAR(255),
-    school_email VARCHAR(255),
-    is_verified BOOLEAN DEFAULT FALSE,
-    school_id BIGINT,
-    CONSTRAINT fk_member_school FOREIGN KEY (school_id) REFERENCES school(id)
+    name           VARCHAR(31),
+    image_url      VARCHAR(255),
+    description    VARCHAR(255),
+    school_email   VARCHAR(255),
+    is_verified    BOOLEAN DEFAULT FALSE,
+    school_id      BIGINT,
+    CONSTRAINT fk_member_school FOREIGN KEY (school_id) REFERENCES school (id)
 );
 
 ALTER TABLE member
     ADD CONSTRAINT uq_oauth UNIQUE (oauth_id, oauth_provider);
 
-CREATE TABLE sport (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(31) NOT NULL,
-    recommended_player_count INT NOT NULL
+CREATE TABLE sport
+(
+    id                       BIGSERIAL PRIMARY KEY,
+    name                     VARCHAR(31) NOT NULL,
+    recommended_player_count INT         NOT NULL
 );
 
-CREATE TABLE game (
-    id BIGSERIAL PRIMARY KEY,
-    sport_id BIGINT NOT NULL REFERENCES sport(id),
-    name VARCHAR(31) NOT NULL,
-    player_count INT NOT NULL,
-    start_time TIMESTAMP NOT NULL,
-    duration INT NOT NULL,
-    description VARCHAR(255),
-    game_status game_status NOT NULL DEFAULT 'ON_RECRUITING'
+CREATE TABLE game
+(
+    id            BIGSERIAL PRIMARY KEY,
+    sport_id      BIGINT       NOT NULL REFERENCES sport (id),
+    game_name     VARCHAR(31)  NOT NULL,
+    game_location VARCHAR(255) NOT NULL,
+    player_count  INT          NOT NULL,
+    start_time    TIMESTAMP    NOT NULL,
+    duration      INT          NOT NULL,
+    description   VARCHAR(255),
+    game_status   game_status  NOT NULL DEFAULT 'ON_RECRUITING'
 );
 
-CREATE TABLE rank_game (
-    id BIGINT PRIMARY KEY REFERENCES game(id),
+CREATE TABLE rank_game
+(
+    id       BIGINT PRIMARY KEY REFERENCES game (id),
     win_team rank_game_team
 );
 
-CREATE TABLE game_user (
-    id BIGSERIAL PRIMARY KEY,
-    member_id BIGINT NOT NULL REFERENCES member(id),
-    game_id BIGINT NOT NULL REFERENCES game(id)
+CREATE TABLE game_user
+(
+    id        BIGSERIAL PRIMARY KEY,
+    member_id BIGINT NOT NULL REFERENCES member (id),
+    game_id   BIGINT NOT NULL REFERENCES game (id)
 );
 
-CREATE TABLE rank_game_user (
-    team rank_game_team,
+CREATE TABLE rank_game_user
+(
+    team            rank_game_team,
     queue_joined_at TIMESTAMP NOT NULL,
-    accepted BOOLEAN NOT NULL DEFAULT FALSE
+    accepted        BOOLEAN   NOT NULL DEFAULT FALSE
 );
 
-CREATE TABLE game_report (
-    id BIGSERIAL PRIMARY KEY,
-    game_id BIGINT NOT NULL REFERENCES game(id) ON DELETE CASCADE,
-    reporter_id BIGINT NOT NULL REFERENCES member(id) ON DELETE CASCADE,
-    reported_id BIGINT NOT NULL REFERENCES member(id) ON DELETE CASCADE,
+CREATE TABLE game_report
+(
+    id          BIGSERIAL PRIMARY KEY,
+    game_id     BIGINT        NOT NULL REFERENCES game (id) ON DELETE CASCADE,
+    reporter_id BIGINT        NOT NULL REFERENCES member (id) ON DELETE CASCADE,
+    reported_id BIGINT        NOT NULL REFERENCES member (id) ON DELETE CASCADE,
     reason_text VARCHAR(255),
-    status report_status NOT NULL DEFAULT 'PENDING',
-    created_at TIMESTAMP NOT NULL DEFAULT now(),
+    status      report_status NOT NULL DEFAULT 'PENDING',
+    created_at  TIMESTAMP     NOT NULL DEFAULT now(),
     CONSTRAINT chk_different_users CHECK (reporter_id <> reported_id),
     CONSTRAINT unique_report UNIQUE (game_id, reporter_id, reported_id)
 );
 
-CREATE TABLE mmr (
-    id BIGSERIAL PRIMARY KEY,
-    sport_id BIGINT NOT NULL REFERENCES sport(id),
-    member_id BIGINT NOT NULL REFERENCES member(id),
-    mu DOUBLE PRECISION DEFAULT 25,
-    sigma DOUBLE PRECISION DEFAULT 8.3
+CREATE TABLE mmr
+(
+    id        BIGSERIAL PRIMARY KEY,
+    sport_id  BIGINT NOT NULL REFERENCES sport (id),
+    member_id BIGINT NOT NULL REFERENCES member (id),
+    mu        DOUBLE PRECISION DEFAULT 25,
+    sigma     DOUBLE PRECISION DEFAULT 8.3
 );
 
-ALTER TABLE mmr ADD CONSTRAINT uq_mmr_sport_id_member_id UNIQUE (sport_id, member_id);
+ALTER TABLE mmr
+    ADD CONSTRAINT uq_mmr_sport_id_member_id UNIQUE (sport_id, member_id);
 
-CREATE TABLE match_result_vote (
-    id BIGSERIAL PRIMARY KEY,
-    member_id BIGINT NOT NULL REFERENCES member(id),
-    game_id BIGINT NOT NULL REFERENCES game(id),
-    win_team rank_game_team NOT NULL
+CREATE TABLE match_result_vote
+(
+    id        BIGSERIAL PRIMARY KEY,
+    member_id BIGINT         NOT NULL REFERENCES member (id),
+    game_id   BIGINT         NOT NULL REFERENCES game (id),
+    win_team  rank_game_team NOT NULL
 );
+
+ALTER TYPE oauth_provider ADD VALUE 'GOOGLE';
+ALTER TYPE game_status ADD VALUE 'CLOSED';
+ALTER TYPE game_status ADD VALUE 'CANCELED';
+
+CREATE TYPE time_period AS ENUM ('MORNING', 'NOON', 'EVENING');
+
+CREATE TABLE user_interest_time
+(
+    id          BIGSERIAL PRIMARY KEY,
+    member_Id   BIGINT      NOT NULL REFERENCES member (id),
+    time_period time_period NOT NULL
+);
+
+CREATE TABLE user_interest_sport
+(
+    id        BIGSERIAL PRIMARY KEY,
+    member_Id BIGINT NOT NULL REFERENCES member (id),
+    sport_id  BIGINT NOT NULL REFERENCES sport (id)
+);
+
+ALTER TABLE member
+    ADD COLUMN is_subscribed BOOLEAN DEFAULT false;

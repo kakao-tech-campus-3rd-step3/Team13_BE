@@ -44,7 +44,7 @@ class FcmServiceTest {
     @Test
     void saveToken_토큰이_없는_회원의_FCM_토큰_저장_성공() {
         // given
-        Member member = new Member(123123L, KAKAO);
+        Member member = new Member("123123", KAKAO);
         String token = "fcm-token";
         given(fcmTokenRepository.findByMember(member)).willReturn(Optional.empty());
 
@@ -58,7 +58,7 @@ class FcmServiceTest {
     @Test
     void saveToken_토큰이_있는_회원의_FCM_토큰_업데이트_성공() {
         // given
-        Member member = new Member(123131L, KAKAO);
+        Member member = new Member("123131", KAKAO);
         String oldToken = "fcm-token-1";
         String newToken = "fcm-token-2";
         FcmToken fcmToken = new FcmToken(member, oldToken);
