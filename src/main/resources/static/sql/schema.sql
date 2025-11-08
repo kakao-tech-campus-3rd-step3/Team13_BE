@@ -1,4 +1,4 @@
-CREATE TYPE game_status AS ENUM ('ON_RECRUITING', 'ON_MATCHING', 'END');
+CREATE TYPE game_status AS ENUM ('ON_RECRUITING', 'FULL', 'END');
 CREATE TYPE oauth_provider AS ENUM ('KAKAO');
 CREATE TYPE report_status AS ENUM ('PENDING', 'RESOLVED', 'REJECTED');
 CREATE TYPE rank_game_team AS ENUM ('RED_TEAM', 'BLUE_TEAM', 'NONE');
@@ -40,7 +40,7 @@ CREATE TABLE game (
     start_time TIMESTAMP NOT NULL,
     duration INT NOT NULL,
     description VARCHAR(255),
-    game_status game_status NOT NULL DEFAULT 'ON_MATCHING'
+    game_status game_status NOT NULL DEFAULT 'ON_RECRUITING'
 );
 
 CREATE TABLE rank_game (

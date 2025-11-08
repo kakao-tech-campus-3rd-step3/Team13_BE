@@ -39,7 +39,7 @@ spring:
             enable: true
 
 firebase:
-  credentials: classpath:firebase/pting-sdk-credentials.json
+  credentials: ${FIREBASE_CREDENTIALS_PATH}
 
 app:
   domain: ${SERVER_ADDRESS}

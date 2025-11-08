@@ -22,7 +22,7 @@ jobs:
       - name: Setup Firebase Credentials
         run: |
           mkdir -p ./src/main/resources/firebase
-          echo "${{ secrets.FIREBASE_CREDENTIALS }}" > ./src/main/resources/firebase/pting-sdk-credentials.json
+          echo "${{ secrets.FIREBASE_CREDENTIALS }}" > ./pting-sdk-credentials.json
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -38,7 +38,7 @@ jobs:
           host: ${{ secrets.AWS_EC2_HOST }}
           username: ${{ secrets.AWS_EC2_USERNAME }}
           key: ${{ secrets.AWS_EC2_SSH_PRIVATE_KEY }}
-          source: "build/libs/*.jar"
+          source: "build/libs/*.jar,pting-sdk-credentials.json"
           target: "/home/ubuntu/app"
 
       - name: Execute deployment script on EC2

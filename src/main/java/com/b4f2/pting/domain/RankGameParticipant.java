@@ -8,11 +8,13 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "rank_game_user")
 @NoArgsConstructor
+@Getter
 public class RankGameParticipant extends GameParticipant {
 
     @Column(name = "team")
@@ -24,6 +26,10 @@ public class RankGameParticipant extends GameParticipant {
 
     @Column(name = "accepted")
     private boolean accepted = false;
+
+    public RankGameParticipant(Member member) {
+        super(member, null);
+    }
 
     public boolean isTeam(RankGameTeam rankGameTeam) {
         return team == rankGameTeam;
@@ -39,9 +45,5 @@ public class RankGameParticipant extends GameParticipant {
 
     public void accept() {
         accepted = true;
-    }
-
-    public boolean isAccepted() {
-        return accepted;
     }
 }
